@@ -12,13 +12,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import org.osmdroid.config.Configuration.*
+import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
@@ -33,7 +34,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
+        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
         setContentView(R.layout.activity_main)
 
@@ -119,14 +121,15 @@ class MainActivity : AppCompatActivity() {
                 fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                     Log.d(DEBUG_TAG, "LOCATION: $location")
                     if (location == null) {
-                        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                            .addOnSuccessListener { location: Location? ->
-                                Log.d(DEBUG_TAG, "LOCATION: $location")
-                                location?.let {
-                                    val startPoint = GeoPoint(location.latitude, location.longitude)
-                                    mapController.setCenter(startPoint)
-                                }
+                        fusedLocationClient.getCurrentLocation(
+                            Priority.PRIORITY_HIGH_ACCURACY, null
+                        ).addOnSuccessListener { location: Location? ->
+                            Log.d(DEBUG_TAG, "LOCATION: $location")
+                            location?.let {
+                                val startPoint = GeoPoint(location.latitude, location.longitude)
+                                mapController.setCenter(startPoint)
                             }
+                        }
                         return@addOnSuccessListener
                     }
                     val startPoint = GeoPoint(location.latitude, location.longitude)
@@ -162,6 +165,12 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setOnDismissListener(onDismissListener)
         alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText, onClickListener)
         alertDialog.show()
+    }
+
+    fun onOSMCopyrightNoticeClick(view: View) {
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
+        startActivity(browserIntent, null)
     }
 
 }

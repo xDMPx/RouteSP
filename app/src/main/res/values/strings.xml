@@ -5,4 +5,5 @@
     <string name="please_grant_required_permission">Please grant the required permission</string>
     <string name="location_permission">Location permission -> Allow only when using the app</string>
     <string name="ok">OK</string>
+    <string name="osm_copyright_notice">© OpenStreetMap\ncontributors</string>
 </resources>
