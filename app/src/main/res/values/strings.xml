@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RouteSP</string>
+    <string name="gps_disabled">GPS Disabled</string>
+    <string name="please_turn_on_gps">Please turn on GPS</string>
+    <string name="please_grant_required_permission">Please grant the required permission</string>
+    <string name="location_permission">Location permission -> Allow only when using the app</string>
+    <string name="ok">OK</string>
 </resources>
