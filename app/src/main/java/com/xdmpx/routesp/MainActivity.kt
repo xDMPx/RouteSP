@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -16,6 +17,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -24,12 +26,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
-
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
     private lateinit var map: MapView
     private lateinit var mapController: MapController
+    private lateinit var mLocationOverlay: MyLocationNewOverlay
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,34 @@ class MainActivity : AppCompatActivity() {
         mapController.setZoom(13.0)
         val startPoint = GeoPoint(52.22977, 21.01178)
         mapController.setCenter(startPoint)
+
+        val gpsLocationProvider = object : GpsMyLocationProvider(this) {
+            override fun onLocationChanged(locations: MutableList<Location>) {
+                runOnUiThread {
+                    val location = locations.last()
+                    mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+                }
+                super.onLocationChanged(locations)
+            }
+
+            override fun onLocationChanged(location: Location) {
+                runOnUiThread {
+                    mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+                }
+                super.onLocationChanged(location)
+            }
+        }
+        mLocationOverlay = MyLocationNewOverlay(gpsLocationProvider, map)
+        mLocationOverlay.setDirectionIcon(
+            (ResourcesCompat.getDrawable(
+                map.context.resources,
+                org.osmdroid.library.R.drawable.twotone_navigation_black_48,
+                theme
+            ) as BitmapDrawable).bitmap
+        )
+        mLocationOverlay.enableMyLocation()
+
+        map.overlays.add(this.mLocationOverlay)
 
     }
 
