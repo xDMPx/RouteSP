@@ -26,6 +26,9 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.compass.CompassOverlay
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
@@ -34,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var map: MapView
     private lateinit var mapController: MapController
     private lateinit var mLocationOverlay: MyLocationNewOverlay
+    private lateinit var compassOverlay: CompassOverlay
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +80,17 @@ class MainActivity : AppCompatActivity() {
             ) as BitmapDrawable).bitmap
         )
         mLocationOverlay.enableMyLocation()
-
         map.overlays.add(this.mLocationOverlay)
+
+        compassOverlay = CompassOverlay(this, InternalCompassOrientationProvider(this), map)
+        compassOverlay.enableCompass()
+        map.overlays.add(compassOverlay)
+
+        val rotationGestureOverlay = RotationGestureOverlay(map)
+        rotationGestureOverlay.isEnabled
+        map.setMultiTouchControls(true)
+        map.overlays.add(rotationGestureOverlay)
+
 
     }
 
