@@ -7,6 +7,7 @@ import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.BitmapDrawable
+import android.icu.text.CaseMap.Title
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -14,6 +15,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.Window
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -34,82 +36,26 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
-    private lateinit var map: MapView
-    private lateinit var mapController: MapController
-    private lateinit var mLocationOverlay: MyLocationNewOverlay
-    private lateinit var compassOverlay: CompassOverlay
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
-        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
-
         setContentView(R.layout.activity_main)
 
-        map = findViewById<MapView>(R.id.map)
-        map.setTileSource(TileSourceFactory.MAPNIK)
+    }
 
-        mapController = map.controller as MapController
-        mapController.setZoom(13.0)
-        val startPoint = GeoPoint(52.22977, 21.01178)
-        mapController.setCenter(startPoint)
-
-        val gpsLocationProvider = object : GpsMyLocationProvider(this) {
-            override fun onLocationChanged(locations: MutableList<Location>) {
-                runOnUiThread {
-                    val location = locations.last()
-                    mapController.setCenter(GeoPoint(location.latitude, location.longitude))
-                }
-                super.onLocationChanged(locations)
+    fun goToMapActivity(view: View) {
+        when (requestLocation()) {
+            true -> {
+                val intent = Intent(this, MapActivity::class.java)
+                startActivity(intent)
             }
 
-            override fun onLocationChanged(location: Location) {
-                runOnUiThread {
-                    mapController.setCenter(GeoPoint(location.latitude, location.longitude))
-                }
-                super.onLocationChanged(location)
-            }
+            false -> {}
         }
-        mLocationOverlay = MyLocationNewOverlay(gpsLocationProvider, map)
-        mLocationOverlay.setDirectionIcon(
-            (ResourcesCompat.getDrawable(
-                map.context.resources,
-                org.osmdroid.library.R.drawable.twotone_navigation_black_48,
-                theme
-            ) as BitmapDrawable).bitmap
-        )
-        mLocationOverlay.enableMyLocation()
-        map.overlays.add(this.mLocationOverlay)
-
-        compassOverlay = CompassOverlay(this, InternalCompassOrientationProvider(this), map)
-        compassOverlay.enableCompass()
-        map.overlays.add(compassOverlay)
-
-        val rotationGestureOverlay = RotationGestureOverlay(map)
-        rotationGestureOverlay.isEnabled
-        map.setMultiTouchControls(true)
-        map.overlays.add(rotationGestureOverlay)
-
-
     }
 
-    override fun onResume() {
-        requestLocation()
-        super.onResume()
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
-        map.onPause()
-    }
-
-    private fun requestLocation() {
+    private fun requestLocation(): Boolean {
         when {
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
@@ -162,29 +108,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             else -> {
-                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    Log.d(DEBUG_TAG, "LOCATION: $location")
-                    if (location == null) {
-                        fusedLocationClient.getCurrentLocation(
-                            Priority.PRIORITY_HIGH_ACCURACY, null
-                        ).addOnSuccessListener { location: Location? ->
-                            Log.d(DEBUG_TAG, "LOCATION: $location")
-                            location?.let {
-                                val startPoint = GeoPoint(location.latitude, location.longitude)
-                                mapController.setCenter(startPoint)
-                            }
-                        }
-                        return@addOnSuccessListener
-                    }
-                    val startPoint = GeoPoint(location.latitude, location.longitude)
-                    mapController.setCenter(startPoint)
-                }
+                return true
             }
         }
 
-
         //TODO: Manifest.permission.ACCESS_BACKGROUND_LOCATION
+
+        return false
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -210,12 +140,6 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setOnDismissListener(onDismissListener)
         alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText, onClickListener)
         alertDialog.show()
-    }
-
-    fun onOSMCopyrightNoticeClick(view: View) {
-        val browserIntent =
-            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
-        startActivity(browserIntent, null)
     }
 
 }

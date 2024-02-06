@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.RouteSP" parent="Base.Theme.RouteSP" />
+
+    <style name="GoToMapFAB">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">100%</item>
+    </style>
+
 </resources>
