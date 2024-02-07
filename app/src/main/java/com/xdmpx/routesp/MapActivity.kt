@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import org.osmdroid.config.Configuration
@@ -25,6 +26,8 @@ class MapActivity : AppCompatActivity() {
     private lateinit var mapController: MapController
     private lateinit var mLocationOverlay: MyLocationNewOverlay
     private lateinit var compassOverlay: CompassOverlay
+
+    var speedInKMH = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +54,16 @@ class MapActivity : AppCompatActivity() {
             }
 
             override fun onLocationChanged(location: Location) {
+                val speed = when (speedInKMH) {
+                    true -> location.speed * 3.6
+                    false -> location.speed
+                }
+                val speedText = when (speedInKMH) {
+                    true -> String.format("%.2f km/h", speed)
+                    false -> String.format("%.2f m/s", speed)
+                }
                 runOnUiThread {
+                    (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
                     mapController.setCenter(GeoPoint(location.latitude, location.longitude))
                 }
                 super.onLocationChanged(location)
@@ -97,6 +109,10 @@ class MapActivity : AppCompatActivity() {
         val browserIntent =
             Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
         startActivity(browserIntent, null)
+    }
+
+    fun onSpeedClick(view: View) {
+        speedInKMH = !speedInKMH
     }
 
 }

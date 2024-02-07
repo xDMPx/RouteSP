@@ -20,6 +20,37 @@
             android:layout_height="fill_parent" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/speedImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onSpeedClick"
+        android:src="@drawable/ic_baseline_speed_24"
+        app:tint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/speedMapText"
+        app:layout_constraintEnd_toStartOf="@+id/speedMapText"
+        app:layout_constraintTop_toTopOf="@+id/speedMapText" />
+
+    <TextView
+        android:id="@+id/speedMapText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="55dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onSpeedClick"
+        android:text="0.0km/h"
+        android:textColor="#6200EA"
+        android:textSize="20.0sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/OSMCopyrightNotice"
         android:layout_width="wrap_content"
