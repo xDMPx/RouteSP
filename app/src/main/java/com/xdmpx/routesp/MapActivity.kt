@@ -1,15 +1,20 @@
 package com.xdmpx.routesp
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
+import com.xdmpx.routesp.services.LocationService
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -26,8 +31,23 @@ class MapActivity : AppCompatActivity() {
     private lateinit var mapController: MapController
     private lateinit var mLocationOverlay: MyLocationNewOverlay
     private lateinit var compassOverlay: CompassOverlay
+    private lateinit var mLocationService: LocationService
+    private lateinit var mServiceIntent: Intent
+    private var mBound: Boolean = false
 
     var speedInKMH = true
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as LocationService.LocalBinder
+            mLocationService = binder.getService()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +66,17 @@ class MapActivity : AppCompatActivity() {
 
         val gpsLocationProvider = object : GpsMyLocationProvider(this) {
             override fun onLocationChanged(locations: MutableList<Location>) {
+                val location = locations.last()
+                val speed = when (speedInKMH) {
+                    true -> location.speed * 3.6
+                    false -> location.speed
+                }
+                val speedText = when (speedInKMH) {
+                    true -> String.format("%.2f km/h", speed)
+                    false -> String.format("%.2f m/s", speed)
+                }
                 runOnUiThread {
-                    val location = locations.last()
+                    (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
                     mapController.setCenter(GeoPoint(location.latitude, location.longitude))
                 }
                 super.onLocationChanged(locations)
@@ -88,6 +117,14 @@ class MapActivity : AppCompatActivity() {
         rotationGestureOverlay.isEnabled
         map.setMultiTouchControls(true)
         map.overlays.add(rotationGestureOverlay)
+
+        mLocationOverlay.runOnFirstFix {
+            mLocationService = LocationService()
+            mServiceIntent = Intent(this@MapActivity, mLocationService.javaClass).also { intent ->
+                bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            }
+            startForegroundService(mServiceIntent)
+        }
 
     }
 
