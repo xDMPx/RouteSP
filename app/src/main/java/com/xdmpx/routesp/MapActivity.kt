@@ -10,7 +10,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -44,6 +43,7 @@ class MapActivity : AppCompatActivity() {
     private var mBound: Boolean = false
 
     var speedInKMH = true
+    var distanceInKMH = true
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -176,6 +176,17 @@ class MapActivity : AppCompatActivity() {
         speedInKMH = !speedInKMH
     }
 
+    fun onDistanceClick(view: View) {
+        distanceInKMH = !distanceInKMH
+        runOnUiThread {
+            val distanceText = when (distanceInKMH) {
+                true -> String.format("%.2f km", routeLine.distance / 1000f)
+                false -> String.format("%.2f m", routeLine.distance)
+            }
+            (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text = distanceText
+        }
+    }
+
     private fun scheduleTimer() {
         updateTimer = Timer()
         updateTimer.schedule(
@@ -183,13 +194,19 @@ class MapActivity : AppCompatActivity() {
                 override fun run() {
                     runOnUiThread(object : TimerTask() {
                         override fun run() {
-                            val recordedGeoPoints = ArrayList<GeoPoint>()
-                            recordedGeoPoints.addAll(mLocationService.getRecordedGeoPoints())
+                            val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
                             if (recordedGeoPoints.isNotEmpty()) {
                                 routeLine.setPoints(recordedGeoPoints)
+                                val distanceText = when (distanceInKMH) {
+                                    true -> String.format("%.2f km", routeLine.distance / 1000f)
+                                    false -> String.format("%.2f m", routeLine.distance)
+                                }
+                                runOnUiThread {
+                                    (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text =
+                                        distanceText
+                                }
                                 map.invalidate()
                             }
-                            Log.d("shedulerTimer", "${map.overlays.size}")
                         }
                     })
                 }
@@ -205,7 +222,6 @@ class MapActivity : AppCompatActivity() {
             unbindService(connection)
             if (::mServiceIntent.isInitialized) mLocationService.stopService(mServiceIntent)
         }
-        Log.d("TAG", "STOP")
     }
 
 }

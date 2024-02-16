@@ -51,6 +51,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/distanceImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onDistanceClick"
+        android:src="@drawable/round_route_24"
+        app:tint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/distanceMapText"
+        app:layout_constraintEnd_toStartOf="@+id/distanceMapText"
+        app:layout_constraintTop_toTopOf="@+id/distanceMapText" />
+
+    <TextView
+        android:id="@+id/distanceMapText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onDistanceClick"
+        android:text="0.0km"
+        android:textColor="#6200EA"
+        android:textSize="20.0sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/speedMapText" />
+
     <TextView
         android:id="@+id/OSMCopyrightNotice"
         android:layout_width="wrap_content"
