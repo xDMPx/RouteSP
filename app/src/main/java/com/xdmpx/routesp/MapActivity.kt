@@ -10,6 +10,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -20,11 +21,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import java.util.Timer
+import java.util.TimerTask
 
 class MapActivity : AppCompatActivity() {
     private lateinit var map: MapView
@@ -33,6 +37,10 @@ class MapActivity : AppCompatActivity() {
     private lateinit var compassOverlay: CompassOverlay
     private lateinit var mLocationService: LocationService
     private lateinit var mServiceIntent: Intent
+
+    private var routeLine = Polyline()
+    private lateinit var updateTimer: Timer
+
     private var mBound: Boolean = false
 
     var speedInKMH = true
@@ -67,6 +75,11 @@ class MapActivity : AppCompatActivity() {
         val gpsLocationProvider = object : GpsMyLocationProvider(this) {
             override fun onLocationChanged(locations: MutableList<Location>) {
                 val location = locations.last()
+                if (location.provider != "gps") {
+                    super.onLocationChanged(locations)
+                    return
+                }
+
                 val speed = when (speedInKMH) {
                     true -> location.speed * 3.6
                     false -> location.speed
@@ -83,6 +96,11 @@ class MapActivity : AppCompatActivity() {
             }
 
             override fun onLocationChanged(location: Location) {
+                if (location.provider != "gps") {
+                    super.onLocationChanged(location)
+                    return
+                }
+
                 val speed = when (speedInKMH) {
                     true -> location.speed * 3.6
                     false -> location.speed
@@ -124,8 +142,10 @@ class MapActivity : AppCompatActivity() {
                 bindService(intent, connection, Context.BIND_AUTO_CREATE)
             }
             startForegroundService(mServiceIntent)
+            scheduleTimer()
         }
 
+        map.overlays.add(routeLine)
     }
 
     override fun onResume() {
@@ -133,6 +153,8 @@ class MapActivity : AppCompatActivity() {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map.onResume()
+
+        if (mBound) scheduleTimer()
     }
 
     override fun onPause() {
@@ -140,6 +162,8 @@ class MapActivity : AppCompatActivity() {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause()
+
+        if (::updateTimer.isInitialized) updateTimer.cancel()
     }
 
     fun onOSMCopyrightNoticeClick(view: View) {
@@ -150,6 +174,38 @@ class MapActivity : AppCompatActivity() {
 
     fun onSpeedClick(view: View) {
         speedInKMH = !speedInKMH
+    }
+
+    private fun scheduleTimer() {
+        updateTimer = Timer()
+        updateTimer.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    runOnUiThread(object : TimerTask() {
+                        override fun run() {
+                            val recordedGeoPoints = ArrayList<GeoPoint>()
+                            recordedGeoPoints.addAll(mLocationService.getRecordedGeoPoints())
+                            if (recordedGeoPoints.isNotEmpty()) {
+                                routeLine.setPoints(recordedGeoPoints)
+                                map.invalidate()
+                            }
+                            Log.d("shedulerTimer", "${map.overlays.size}")
+                        }
+                    })
+                }
+            }, 0, 1000
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mBound) {
+            mBound = false
+            updateTimer.cancel()
+            unbindService(connection)
+            if (::mServiceIntent.isInitialized) mLocationService.stopService(mServiceIntent)
+        }
+        Log.d("TAG", "STOP")
     }
 
 }

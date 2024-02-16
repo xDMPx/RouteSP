@@ -15,9 +15,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.xdmpx.routesp.R
+import org.osmdroid.util.GeoPoint
 
 class LocationService : Service() {
 
+    private var recordedGeoPoints: ArrayList<GeoPoint> = ArrayList()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -53,7 +55,7 @@ class LocationService : Service() {
 
     private fun setRequestLocationUpdates() {
         val locationRequest =
-            LocationRequest.Builder(5000).setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            LocationRequest.Builder(2500).setPriority(Priority.PRIORITY_HIGH_ACCURACY)
                 .setWaitForAccurateLocation(true).setGranularity(Granularity.GRANULARITY_FINE)
                 .build()
 
@@ -61,7 +63,9 @@ class LocationService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location = locationResult.lastLocation
                 location?.let { location ->
+                    val newGeoPoint = GeoPoint(location.latitude, location.longitude)
                     Log.d("LocationService", "Location Updated: $location")
+                    recordedGeoPoints.add(newGeoPoint)
                 }
 
             }
@@ -94,6 +98,10 @@ class LocationService : Service() {
                 .setOngoing(true).build()
 
         startForeground(2, notification)
+    }
+
+    fun getRecordedGeoPoints(): ArrayList<GeoPoint> {
+        return recordedGeoPoints
     }
 
 }
