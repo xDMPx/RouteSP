@@ -29,7 +29,7 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="onSpeedClick"
+        android:onClick="onSpeedIconClick"
         android:src="@drawable/ic_baseline_speed_24"
         app:layout_constraintBottom_toBottomOf="@+id/speedMapText"
         app:layout_constraintEnd_toStartOf="@+id/speedMapText"

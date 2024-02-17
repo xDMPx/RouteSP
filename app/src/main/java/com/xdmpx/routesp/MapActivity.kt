@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
@@ -38,13 +39,15 @@ class MapActivity : AppCompatActivity() {
     private lateinit var mLocationService: LocationService
     private lateinit var mServiceIntent: Intent
 
+    private var lastSpeed = 0f
     private var routeLine = Polyline()
     private lateinit var updateTimer: Timer
 
     private var mBound: Boolean = false
 
-    var speedInKMH = true
-    var distanceInKMH = true
+    private var speedInKMH = true
+    private var avgSpeed = false
+    private var distanceInKMH = true
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -81,18 +84,10 @@ class MapActivity : AppCompatActivity() {
                     return
                 }
 
-                val speed = when (speedInKMH) {
-                    true -> location.speed * 3.6
-                    false -> location.speed
-                }
-                val speedText = when (speedInKMH) {
-                    true -> String.format("%.2f km/h", speed)
-                    false -> String.format("%.2f m/s", speed)
-                }
-                runOnUiThread {
-                    (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
-                    mapController.setCenter(GeoPoint(location.latitude, location.longitude))
-                }
+                lastSpeed = location.speed
+                setSpeedMapText()
+                mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+
                 super.onLocationChanged(locations)
             }
 
@@ -102,18 +97,10 @@ class MapActivity : AppCompatActivity() {
                     return
                 }
 
-                val speed = when (speedInKMH) {
-                    true -> location.speed * 3.6
-                    false -> location.speed
-                }
-                val speedText = when (speedInKMH) {
-                    true -> String.format("%.2f km/h", speed)
-                    false -> String.format("%.2f m/s", speed)
-                }
-                runOnUiThread {
-                    (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
-                    mapController.setCenter(GeoPoint(location.latitude, location.longitude))
-                }
+                lastSpeed = location.speed
+                setSpeedMapText()
+                mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+
                 super.onLocationChanged(location)
             }
         }
@@ -175,6 +162,53 @@ class MapActivity : AppCompatActivity() {
 
     fun onSpeedClick(view: View) {
         speedInKMH = !speedInKMH
+        setSpeedMapText()
+    }
+
+    fun onSpeedIconClick(view: View) {
+        avgSpeed = !avgSpeed
+        if (avgSpeed) {
+            runOnUiThread {
+                (this@MapActivity.findViewById(R.id.speedImageView) as ImageView).setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.rounded_avg_pace_24, theme)
+                )
+            }
+        } else {
+            (this@MapActivity.findViewById(R.id.speedImageView) as ImageView).setImageDrawable(
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_speed_24, theme)
+            )
+        }
+    }
+
+    private fun setSpeedMapText() {
+        val speedText = when (avgSpeed) {
+            true -> speedText(getAvgSpeed())
+            false -> speedText(lastSpeed)
+        }
+        runOnUiThread {
+            (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
+        }
+    }
+
+    private fun getAvgSpeed(): Float {
+        var timeDif = Calendar.getInstance().time.time - mLocationService.getStartDate().time
+        timeDif /= 1000
+
+        val avgSpeed = routeLine.distance / (timeDif.toDouble())
+        return avgSpeed.toFloat()
+    }
+
+    private fun speedText(speedMS: Float): String {
+        val speed = when (speedInKMH) {
+            true -> speedMS * 3.6
+            false -> speedMS
+        }
+        val speedText = when (speedInKMH) {
+            true -> String.format("%.2f km/h", speed)
+            false -> String.format("%.2f m/s", speed)
+        }
+
+        return speedText
     }
 
     fun onDistanceClick(view: View) {
@@ -205,6 +239,8 @@ class MapActivity : AppCompatActivity() {
                                 var timeDif =
                                     Calendar.getInstance().time.time - mLocationService.getStartDate().time
                                 timeDif /= 1000
+
+                                setSpeedMapText()
                                 runOnUiThread {
                                     (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text =
                                         distanceText
@@ -216,7 +252,7 @@ class MapActivity : AppCompatActivity() {
                         }
                     })
                 }
-            }, 0, 1000
+            }, 0, 500
         )
     }
 
