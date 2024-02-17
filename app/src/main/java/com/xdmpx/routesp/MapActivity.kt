@@ -26,6 +26,7 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import java.util.Calendar
 import java.util.Timer
 import java.util.TimerTask
 
@@ -201,9 +202,14 @@ class MapActivity : AppCompatActivity() {
                                     true -> String.format("%.2f km", routeLine.distance / 1000f)
                                     false -> String.format("%.2f m", routeLine.distance)
                                 }
+                                var timeDif =
+                                    Calendar.getInstance().time.time - mLocationService.getStartDate().time
+                                timeDif /= 1000
                                 runOnUiThread {
                                     (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text =
                                         distanceText
+                                    (this@MapActivity.findViewById(R.id.timeMapText) as TextView).text =
+                                        convertSecondsToHMmSs(timeDif)
                                 }
                                 map.invalidate()
                             }
@@ -222,6 +228,13 @@ class MapActivity : AppCompatActivity() {
             unbindService(connection)
             if (::mServiceIntent.isInitialized) mLocationService.stopService(mServiceIntent)
         }
+    }
+
+    private fun convertSecondsToHMmSs(seconds: Long): String {
+        val s = seconds % 60
+        val m = seconds / 60 % 60
+        val h = seconds / (60 * 60) % 24
+        return String.format("%dh %dm %ds", h, m, s)
     }
 
 }

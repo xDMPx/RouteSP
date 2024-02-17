@@ -16,10 +16,13 @@ import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.xdmpx.routesp.R
 import org.osmdroid.util.GeoPoint
+import java.util.Calendar
+import java.util.Date
 
 class LocationService : Service() {
 
     private var recordedGeoPoints: ArrayList<GeoPoint> = ArrayList()
+    private lateinit var startDate: Date
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -33,6 +36,7 @@ class LocationService : Service() {
         super.onStartCommand(intent, flags, startId)
 
         if (!::fusedLocationClient.isInitialized) {
+            startDate = Calendar.getInstance().time
             setRequestLocationUpdates()
         }
         return Service.START_STICKY
@@ -102,6 +106,10 @@ class LocationService : Service() {
 
     fun getRecordedGeoPoints(): ArrayList<GeoPoint> {
         return recordedGeoPoints
+    }
+
+    fun getStartDate(): Date {
+        return startDate
     }
 
 }

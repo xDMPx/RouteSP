@@ -31,10 +31,10 @@
         android:focusable="true"
         android:onClick="onSpeedClick"
         android:src="@drawable/ic_baseline_speed_24"
-        app:tint="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/speedMapText"
         app:layout_constraintEnd_toStartOf="@+id/speedMapText"
-        app:layout_constraintTop_toTopOf="@+id/speedMapText" />
+        app:layout_constraintTop_toTopOf="@+id/speedMapText"
+        app:tint="@color/black" />
 
     <TextView
         android:id="@+id/speedMapText"
@@ -62,10 +62,10 @@
         android:focusable="true"
         android:onClick="onDistanceClick"
         android:src="@drawable/round_route_24"
-        app:tint="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/distanceMapText"
         app:layout_constraintEnd_toStartOf="@+id/distanceMapText"
-        app:layout_constraintTop_toTopOf="@+id/distanceMapText" />
+        app:layout_constraintTop_toTopOf="@+id/distanceMapText"
+        app:tint="@color/black" />
 
     <TextView
         android:id="@+id/distanceMapText"
@@ -80,6 +80,34 @@
         android:textSize="20.0sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/speedMapText" />
+
+    <ImageView
+        android:id="@+id/timeImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/rounded_timer_24"
+        app:layout_constraintBottom_toBottomOf="@+id/timeMapText"
+        app:layout_constraintEnd_toStartOf="@+id/timeMapText"
+        app:layout_constraintTop_toTopOf="@+id/timeMapText"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/timeMapText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="0.0h"
+        android:textColor="#6200EA"
+        android:textSize="20.0sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/distanceMapText" />
 
     <TextView
         android:id="@+id/OSMCopyrightNotice"
