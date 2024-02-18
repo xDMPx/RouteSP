@@ -86,7 +86,7 @@ class MapActivity : AppCompatActivity() {
 
                 lastSpeed = location.speed
                 setSpeedMapText()
-                mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+                //mapController.setCenter(GeoPoint(location.latitude, location.longitude))
 
                 super.onLocationChanged(locations)
             }
@@ -99,7 +99,7 @@ class MapActivity : AppCompatActivity() {
 
                 lastSpeed = location.speed
                 setSpeedMapText()
-                mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+                //mapController.setCenter(GeoPoint(location.latitude, location.longitude))
 
                 super.onLocationChanged(location)
             }
@@ -132,6 +132,7 @@ class MapActivity : AppCompatActivity() {
             startForegroundService(mServiceIntent)
             scheduleTimer()
         }
+        mLocationOverlay.enableFollowLocation()
 
         map.overlays.add(routeLine)
     }
@@ -220,6 +221,10 @@ class MapActivity : AppCompatActivity() {
             }
             (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text = distanceText
         }
+    }
+
+    fun onFollowLocationClick(view: View) {
+        mLocationOverlay.enableFollowLocation()
     }
 
     private fun scheduleTimer() {
