@@ -1,0 +1,19 @@
+package com.xdmpx.routesp.database
+
+import androidx.room.*
+import com.xdmpx.routesp.database.entities.PointEntity
+import com.xdmpx.routesp.database.entities.RouteEntity
+
+@Dao
+interface RouteDao {
+
+    @Insert
+    suspend fun insertRoute(route: RouteEntity)
+
+    @Insert
+    suspend fun insertPoint(point: PointEntity)
+
+    @Query("SELECT id FROM RouteEntity ORDER BY id DESC LIMIT 1")
+    suspend fun getLastRouteID(): Int?
+
+}

@@ -4,18 +4,26 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
+import com.xdmpx.routesp.database.RouteDatabase
+import com.xdmpx.routesp.database.entities.PointEntity
+import com.xdmpx.routesp.database.entities.RouteEntity
 import com.xdmpx.routesp.services.LocationService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -268,6 +276,24 @@ class MapActivity : AppCompatActivity() {
             updateTimer.cancel()
             unbindService(connection)
             if (::mServiceIntent.isInitialized) mLocationService.stopService(mServiceIntent)
+        }
+
+        val scope = CoroutineScope(Dispatchers.IO)
+        val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
+        val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
+        scope.launch {
+            routeDBDao.insertRoute(RouteEntity())
+            val latRouteID = routeDBDao.getLastRouteID()
+            if (latRouteID != null) {
+                recordedGeoPoints.forEach {
+                    routeDBDao.insertPoint(
+                        PointEntity(
+                            routeID = latRouteID, latitude = it.latitude, longitude = it.longitude
+                        )
+                    )
+                }
+            }
+            Log.d("Map onDestroy", "SAVED: ${recordedGeoPoints.size}")
         }
     }
 
