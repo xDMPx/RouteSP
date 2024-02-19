@@ -270,6 +270,8 @@ class MapActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
+
         super.onDestroy()
         if (mBound) {
             mBound = false
@@ -279,7 +281,6 @@ class MapActivity : AppCompatActivity() {
         }
 
         val scope = CoroutineScope(Dispatchers.IO)
-        val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         scope.launch {
             routeDBDao.insertRoute(RouteEntity())

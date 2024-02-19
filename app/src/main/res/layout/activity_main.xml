@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="goToRecordedRouteDetailsActivity"
+        android:text="Show Last Recorded Route"
+        app:layout_constraintBottom_toTopOf="@+id/goToMapActivityButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/goToMapActivityButton"
         android:layout_width="90dp"

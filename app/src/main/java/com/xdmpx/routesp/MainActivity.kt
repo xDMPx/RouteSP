@@ -44,6 +44,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun goToRecordedRouteDetailsActivity(view: View) {
+        if (requestPermissions()) {
+            val intent = Intent(this, RecordedRouteDetailsActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
     enum class PermissionType {
         NOTIFICATION, LOCATION,
     }

@@ -7,6 +7,6 @@ import com.xdmpx.routesp.database.entities.RouteEntity
 
 data class RouteWithPoints(
     @Embedded val route: RouteEntity, @Relation(
-        parentColumn = "ID", entityColumn = "routeID"
+        parentColumn = "id", entityColumn = "routeID"
     ) val points: List<PointEntity>
 )
