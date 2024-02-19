@@ -14,6 +14,9 @@ interface RouteDao {
     @Insert
     suspend fun insertPoint(point: PointEntity)
 
+    @Query("SELECT * FROM RouteEntity")
+    suspend fun getRoutes(): List<RouteEntity>
+
     @Query("SELECT id FROM RouteEntity ORDER BY id DESC LIMIT 1")
     suspend fun getLastRouteID(): Int?
 

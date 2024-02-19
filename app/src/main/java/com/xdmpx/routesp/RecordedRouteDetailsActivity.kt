@@ -21,6 +21,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recorded_route_details)
 
+        val routeID = intent.extras!!.getInt("routeID")
+
         Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -30,19 +32,17 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            routeDBDao.getLastRouteID()?.let {
-                val points = routeDBDao.getRouteWithPoints(it)?.points?.map { point ->
-                    GeoPoint(
-                        point.latitude, point.longitude
-                    )
-                }
-                routeLine.setPoints(points)
+            val points = routeDBDao.getRouteWithPoints(routeID)?.points?.map { point ->
+                GeoPoint(
+                    point.latitude, point.longitude
+                )
+            }
+            routeLine.setPoints(points)
 
-                runOnUiThread {
-                    val mapController = map.controller
-                    mapController.setZoom(13.0)
-                    mapController.setCenter(points?.get(0) ?: GeoPoint(52.22977, 21.01178))
-                }
+            runOnUiThread {
+                val mapController = map.controller
+                mapController.setZoom(13.0)
+                mapController.setCenter(points?.get(0) ?: GeoPoint(52.22977, 21.01178))
             }
         }
 

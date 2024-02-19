@@ -13,14 +13,22 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.xdmpx.routesp.database.RouteDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+const val DEBUG_TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
-    private val DEBUG_TAG = "MainActivity"
+
+    private lateinit var recordedRoutesListView: ListView
 
     private var requestedNotificationPermission = false
     private val requestNotificationPermissionLauncher = registerForActivityResult(
@@ -35,6 +43,47 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        recordedRoutesListView = this.findViewById(R.id.recordedRoutesList)
+
+        recordedRoutesListView.setOnItemClickListener { adapterView, _, position, _ ->
+            val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
+            goToRecordedRouteDetailsActivity(recordedRouteItem.routeID)
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        fillRecordedRoutesListView()
+    }
+
+    private fun fillRecordedRoutesListView() {
+        val recordedRoutesListItems = ArrayList<RecordedRouteItem>()
+
+        val scope = CoroutineScope(Dispatchers.IO)
+        val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
+        scope.launch {
+            val recordedRoutes = routeDBDao.getRoutes()
+            recordedRoutes.forEach {
+                recordedRoutesListItems.add(RecordedRouteItem(it.id, it.id.toString(), ""))
+            }
+
+            val recordedRoutesListArrayAdapter =
+                RecordedRouteItemArrayAdapter(this@MainActivity, recordedRoutesListItems)
+
+            if (recordedRoutesListArrayAdapter.count >= 5) {
+                val item: View =
+                    recordedRoutesListArrayAdapter.getView(0, null, recordedRoutesListView)
+                item.measure(0, 0)
+                recordedRoutesListView.layoutParams.height = (5.5 * item.measuredHeight).toInt()
+            }
+
+            runOnUiThread {
+                recordedRoutesListView.adapter = recordedRoutesListArrayAdapter
+            }
+        }
+
     }
 
     fun goToMapActivity(view: View) {
@@ -44,9 +93,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun goToRecordedRouteDetailsActivity(view: View) {
+    private fun goToRecordedRouteDetailsActivity(routeID: Int) {
         if (requestPermissions()) {
             val intent = Intent(this, RecordedRouteDetailsActivity::class.java)
+            intent.putExtra("routeID", routeID)
             startActivity(intent)
         }
     }
