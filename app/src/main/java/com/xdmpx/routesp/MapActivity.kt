@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
@@ -14,7 +13,11 @@ import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import com.xdmpx.routesp.database.RouteDatabase
@@ -40,6 +43,10 @@ import java.util.Timer
 import java.util.TimerTask
 
 class MapActivity : AppCompatActivity() {
+    private val DEBUG_TAG = "MapActivity"
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
+
     private lateinit var map: MapView
     private lateinit var mapController: MapController
     private lateinit var mLocationOverlay: MyLocationNewOverlay
@@ -143,6 +150,11 @@ class MapActivity : AppCompatActivity() {
         mLocationOverlay.enableFollowLocation()
 
         map.overlays.add(routeLine)
+
+        onBackPressedCallback = this.onBackPressedDispatcher.addCallback(this) {
+            saveRecordedRoute()
+        }
+
     }
 
     override fun onResume() {
@@ -270,8 +282,6 @@ class MapActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
-
         super.onDestroy()
         if (mBound) {
             mBound = false
@@ -279,9 +289,19 @@ class MapActivity : AppCompatActivity() {
             unbindService(connection)
             if (::mServiceIntent.isInitialized) mLocationService.stopService(mServiceIntent)
         }
+        Log.d(DEBUG_TAG, "onDestroy")
+    }
+
+    private fun saveRecordedRoute() {
+        if ((this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility == View.VISIBLE) return
+
+        (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
+            View.VISIBLE
+
+        val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
+        val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
         val scope = CoroutineScope(Dispatchers.IO)
-        val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         scope.launch {
             routeDBDao.insertRoute(RouteEntity())
             val latRouteID = routeDBDao.getLastRouteID()
@@ -293,8 +313,15 @@ class MapActivity : AppCompatActivity() {
                         )
                     )
                 }
+                Log.d(DEBUG_TAG, "Saved ${recordedGeoPoints.size}")
+
+                runOnUiThread {
+                    (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
+                        View.GONE
+                    this@MapActivity.onBackPressedCallback.isEnabled = false
+                    this@MapActivity.onBackPressedDispatcher.onBackPressed()
+                }
             }
-            Log.d("Map onDestroy", "SAVED: ${recordedGeoPoints.size}")
         }
     }
 

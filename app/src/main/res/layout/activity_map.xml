@@ -140,4 +140,26 @@
         app:shapeAppearanceOverlay="@style/GoToMapFAB"
         app:srcCompat="@drawable/rounded_navigation_24" />
 
+    <LinearLayout
+        android:id="@+id/progressBarLinearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#80000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="auto" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

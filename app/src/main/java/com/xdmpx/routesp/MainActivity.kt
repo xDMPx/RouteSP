@@ -24,9 +24,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-const val DEBUG_TAG = "MainActivity"
-
 class MainActivity : AppCompatActivity() {
+    private val DEBUG_TAG = "MainActivity"
 
     private lateinit var recordedRoutesListView: ListView
 
