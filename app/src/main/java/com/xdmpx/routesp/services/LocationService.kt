@@ -67,6 +67,8 @@ class LocationService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location = locationResult.lastLocation
                 location?.let { location ->
+                    if (location.time < startDate.time) return
+
                     val newGeoPoint = GeoPoint(location.latitude, location.longitude)
                     Log.d("LocationService", "Location Updated: $location")
                     recordedGeoPoints.add(newGeoPoint)
