@@ -20,6 +20,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
+import com.xdmpx.routesp.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.database.entities.PointEntity
 import com.xdmpx.routesp.database.entities.RouteEntity
@@ -298,12 +299,14 @@ class MapActivity : AppCompatActivity() {
         (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
             View.VISIBLE
 
+        val endDate = Calendar.getInstance().time
+        val startDate = mLocationService.getStartDate()
         val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            routeDBDao.insertRoute(RouteEntity())
+            routeDBDao.insertRoute(RouteEntity(startDate = startDate.time, endDate = endDate.time))
             val latRouteID = routeDBDao.getLastRouteID()
             if (latRouteID != null) {
                 recordedGeoPoints.forEach {
@@ -323,13 +326,6 @@ class MapActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun convertSecondsToHMmSs(seconds: Long): String {
-        val s = seconds % 60
-        val m = seconds / 60 % 60
-        val h = seconds / (60 * 60) % 24
-        return String.format("%dh %dm %ds", h, m, s)
     }
 
 }

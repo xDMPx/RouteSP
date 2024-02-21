@@ -2,7 +2,9 @@ package com.xdmpx.routesp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import androidx.preference.PreferenceManager
+import com.xdmpx.routesp.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +14,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
+import java.util.Calendar
 
 class RecordedRouteDetailsActivity : AppCompatActivity() {
     private lateinit var map: MapView
@@ -32,7 +35,13 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            val points = routeDBDao.getRouteWithPoints(routeID)?.points?.map { point ->
+            val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)!!
+            val route = routeWithPoints.route
+
+            var timeDif = route.endDate - route.startDate
+            timeDif /= 1000
+
+            val points = routeWithPoints.points.map { point ->
                 GeoPoint(
                     point.latitude, point.longitude
                 )
@@ -40,9 +49,12 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             routeLine.setPoints(points)
 
             runOnUiThread {
+                (this@RecordedRouteDetailsActivity.findViewById(R.id.timeMapText) as TextView).text =
+                    convertSecondsToHMmSs(timeDif)
+
                 val mapController = map.controller
                 mapController.setZoom(13.0)
-                mapController.setCenter(points?.get(0) ?: GeoPoint(52.22977, 21.01178))
+                mapController.setCenter(points[0])
             }
         }
 

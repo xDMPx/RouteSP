@@ -23,6 +23,8 @@ import com.xdmpx.routesp.database.RouteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DateFormat.getDateTimeInstance
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
@@ -65,7 +67,10 @@ class MainActivity : AppCompatActivity() {
         scope.launch {
             val recordedRoutes = routeDBDao.getRoutes()
             recordedRoutes.forEach {
-                recordedRoutesListItems.add(RecordedRouteItem(it.id, it.id.toString(), ""))
+                val startDate = Calendar.getInstance()
+                startDate.timeInMillis = it.startDate
+                val startDateString = getDateTimeInstance().format(startDate.time)
+                recordedRoutesListItems.add(RecordedRouteItem(it.id, startDateString, ""))
             }
 
             val recordedRoutesListArrayAdapter =

@@ -20,4 +20,29 @@
             android:layout_height="fill_parent" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/timeImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/rounded_timer_24"
+        app:layout_constraintBottom_toBottomOf="@+id/timeMapText"
+        app:layout_constraintEnd_toStartOf="@+id/timeMapText"
+        app:layout_constraintTop_toTopOf="@+id/timeMapText"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/timeMapText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="55dp"
+        android:text="0.0h"
+        android:textColor="#6200EA"
+        android:textSize="20.0sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

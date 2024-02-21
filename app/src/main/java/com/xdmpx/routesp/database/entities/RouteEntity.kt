@@ -6,4 +6,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class RouteEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val startDate: Long,
+    val endDate: Long,
 )
