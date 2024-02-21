@@ -70,7 +70,17 @@ class MainActivity : AppCompatActivity() {
                 val startDate = Calendar.getInstance()
                 startDate.timeInMillis = it.startDate
                 val startDateString = getDateTimeInstance().format(startDate.time)
-                recordedRoutesListItems.add(RecordedRouteItem(it.id, startDateString, ""))
+
+                val distance = String.format("%.2f km", it.distanceInM / 1000f)
+                var timeDif = it.endDate - it.startDate
+                timeDif /= 1000
+                val time = Utils.convertSecondsToHMmSs(timeDif)
+
+                recordedRoutesListItems.add(
+                    RecordedRouteItem(
+                        it.id, startDateString, "Distance: $distance Time: $time"
+                    )
+                )
             }
 
             val recordedRoutesListArrayAdapter =

@@ -38,6 +38,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)!!
             val route = routeWithPoints.route
 
+            val distance = String.format("%.2f km", route.distanceInM / 1000f)
             var timeDif = route.endDate - route.startDate
             timeDif /= 1000
 
@@ -51,6 +52,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             runOnUiThread {
                 (this@RecordedRouteDetailsActivity.findViewById(R.id.timeMapText) as TextView).text =
                     convertSecondsToHMmSs(timeDif)
+                (this@RecordedRouteDetailsActivity.findViewById(R.id.distanceMapText) as TextView).text =
+                    distance
 
                 val mapController = map.controller
                 mapController.setZoom(13.0)

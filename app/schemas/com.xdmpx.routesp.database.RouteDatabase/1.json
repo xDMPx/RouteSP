@@ -2,16 +2,22 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7f6c408cdc8ff5ecc77d22c9b85201f8",
+    "identityHash": "a59c3fbefa62cdebdb657ce446a46479",
     "entities": [
       {
         "tableName": "RouteEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `startDate` INTEGER NOT NULL, `endDate` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `distanceInM` REAL NOT NULL, `startDate` INTEGER NOT NULL, `endDate` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distanceInM",
+            "columnName": "distanceInM",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -90,7 +96,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7f6c408cdc8ff5ecc77d22c9b85201f8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a59c3fbefa62cdebdb657ce446a46479')"
     ]
   }
 }

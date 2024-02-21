@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
@@ -63,7 +62,7 @@ class MapActivity : AppCompatActivity() {
 
     private var speedInKMH = true
     private var avgSpeed = false
-    private var distanceInKMH = true
+    private var distanceInKM = true
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -234,9 +233,9 @@ class MapActivity : AppCompatActivity() {
     }
 
     fun onDistanceClick(view: View) {
-        distanceInKMH = !distanceInKMH
+        distanceInKM = !distanceInKM
         runOnUiThread {
-            val distanceText = when (distanceInKMH) {
+            val distanceText = when (distanceInKM) {
                 true -> String.format("%.2f km", routeLine.distance / 1000f)
                 false -> String.format("%.2f m", routeLine.distance)
             }
@@ -258,7 +257,7 @@ class MapActivity : AppCompatActivity() {
                             val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
                             if (recordedGeoPoints.isNotEmpty()) {
                                 routeLine.setPoints(recordedGeoPoints)
-                                val distanceText = when (distanceInKMH) {
+                                val distanceText = when (distanceInKM) {
                                     true -> String.format("%.2f km", routeLine.distance / 1000f)
                                     false -> String.format("%.2f m", routeLine.distance)
                                 }
@@ -306,7 +305,16 @@ class MapActivity : AppCompatActivity() {
 
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            routeDBDao.insertRoute(RouteEntity(startDate = startDate.time, endDate = endDate.time))
+            val recordedRouteLine = Polyline()
+            recordedRouteLine.setPoints(recordedGeoPoints)
+
+            val distanceInM = routeLine.distance
+
+            routeDBDao.insertRoute(
+                RouteEntity(
+                    distanceInM = distanceInM, startDate = startDate.time, endDate = endDate.time
+                )
+            )
             val latRouteID = routeDBDao.getLastRouteID()
             if (latRouteID != null) {
                 recordedGeoPoints.forEach {
