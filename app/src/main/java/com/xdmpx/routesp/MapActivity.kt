@@ -303,6 +303,16 @@ class MapActivity : AppCompatActivity() {
         val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
+        if (recordedGeoPoints.size == 0) {
+            runOnUiThread {
+                (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
+                    View.GONE
+                this@MapActivity.onBackPressedCallback.isEnabled = false
+                this@MapActivity.onBackPressedDispatcher.onBackPressed()
+            }
+            return
+        }
+
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             val recordedRouteLine = Polyline()
