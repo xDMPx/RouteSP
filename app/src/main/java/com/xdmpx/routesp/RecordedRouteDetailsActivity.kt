@@ -14,7 +14,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
-import java.util.Calendar
 
 class RecordedRouteDetailsActivity : AppCompatActivity() {
     private lateinit var map: MapView
@@ -42,6 +41,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             var timeDif = route.endDate - route.startDate
             timeDif /= 1000
 
+            val avgSpeedMS = route.distanceInM / timeDif
+            val avgSpeedKMH = avgSpeedMS * 3.6
+
             val points = routeWithPoints.points.map { point ->
                 GeoPoint(
                     point.latitude, point.longitude
@@ -54,6 +56,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                     convertSecondsToHMmSs(timeDif)
                 (this@RecordedRouteDetailsActivity.findViewById(R.id.distanceMapText) as TextView).text =
                     distance
+                (this@RecordedRouteDetailsActivity.findViewById(R.id.avgSpeedMapText) as TextView).text =
+                    String.format("%.2f km/h", avgSpeedKMH)
 
                 val mapController = map.controller
                 mapController.setZoom(13.0)
