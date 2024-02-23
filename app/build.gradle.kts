@@ -64,4 +64,6 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
 }

@@ -3,33 +3,33 @@ package com.xdmpx.routesp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import androidx.preference.PreferenceManager
+import androidx.core.os.bundleOf
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import com.xdmpx.routesp.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
+import com.xdmpx.routesp.recorded_route_details.ROUTE_ID
+import com.xdmpx.routesp.recorded_route_details.RecordedRouteMapFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Polyline
 
 class RecordedRouteDetailsActivity : AppCompatActivity() {
-    private lateinit var map: MapView
-    private val routeLine = Polyline()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recorded_route_details)
 
         val routeID = intent.extras!!.getInt("routeID")
 
-        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
-        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
+        if (savedInstanceState == null) {
+            val bundle = bundleOf(ROUTE_ID to routeID)
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                add<RecordedRouteMapFragment>(R.id.fragment_container_view, args = bundle)
+            }
+        }
 
-        map = findViewById<MapView>(R.id.map)
-        map.setTileSource(TileSourceFactory.MAPNIK)
+        setContentView(R.layout.activity_recorded_route_details)
 
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         val scope = CoroutineScope(Dispatchers.IO)
@@ -44,13 +44,6 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             val avgSpeedMS = route.distanceInM / timeDif
             val avgSpeedKMH = avgSpeedMS * 3.6
 
-            val points = routeWithPoints.points.map { point ->
-                GeoPoint(
-                    point.latitude, point.longitude
-                )
-            }
-            routeLine.setPoints(points)
-
             runOnUiThread {
                 (this@RecordedRouteDetailsActivity.findViewById(R.id.timeMapText) as TextView).text =
                     convertSecondsToHMmSs(timeDif)
@@ -58,28 +51,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                     distance
                 (this@RecordedRouteDetailsActivity.findViewById(R.id.avgSpeedMapText) as TextView).text =
                     String.format("%.2f km/h", avgSpeedKMH)
-
-                val mapController = map.controller
-                mapController.setZoom(13.0)
-                mapController.setCenter(points[0])
             }
         }
 
-        map.overlays.add(routeLine)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
-        map.onPause()
     }
 
 }
