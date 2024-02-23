@@ -18,7 +18,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 
-const val ROUTE_ID = "routeID"
+const val ARG_ROUTE_ID = "routeID"
 
 class RecordedRouteMapFragment : Fragment() {
 
@@ -30,7 +30,7 @@ class RecordedRouteMapFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            routeID = it.getInt(ROUTE_ID)
+            routeID = it.getInt(ARG_ROUTE_ID)
         }
 
         val activity = requireActivity()
@@ -76,7 +76,7 @@ class RecordedRouteMapFragment : Fragment() {
         @JvmStatic
         fun newInstance(routeID: Int) = RecordedRouteMapFragment().apply {
             arguments = Bundle().apply {
-                putInt(ROUTE_ID, routeID)
+                putInt(ARG_ROUTE_ID, routeID)
             }
         }
     }
