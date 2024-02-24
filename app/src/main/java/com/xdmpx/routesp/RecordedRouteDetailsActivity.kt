@@ -47,11 +47,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)!!
             val route = routeWithPoints.route
 
-            val startDate = Calendar.getInstance()
-            startDate.timeInMillis = route.startDate
-            recordingDate = DateFormat.getDateTimeInstance().format(startDate.time)
+            recordingDate = DateFormat.getDateTimeInstance().format(route.startDate)
 
-            var timeDif = route.endDate - route.startDate
+            var timeDif = route.endDate.time - route.startDate.time
             timeDif /= 1000
             timeInS = timeDif
             distanceInM = route.distanceInM

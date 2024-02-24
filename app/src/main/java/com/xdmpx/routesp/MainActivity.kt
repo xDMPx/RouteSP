@@ -67,12 +67,10 @@ class MainActivity : AppCompatActivity() {
         scope.launch {
             val recordedRoutes = routeDBDao.getRoutes()
             recordedRoutes.forEach {
-                val startDate = Calendar.getInstance()
-                startDate.timeInMillis = it.startDate
-                val startDateString = getDateTimeInstance().format(startDate.time)
+                val startDateString = getDateTimeInstance().format(it.startDate)
 
                 val distance = String.format("%.2f km", it.distanceInM / 1000f)
-                var timeDif = it.endDate - it.startDate
+                var timeDif = it.endDate.time - it.startDate.time
                 timeDif /= 1000
                 val time = Utils.convertSecondsToHMmSs(timeDif)
 

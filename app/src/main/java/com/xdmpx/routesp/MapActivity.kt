@@ -322,7 +322,7 @@ class MapActivity : AppCompatActivity() {
 
             routeDBDao.insertRoute(
                 RouteEntity(
-                    distanceInM = distanceInM, startDate = startDate.time, endDate = endDate.time
+                    distanceInM = distanceInM, startDate = startDate, endDate = endDate
                 )
             )
             val latRouteID = routeDBDao.getLastRouteID()
