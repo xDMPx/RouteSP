@@ -9,11 +9,13 @@ import android.widget.TextView
 import com.xdmpx.routesp.R
 import com.xdmpx.routesp.Utils
 
+const val ARG_RECORDING_DATE = "startDateString"
 const val ARG_DISTANCE_IN_M = "distance_in_m"
 const val ARG_TIME_IN_S = "time_in_s"
 const val ARG_AVG_SPEED_KMH = "avg_speed_kmh"
 
 class RecordedRouteDetailsFragment : Fragment() {
+    private var recordingDate: String = ""
     private var distanceInM = 0.0
     private var timeInS = 0L
     private var avgSpeedKMH = 0.0
@@ -21,6 +23,7 @@ class RecordedRouteDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            recordingDate = it.getString(ARG_RECORDING_DATE)!!
             distanceInM = it.getDouble(ARG_DISTANCE_IN_M)
             timeInS = it.getLong(ARG_TIME_IN_S)
             avgSpeedKMH = it.getDouble(ARG_AVG_SPEED_KMH)
@@ -32,11 +35,12 @@ class RecordedRouteDetailsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recorded_route_details, container, false)
 
-        (view.findViewById(R.id.timeMapText) as TextView).text =
+        (view.findViewById(R.id.dateValueView) as TextView).text = recordingDate
+        (view.findViewById(R.id.durationValueView) as TextView).text =
             Utils.convertSecondsToHMmSs(timeInS)
         val distance = String.format("%.2f km", distanceInM / 1000f)
-        (view.findViewById(R.id.distanceMapText) as TextView).text = distance
-        (view.findViewById(R.id.avgSpeedMapText) as TextView).text =
+        (view.findViewById(R.id.distanceValueView) as TextView).text = distance
+        (view.findViewById(R.id.avgSpeedValueView) as TextView).text =
             String.format("%.2f km/h", avgSpeedKMH)
 
         return view
@@ -44,13 +48,15 @@ class RecordedRouteDetailsFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(distanceInM: Double, timeInS: Long, avgSpeedKMH: Double) =
-            RecordedRouteDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putDouble(ARG_DISTANCE_IN_M, distanceInM)
-                    putLong(ARG_TIME_IN_S, timeInS)
-                    putDouble(ARG_AVG_SPEED_KMH, avgSpeedKMH)
-                }
+        fun newInstance(
+            recordingDate: String, distanceInM: Double, timeInS: Long, avgSpeedKMH: Double
+        ) = RecordedRouteDetailsFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_RECORDING_DATE, recordingDate)
+                putDouble(ARG_DISTANCE_IN_M, distanceInM)
+                putLong(ARG_TIME_IN_S, timeInS)
+                putDouble(ARG_AVG_SPEED_KMH, avgSpeedKMH)
             }
+        }
     }
 }

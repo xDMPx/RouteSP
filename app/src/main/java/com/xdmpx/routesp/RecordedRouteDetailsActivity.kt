@@ -14,6 +14,8 @@ import com.xdmpx.routesp.recorded_route_details.RecordedRouteMapFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Calendar
 
 class RecordedRouteDetailsActivity : AppCompatActivity() {
 
@@ -21,6 +23,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     private var timeInS = 0L
     private var avgSpeedKMH = 0.0
     private var routeID: Int = 0
+    private var recordingDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +35,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                 setReorderingAllowed(true)
                 add<RecordedRouteMapFragment>(R.id.fragment_container_view, args = bundle)
             }
-        } else{
-           showRecordedRouteMapFragment()
+        } else {
+            showRecordedRouteMapFragment()
         }
 
         setContentView(R.layout.activity_recorded_route_details)
@@ -43,6 +46,10 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         scope.launch {
             val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)!!
             val route = routeWithPoints.route
+
+            val startDate = Calendar.getInstance()
+            startDate.timeInMillis = route.startDate
+            recordingDate = DateFormat.getDateTimeInstance().format(startDate.time)
 
             var timeDif = route.endDate - route.startDate
             timeDif /= 1000
@@ -78,8 +85,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     private fun showRecordedRouteDetailsFragment() {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(
-            R.id.fragment_container_view,
-            RecordedRouteDetailsFragment.newInstance(distanceInM, timeInS, avgSpeedKMH)
+            R.id.fragment_container_view, RecordedRouteDetailsFragment.newInstance(
+                recordingDate, distanceInM, timeInS, avgSpeedKMH
+            )
         )
         ft.commit()
     }

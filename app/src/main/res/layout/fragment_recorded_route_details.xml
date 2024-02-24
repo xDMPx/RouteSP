@@ -10,72 +10,105 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/timeImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/rounded_timer_24"
-            app:layout_constraintBottom_toBottomOf="@+id/timeMapText"
-            app:layout_constraintEnd_toStartOf="@+id/timeMapText"
-            app:layout_constraintTop_toTopOf="@+id/timeMapText" />
-
         <TextView
-            android:id="@+id/timeMapText"
+            android:id="@+id/dateValueView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="55dp"
-            android:text="0.0h"
-            android:textSize="20.0sp"
+            android:layout_marginTop="32dp"
+            android:text="DateValue"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/durationImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/rounded_timer_24"
+            app:layout_constraintBottom_toBottomOf="@+id/durationValueView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/durationTextView" />
+
+        <TextView
+            android:id="@+id/durationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
+            android:text="Duration"
+            app:layout_constraintStart_toEndOf="@+id/durationImageView"
+            app:layout_constraintTop_toBottomOf="@+id/dateValueView" />
+
+        <TextView
+            android:id="@+id/durationValueView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:text="0.0h"
+            app:layout_constraintStart_toEndOf="@+id/durationImageView"
+            app:layout_constraintTop_toBottomOf="@+id/durationTextView" />
 
         <ImageView
             android:id="@+id/distanceImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="4dp"
             android:src="@drawable/round_route_24"
-            app:layout_constraintBottom_toBottomOf="@+id/distanceMapText"
-            app:layout_constraintEnd_toStartOf="@+id/distanceMapText"
-            app:layout_constraintTop_toTopOf="@+id/distanceMapText" />
+            app:layout_constraintBottom_toBottomOf="@+id/durationImageView"
+            app:layout_constraintEnd_toStartOf="@+id/distanceTextView"
+            app:layout_constraintTop_toTopOf="@+id/durationImageView" />
 
         <TextView
-            android:id="@+id/distanceMapText"
+            android:id="@+id/distanceTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:text="0.0km"
-            android:textSize="20.0sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timeMapText" />
+            android:layout_marginEnd="60dp"
+            android:text="Distance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/durationTextView" />
+
+        <TextView
+            android:id="@+id/distanceValueView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="0km"
+            app:layout_constraintBottom_toBottomOf="@+id/durationValueView"
+            app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
 
         <ImageView
             android:id="@+id/avgSpeedImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="1dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/ic_baseline_speed_24"
-            app:layout_constraintBottom_toBottomOf="@+id/avgSpeedMapText"
-            app:layout_constraintEnd_toStartOf="@+id/avgSpeedMapText"
-            app:layout_constraintTop_toTopOf="@+id/avgSpeedMapText" />
+            app:layout_constraintBottom_toBottomOf="@+id/avgSpeedValueView"
+            app:layout_constraintStart_toStartOf="@+id/durationImageView"
+            app:layout_constraintTop_toTopOf="@+id/avgSpeedTextView" />
 
         <TextView
-            android:id="@+id/avgSpeedMapText"
+            android:id="@+id/avgSpeedTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginTop="40dp"
+            android:text="Avg speed"
+            app:layout_constraintStart_toStartOf="@+id/durationValueView"
+            app:layout_constraintTop_toBottomOf="@+id/durationValueView" />
+
+        <TextView
+            android:id="@+id/avgSpeedValueView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="0.0km/h"
-            android:textSize="20.0sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/distanceMapText" />
+            app:layout_constraintStart_toStartOf="@+id/durationValueView"
+            app:layout_constraintTop_toBottomOf="@+id/avgSpeedTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
