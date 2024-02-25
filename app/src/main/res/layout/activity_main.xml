@@ -6,6 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/overviewTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="OVERVIEW"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/distanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="0.0km"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
+
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0.0h"
+        app:layout_constraintEnd_toEndOf="@+id/overviewTextView"
+        app:layout_constraintStart_toStartOf="@+id/overviewTextView"
+        app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
+
+    <TextView
+        android:id="@+id/recordedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:text="Recorded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
+
     <ListView
         android:id="@+id/recordedRoutesList"
         android:layout_width="0dp"
@@ -17,7 +57,8 @@
         app:layout_constraintBottom_toTopOf="@+id/goToMapActivityButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/timeTextView" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/goToMapActivityButton"

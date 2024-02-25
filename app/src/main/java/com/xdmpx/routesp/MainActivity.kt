@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ListView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
 
     private lateinit var recordedRoutesListView: ListView
+    private var totalDistance: Double = 0.0
+    private var totalTime: Long = 0
 
     private var requestedNotificationPermission = false
     private val requestNotificationPermissionLauncher = registerForActivityResult(
@@ -63,6 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun fillRecordedRoutesListView() {
         val recordedRoutesListItems = ArrayList<RecordedRouteItem>()
+        totalDistance = 0.0
+        totalTime = 0
 
         val scope = CoroutineScope(Dispatchers.IO)
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
@@ -74,6 +79,9 @@ class MainActivity : AppCompatActivity() {
                 val distance = Utils.distanceText(it.distanceInM, true)
                 val timeInS = Utils.calculateTimeDiffS(it.startDate, it.endDate)
                 val time = Utils.convertSecondsToHMmSs(timeInS)
+
+                totalDistance += it.distanceInM
+                totalTime += timeInS
 
                 recordedRoutesListItems.add(
                     RecordedRouteItem(
@@ -93,7 +101,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             runOnUiThread {
+                val recordedRoutesCount = "${recordedRoutes.size} Recordings"
                 recordedRoutesListView.adapter = recordedRoutesListArrayAdapter
+                this@MainActivity.findViewById<TextView>(R.id.distanceTextView).text =
+                    Utils.distanceText(totalDistance, true)
+                this@MainActivity.findViewById<TextView>(R.id.timeTextView).text =
+                    Utils.convertSecondsToHMmSs(totalTime)
+                this@MainActivity.findViewById<TextView>(R.id.recordedTextView).text =
+                    recordedRoutesCount
             }
         }
 
