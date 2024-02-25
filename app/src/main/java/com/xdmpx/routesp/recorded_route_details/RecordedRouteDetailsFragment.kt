@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.xdmpx.routesp.R
-import com.xdmpx.routesp.Utils
+import com.xdmpx.routesp.utils.Utils
 
 const val ARG_RECORDING_DATE = "startDateString"
 const val ARG_DISTANCE_IN_M = "distance_in_m"
@@ -38,7 +38,7 @@ class RecordedRouteDetailsFragment : Fragment() {
         (view.findViewById(R.id.dateValueView) as TextView).text = recordingDate
         (view.findViewById(R.id.durationValueView) as TextView).text =
             Utils.convertSecondsToHMmSs(timeInS)
-        val distance = String.format("%.2f km", distanceInM / 1000f)
+        val distance = Utils.distanceText(distanceInM, true)
         (view.findViewById(R.id.distanceValueView) as TextView).text = distance
         (view.findViewById(R.id.avgSpeedValueView) as TextView).text =
             String.format("%.2f km/h", avgSpeedKMH)

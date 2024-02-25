@@ -11,11 +11,11 @@ import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.recorded_route_details.ARG_ROUTE_ID
 import com.xdmpx.routesp.recorded_route_details.RecordedRouteDetailsFragment
 import com.xdmpx.routesp.recorded_route_details.RecordedRouteMapFragment
+import com.xdmpx.routesp.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DateFormat
-import java.util.Calendar
 
 class RecordedRouteDetailsActivity : AppCompatActivity() {
 
@@ -49,13 +49,11 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
 
             recordingDate = DateFormat.getDateTimeInstance().format(route.startDate)
 
-            var timeDif = route.endDate.time - route.startDate.time
-            timeDif /= 1000
-            timeInS = timeDif
+            timeInS = Utils.calculateTimeDiffS(route.startDate, route.endDate)
             distanceInM = route.distanceInM
 
-            val avgSpeedMS = route.distanceInM / timeDif
-            val avgSpeedKMH = avgSpeedMS * 3.6
+            val avgSpeedMS = Utils.calculateAvgSpeedMS(distanceInM, timeInS)
+            val avgSpeedKMH = Utils.convertSpeedMStoSpeedKMH(avgSpeedMS)
             this@RecordedRouteDetailsActivity.avgSpeedKMH = avgSpeedKMH
         }
 

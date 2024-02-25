@@ -19,11 +19,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
-import com.xdmpx.routesp.Utils.convertSecondsToHMmSs
+import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.database.entities.PointEntity
 import com.xdmpx.routesp.database.entities.RouteEntity
 import com.xdmpx.routesp.services.LocationService
+import com.xdmpx.routesp.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -203,42 +204,27 @@ class MapActivity : AppCompatActivity() {
 
     private fun setSpeedMapText() {
         val speedText = when (avgSpeed) {
-            true -> speedText(getAvgSpeed())
-            false -> speedText(lastSpeed)
+            true -> Utils.speedText(calculateAvgSpeed(), distanceInKM)
+            false -> Utils.speedText(lastSpeed.toDouble(), speedInKMH)
         }
         runOnUiThread {
             (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
         }
     }
 
-    private fun getAvgSpeed(): Float {
-        var timeDif = Calendar.getInstance().time.time - mLocationService.getStartDate().time
-        timeDif /= 1000
+    private fun calculateAvgSpeed(): Double {
+        val timeInS = Utils.calculateTimeDiffS(
+            mLocationService.getStartDate(), Calendar.getInstance().time
+        )
+        val distanceInM = routeLine.distance
 
-        val avgSpeed = routeLine.distance / (timeDif.toDouble())
-        return avgSpeed.toFloat()
-    }
-
-    private fun speedText(speedMS: Float): String {
-        val speed = when (speedInKMH) {
-            true -> speedMS * 3.6
-            false -> speedMS
-        }
-        val speedText = when (speedInKMH) {
-            true -> String.format("%.2f km/h", speed)
-            false -> String.format("%.2f m/s", speed)
-        }
-
-        return speedText
+        return Utils.calculateAvgSpeedMS(distanceInM, timeInS)
     }
 
     fun onDistanceClick(view: View) {
         distanceInKM = !distanceInKM
         runOnUiThread {
-            val distanceText = when (distanceInKM) {
-                true -> String.format("%.2f km", routeLine.distance / 1000f)
-                false -> String.format("%.2f m", routeLine.distance)
-            }
+            val distanceText = Utils.distanceText(routeLine.distance, distanceInKM)
             (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text = distanceText
         }
     }
@@ -257,20 +243,19 @@ class MapActivity : AppCompatActivity() {
                             val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
                             if (recordedGeoPoints.isNotEmpty()) {
                                 routeLine.setPoints(recordedGeoPoints)
-                                val distanceText = when (distanceInKM) {
-                                    true -> String.format("%.2f km", routeLine.distance / 1000f)
-                                    false -> String.format("%.2f m", routeLine.distance)
-                                }
-                                var timeDif =
-                                    Calendar.getInstance().time.time - mLocationService.getStartDate().time
-                                timeDif /= 1000
+                                val distanceText =
+                                    Utils.distanceText(routeLine.distance, distanceInKM)
 
+                                val timeInS = Utils.calculateTimeDiffS(
+                                    mLocationService.getStartDate(), Calendar.getInstance().time
+                                )
                                 setSpeedMapText()
+
                                 runOnUiThread {
                                     (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text =
                                         distanceText
                                     (this@MapActivity.findViewById(R.id.timeMapText) as TextView).text =
-                                        convertSecondsToHMmSs(timeDif)
+                                        convertSecondsToHMmSs(timeInS)
                                 }
                                 map.invalidate()
                             }

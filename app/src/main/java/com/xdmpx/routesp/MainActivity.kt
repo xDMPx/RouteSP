@@ -20,11 +20,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.xdmpx.routesp.database.RouteDatabase
+import com.xdmpx.routesp.utils.RecordedRouteItem
+import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
+import com.xdmpx.routesp.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DateFormat.getDateTimeInstance
-import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
@@ -69,10 +71,9 @@ class MainActivity : AppCompatActivity() {
             recordedRoutes.forEach {
                 val startDateString = getDateTimeInstance().format(it.startDate)
 
-                val distance = String.format("%.2f km", it.distanceInM / 1000f)
-                var timeDif = it.endDate.time - it.startDate.time
-                timeDif /= 1000
-                val time = Utils.convertSecondsToHMmSs(timeDif)
+                val distance = Utils.distanceText(it.distanceInM, true)
+                val timeInS = Utils.calculateTimeDiffS(it.startDate, it.endDate)
+                val time = Utils.convertSecondsToHMmSs(timeInS)
 
                 recordedRoutesListItems.add(
                     RecordedRouteItem(
