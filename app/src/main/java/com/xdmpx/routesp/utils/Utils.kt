@@ -21,10 +21,6 @@ object Utils {
         return distanceInM / timeInS
     }
 
-    fun convertSpeedMStoSpeedKMH(speedMS: Double): Double {
-        return speedMS * 3.6
-    }
-
     fun distanceText(distanceInM: Double, distanceInKM: Boolean): String {
         return when (distanceInKM) {
             true -> String.format("%.2f km", distanceInM / 1000f)

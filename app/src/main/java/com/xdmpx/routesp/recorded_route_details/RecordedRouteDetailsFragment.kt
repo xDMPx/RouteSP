@@ -12,14 +12,15 @@ import com.xdmpx.routesp.utils.Utils
 const val ARG_RECORDING_DATE = "startDateString"
 const val ARG_DISTANCE_IN_M = "distance_in_m"
 const val ARG_TIME_IN_S = "time_in_s"
-const val ARG_AVG_SPEED_KMH = "avg_speed_kmh"
+const val ARG_AVG_SPEED_MS = "avg_speed_ms"
 
 class RecordedRouteDetailsFragment : Fragment() {
     private var recordingDate: String = ""
     private var distanceInM = 0.0
     private var timeInS = 0L
-    private var avgSpeedKMH = 0.0
+    private var avgSpeedMS = 0.0
     private var distanceInKM = true
+    private var speedInKMH = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,7 @@ class RecordedRouteDetailsFragment : Fragment() {
             recordingDate = it.getString(ARG_RECORDING_DATE)!!
             distanceInM = it.getDouble(ARG_DISTANCE_IN_M)
             timeInS = it.getLong(ARG_TIME_IN_S)
-            avgSpeedKMH = it.getDouble(ARG_AVG_SPEED_KMH)
+            avgSpeedMS = it.getDouble(ARG_AVG_SPEED_MS)
         }
     }
 
@@ -45,8 +46,9 @@ class RecordedRouteDetailsFragment : Fragment() {
         distanceValueView.text = distance
         distanceValueView.setOnClickListener { view -> onDistanceClick(view) }
 
-        (view.findViewById(R.id.avgSpeedValueView) as TextView).text =
-            String.format("%.2f km/h", avgSpeedKMH)
+        val avgSpeedValueView = view.findViewById<TextView>(R.id.avgSpeedValueView)
+        avgSpeedValueView.text = Utils.speedText(avgSpeedMS, speedInKMH)
+        avgSpeedValueView.setOnClickListener { view -> onAvgSpeedClick(view) }
 
         return view
     }
@@ -54,13 +56,13 @@ class RecordedRouteDetailsFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(
-            recordingDate: String, distanceInM: Double, timeInS: Long, avgSpeedKMH: Double
+            recordingDate: String, distanceInM: Double, timeInS: Long, avgSpeedMS: Double
         ) = RecordedRouteDetailsFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_RECORDING_DATE, recordingDate)
                 putDouble(ARG_DISTANCE_IN_M, distanceInM)
                 putLong(ARG_TIME_IN_S, timeInS)
-                putDouble(ARG_AVG_SPEED_KMH, avgSpeedKMH)
+                putDouble(ARG_AVG_SPEED_MS, avgSpeedMS)
             }
         }
     }
@@ -71,6 +73,12 @@ class RecordedRouteDetailsFragment : Fragment() {
             val distanceText = Utils.distanceText(distanceInM, distanceInKM)
             view.findViewById<TextView>(R.id.distanceValueView).text = distanceText
         }
+    }
+
+    private fun onAvgSpeedClick(view: View) {
+        speedInKMH = !speedInKMH
+        view.findViewById<TextView>(R.id.avgSpeedValueView).text =
+            Utils.speedText(avgSpeedMS, speedInKMH)
     }
 
 }

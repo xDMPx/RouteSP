@@ -21,7 +21,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
 
     private var distanceInM = 0.0
     private var timeInS = 0L
-    private var avgSpeedKMH = 0.0
+    private var avgSpeedMS = 0.0
     private var routeID: Int = 0
     private var recordingDate: String = ""
 
@@ -53,8 +53,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             distanceInM = route.distanceInM
 
             val avgSpeedMS = Utils.calculateAvgSpeedMS(distanceInM, timeInS)
-            val avgSpeedKMH = Utils.convertSpeedMStoSpeedKMH(avgSpeedMS)
-            this@RecordedRouteDetailsActivity.avgSpeedKMH = avgSpeedKMH
+            this@RecordedRouteDetailsActivity.avgSpeedMS = avgSpeedMS
         }
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
@@ -82,7 +81,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(
             R.id.fragment_container_view, RecordedRouteDetailsFragment.newInstance(
-                recordingDate, distanceInM, timeInS, avgSpeedKMH
+                recordingDate, distanceInM, timeInS, avgSpeedMS
             )
         )
         ft.commit()
