@@ -19,6 +19,7 @@ class RecordedRouteDetailsFragment : Fragment() {
     private var distanceInM = 0.0
     private var timeInS = 0L
     private var avgSpeedKMH = 0.0
+    private var distanceInKM = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +39,12 @@ class RecordedRouteDetailsFragment : Fragment() {
         (view.findViewById(R.id.dateValueView) as TextView).text = recordingDate
         (view.findViewById(R.id.durationValueView) as TextView).text =
             Utils.convertSecondsToHMmSs(timeInS)
-        val distance = Utils.distanceText(distanceInM, true)
-        (view.findViewById(R.id.distanceValueView) as TextView).text = distance
+
+        val distance = Utils.distanceText(distanceInM, distanceInKM)
+        val distanceValueView = view.findViewById<TextView>(R.id.distanceValueView)
+        distanceValueView.text = distance
+        distanceValueView.setOnClickListener { view -> onDistanceClick(view) }
+
         (view.findViewById(R.id.avgSpeedValueView) as TextView).text =
             String.format("%.2f km/h", avgSpeedKMH)
 
@@ -59,4 +64,13 @@ class RecordedRouteDetailsFragment : Fragment() {
             }
         }
     }
+
+    private fun onDistanceClick(view: View) {
+        distanceInKM = !distanceInKM
+        requireActivity().runOnUiThread {
+            val distanceText = Utils.distanceText(distanceInM, distanceInKM)
+            view.findViewById<TextView>(R.id.distanceValueView).text = distanceText
+        }
+    }
+
 }

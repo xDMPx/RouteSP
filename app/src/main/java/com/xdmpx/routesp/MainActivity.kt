@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recordedRoutesListView: ListView
     private var totalDistance: Double = 0.0
     private var totalTime: Long = 0
+    private var distanceInKM = true
 
     private var requestedNotificationPermission = false
     private val requestNotificationPermissionLauncher = registerForActivityResult(
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                 val recordedRoutesCount = "${recordedRoutes.size} Recordings"
                 recordedRoutesListView.adapter = recordedRoutesListArrayAdapter
                 this@MainActivity.findViewById<TextView>(R.id.distanceTextView).text =
-                    Utils.distanceText(totalDistance, true)
+                    Utils.distanceText(totalDistance, distanceInKM)
                 this@MainActivity.findViewById<TextView>(R.id.timeTextView).text =
                     Utils.convertSecondsToHMmSs(totalTime)
                 this@MainActivity.findViewById<TextView>(R.id.recordedTextView).text =
@@ -237,8 +238,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //TODO: Manifest.permission.ACCESS_BACKGROUND_LOCATION
-
         return false
     }
 
@@ -265,6 +264,14 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setOnDismissListener(onDismissListener)
         alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText, onClickListener)
         alertDialog.show()
+    }
+
+    fun onDistanceClick(view: View) {
+        distanceInKM = !distanceInKM
+        runOnUiThread {
+            val distanceText = Utils.distanceText(totalDistance, distanceInKM)
+            (this@MainActivity.findViewById(R.id.distanceTextView) as TextView).text = distanceText
+        }
     }
 
 }

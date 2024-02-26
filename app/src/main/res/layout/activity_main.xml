@@ -22,6 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onDistanceClick"
         android:text="0.0km"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
@@ -58,7 +61,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/timeTextView" />
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/goToMapActivityButton"
