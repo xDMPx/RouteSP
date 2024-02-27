@@ -123,11 +123,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToRecordedRouteDetailsActivity(routeID: Int) {
-        if (requestPermissions()) {
             val intent = Intent(this, RecordedRouteDetailsActivity::class.java)
             intent.putExtra("routeID", routeID)
             startActivity(intent)
-        }
     }
 
     enum class PermissionType {
