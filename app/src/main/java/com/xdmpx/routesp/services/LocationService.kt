@@ -26,6 +26,7 @@ class LocationService : Service() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    private var latestLocationTime: Long = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -37,6 +38,7 @@ class LocationService : Service() {
 
         if (!::fusedLocationClient.isInitialized) {
             startDate = Calendar.getInstance().time
+            latestLocationTime = startDate.time
             setRequestLocationUpdates()
         }
         return Service.START_STICKY
@@ -53,8 +55,8 @@ class LocationService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        super.onDestroy()
     }
 
     private fun setRequestLocationUpdates() {
@@ -65,15 +67,14 @@ class LocationService : Service() {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                val location = locationResult.lastLocation
-                location?.let { location ->
-                    if (location.time < startDate.time) return
+                val locations = locationResult.locations
+                for (location in locations) {
+                    if (location.time < latestLocationTime) continue
 
                     val newGeoPoint = GeoPoint(location.latitude, location.longitude)
                     Log.d("LocationService", "Location Updated: $location")
                     recordedGeoPoints.add(newGeoPoint)
                 }
-
             }
         }
 
