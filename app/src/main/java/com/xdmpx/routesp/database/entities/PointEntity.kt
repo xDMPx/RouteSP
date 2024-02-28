@@ -16,5 +16,6 @@ data class PointEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val routeID: Int,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val altitude: Double
 )

@@ -92,7 +92,8 @@
             android:src="@drawable/ic_baseline_speed_24"
             app:layout_constraintBottom_toBottomOf="@+id/avgSpeedValueView"
             app:layout_constraintStart_toStartOf="@+id/durationImageView"
-            app:layout_constraintTop_toTopOf="@+id/avgSpeedTextView" />
+            app:layout_constraintTop_toTopOf="@+id/avgSpeedTextView"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/avgSpeedTextView"
@@ -111,6 +112,44 @@
             android:text="0.0km/h"
             app:layout_constraintStart_toStartOf="@+id/durationValueView"
             app:layout_constraintTop_toBottomOf="@+id/avgSpeedTextView" />
+
+        <ImageView
+            android:id="@+id/altitudeImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/rounded_elevation_24"
+            app:layout_constraintBottom_toBottomOf="@+id/minAltitudeValueView"
+            app:layout_constraintStart_toStartOf="@+id/distanceImageView"
+            app:layout_constraintTop_toTopOf="@+id/altitudeTextView"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/altitudeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Altitude"
+            app:layout_constraintStart_toStartOf="@+id/distanceValueView"
+            app:layout_constraintTop_toBottomOf="@+id/distanceValueView" />
+
+        <TextView
+            android:id="@+id/minAltitudeValueView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="0.0m"
+            app:layout_constraintStart_toStartOf="@+id/altitudeTextView"
+            app:layout_constraintTop_toBottomOf="@+id/altitudeTextView" />
+
+        <TextView
+            android:id="@+id/maxAltitudeValueView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0m"
+            app:layout_constraintStart_toStartOf="@+id/minAltitudeValueView"
+            app:layout_constraintTop_toBottomOf="@+id/minAltitudeValueView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

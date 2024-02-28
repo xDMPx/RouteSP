@@ -289,6 +289,7 @@ class MapActivity : AppCompatActivity() {
         val endDate = Calendar.getInstance().time
         val startDate = mLocationService.getStartDate()
         val recordedGeoPoints = mLocationService.getRecordedGeoPointsArray()
+        val recordedAltitudes = mLocationService.getRecordedAltitudesArray()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
         if (recordedGeoPoints.isEmpty()) {
@@ -315,10 +316,13 @@ class MapActivity : AppCompatActivity() {
             )
             val latRouteID = routeDBDao.getLastRouteID()
             if (latRouteID != null) {
-                recordedGeoPoints.forEach {
+                recordedGeoPoints.zip(recordedAltitudes).forEach { (it, altitude) ->
                     routeDBDao.insertPoint(
                         PointEntity(
-                            routeID = latRouteID, latitude = it.latitude, longitude = it.longitude
+                            routeID = latRouteID,
+                            latitude = it.latitude,
+                            longitude = it.longitude,
+                            altitude = altitude
                         )
                     )
                 }

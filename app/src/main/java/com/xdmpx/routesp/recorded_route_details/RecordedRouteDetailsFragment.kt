@@ -13,6 +13,7 @@ const val ARG_RECORDING_DATE = "startDateString"
 const val ARG_DISTANCE_IN_M = "distance_in_m"
 const val ARG_TIME_IN_S = "time_in_s"
 const val ARG_AVG_SPEED_MS = "avg_speed_ms"
+const val ARG_ALTITUDE_ARRAY = "avg_altitude_array"
 
 class RecordedRouteDetailsFragment : Fragment() {
     private var recordingDate: String = ""
@@ -21,6 +22,7 @@ class RecordedRouteDetailsFragment : Fragment() {
     private var avgSpeedMS = 0.0
     private var distanceInKM = true
     private var speedInKMH = true
+    private lateinit var altitudeArray: DoubleArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class RecordedRouteDetailsFragment : Fragment() {
             distanceInM = it.getDouble(ARG_DISTANCE_IN_M)
             timeInS = it.getLong(ARG_TIME_IN_S)
             avgSpeedMS = it.getDouble(ARG_AVG_SPEED_MS)
+            altitudeArray = it.getDoubleArray(ARG_ALTITUDE_ARRAY)!!
         }
     }
 
@@ -50,19 +53,31 @@ class RecordedRouteDetailsFragment : Fragment() {
         avgSpeedValueView.text = Utils.speedText(avgSpeedMS, speedInKMH)
         avgSpeedValueView.setOnClickListener { view -> onAvgSpeedClick(view) }
 
+        val minAltitudeText = String.format("min: %.2f m", altitudeArray.min())
+        val maxAltitudeText = String.format("max: %.2f m", altitudeArray.max())
+        val minAltitudeTextView = view.findViewById<TextView>(R.id.minAltitudeValueView)
+        val maxAltitudeTextView = view.findViewById<TextView>(R.id.maxAltitudeValueView)
+        minAltitudeTextView.text = minAltitudeText
+        maxAltitudeTextView.text = maxAltitudeText
+
         return view
     }
 
     companion object {
         @JvmStatic
         fun newInstance(
-            recordingDate: String, distanceInM: Double, timeInS: Long, avgSpeedMS: Double
+            recordingDate: String,
+            distanceInM: Double,
+            timeInS: Long,
+            avgSpeedMS: Double,
+            altitudeArray: DoubleArray
         ) = RecordedRouteDetailsFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_RECORDING_DATE, recordingDate)
                 putDouble(ARG_DISTANCE_IN_M, distanceInM)
                 putLong(ARG_TIME_IN_S, timeInS)
                 putDouble(ARG_AVG_SPEED_MS, avgSpeedMS)
+                putDoubleArray(ARG_ALTITUDE_ARRAY, altitudeArray)
             }
         }
     }

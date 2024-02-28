@@ -24,6 +24,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     private var avgSpeedMS = 0.0
     private var routeID: Int = 0
     private var recordingDate: String = ""
+    private lateinit var altitudeArray: DoubleArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         scope.launch {
             val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)!!
             val route = routeWithPoints.route
+            this@RecordedRouteDetailsActivity.altitudeArray =
+                routeWithPoints.points.map { it.altitude }.toDoubleArray()
 
             recordingDate = DateFormat.getDateTimeInstance().format(route.startDate)
 
@@ -81,7 +84,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(
             R.id.fragment_container_view, RecordedRouteDetailsFragment.newInstance(
-                recordingDate, distanceInM, timeInS, avgSpeedMS
+                recordingDate, distanceInM, timeInS, avgSpeedMS, altitudeArray
             )
         )
         ft.commit()
