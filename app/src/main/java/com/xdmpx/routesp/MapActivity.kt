@@ -153,7 +153,9 @@ class MapActivity : AppCompatActivity() {
         map.overlays.add(routeLine)
 
         onBackPressedCallback = this.onBackPressedDispatcher.addCallback(this) {
-            saveRecordedRoute()
+            synchronized(this@MapActivity) {
+                saveRecordedRoute()
+            }
         }
 
     }
@@ -278,17 +280,18 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun saveRecordedRoute() {
-        if ((this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility == View.VISIBLE) return
+        this@MapActivity.onBackPressedCallback.isEnabled = false
+        onBackPressedCallback = this.onBackPressedDispatcher.addCallback(this) {}
 
         (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
             View.VISIBLE
 
         val endDate = Calendar.getInstance().time
         val startDate = mLocationService.getStartDate()
-        val recordedGeoPoints = mLocationService.getRecordedGeoPoints()
+        val recordedGeoPoints = mLocationService.getRecordedGeoPointsArray()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
-        if (recordedGeoPoints.size == 0) {
+        if (recordedGeoPoints.isEmpty()) {
             runOnUiThread {
                 (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
                     View.GONE
@@ -301,7 +304,7 @@ class MapActivity : AppCompatActivity() {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             val recordedRouteLine = Polyline()
-            recordedRouteLine.setPoints(recordedGeoPoints)
+            recordedRouteLine.setPoints(recordedGeoPoints.toList())
 
             val distanceInM = routeLine.distance
 

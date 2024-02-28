@@ -84,7 +84,6 @@ class LocationService : Service() {
         )
     }
 
-
     private fun createNotificationChanel() {
         val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
 
@@ -113,6 +112,10 @@ class LocationService : Service() {
 
     fun getStartDate(): Date {
         return startDate
+    }
+
+    fun getRecordedGeoPointsArray(): Array<GeoPoint> {
+        return recordedGeoPoints.toTypedArray()
     }
 
 }
