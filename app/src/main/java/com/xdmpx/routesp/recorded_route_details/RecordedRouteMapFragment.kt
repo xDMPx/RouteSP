@@ -17,6 +17,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 const val ARG_ROUTE_ID = "routeID"
 
@@ -68,6 +69,11 @@ class RecordedRouteMapFragment : Fragment() {
         val mapController = map.controller
         mapController.setZoom(13.0)
         map.overlays.add(routeLine)
+
+        val rotationGestureOverlay = RotationGestureOverlay(map)
+        rotationGestureOverlay.isEnabled
+        map.setMultiTouchControls(true)
+        map.overlays.add(rotationGestureOverlay)
 
         return view
     }
