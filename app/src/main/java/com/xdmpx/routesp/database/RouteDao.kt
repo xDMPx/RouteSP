@@ -24,4 +24,10 @@ interface RouteDao {
     @Query("SELECT * FROM RouteEntity WHERE id = :id")
     suspend fun getRouteWithPoints(id: Int): RouteWithPoints?
 
+    @Query("SELECT * FROM RouteEntity WHERE id = :id")
+    suspend fun getRouteByID(id: Int): RouteEntity?
+
+    @Delete
+    suspend fun deleteRoute(route: RouteEntity)
+
 }

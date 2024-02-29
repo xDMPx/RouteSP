@@ -56,6 +56,17 @@ class MainActivity : AppCompatActivity() {
             val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
             goToRecordedRouteDetailsActivity(recordedRouteItem.routeID)
         }
+        recordedRoutesListView.setOnItemLongClickListener { adapterView, _, position, _ ->
+            val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
+            showAlertDialog(this@MainActivity,
+                "Delete recorded route",
+                "Are you sure you want to delete recorded route? This action cannot be undone.",
+                "DELETE",
+                onDismissListener = {}) { _, _ ->
+                deleteRecordedRoute(recordedRouteItem.routeID)
+            }
+            true
+        }
 
     }
 
@@ -123,9 +134,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToRecordedRouteDetailsActivity(routeID: Int) {
-            val intent = Intent(this, RecordedRouteDetailsActivity::class.java)
-            intent.putExtra("routeID", routeID)
-            startActivity(intent)
+        val intent = Intent(this, RecordedRouteDetailsActivity::class.java)
+        intent.putExtra("routeID", routeID)
+        startActivity(intent)
     }
 
     enum class PermissionType {
@@ -269,6 +280,16 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread {
             val distanceText = Utils.distanceText(totalDistance, distanceInKM)
             (this@MainActivity.findViewById(R.id.distanceTextView) as TextView).text = distanceText
+        }
+    }
+
+    private fun deleteRecordedRoute(routeID: Int) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            val routeDBDao = RouteDatabase.getInstance(this@MainActivity).routeDatabaseDao
+            routeDBDao.getRouteByID(routeID)?.let { routeDBDao.deleteRoute(it) }
+
+            fillRecordedRoutesListView()
         }
     }
 
