@@ -1,8 +1,11 @@
 package com.xdmpx.routesp.recorded_route_details
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -75,6 +78,11 @@ class RecordedRouteMapFragment : Fragment() {
         map.setMultiTouchControls(true)
         map.overlays.add(rotationGestureOverlay)
 
+        val osmCopyrightNotice = view.findViewById<TextView>(R.id.OSMCopyrightNotice)
+        osmCopyrightNotice.setOnClickListener { view ->
+            onOSMCopyrightNoticeClick(view)
+        }
+
         return view
     }
 
@@ -99,6 +107,12 @@ class RecordedRouteMapFragment : Fragment() {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause()
+    }
+
+    fun onOSMCopyrightNoticeClick(view: View) {
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
+        startActivity(browserIntent, null)
     }
 
 }
