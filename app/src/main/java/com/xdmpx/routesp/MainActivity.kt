@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -105,11 +106,16 @@ class MainActivity : AppCompatActivity() {
             val recordedRoutesListArrayAdapter =
                 RecordedRouteItemArrayAdapter(this@MainActivity, recordedRoutesListItems)
 
-            if (recordedRoutesListArrayAdapter.count >= 5) {
+            val maxHeight =
+                this@MainActivity.findViewById<LinearLayout>(R.id.recordedRoutesListContainer).measuredHeight
+            Log.d("MainActivity", "maxHeight  $maxHeight")
+            if (recordedRoutesListArrayAdapter.count >= 1) {
                 val item: View =
                     recordedRoutesListArrayAdapter.getView(0, null, recordedRoutesListView)
                 item.measure(0, 0)
-                recordedRoutesListView.layoutParams.height = (5.5 * item.measuredHeight).toInt()
+                Log.d("MainActivity", "item  ${item.measuredHeight}")
+                recordedRoutesListView.layoutParams.height =
+                    ((maxHeight / item.measuredHeight - 0.5) * item.measuredHeight).toInt()
             }
 
             runOnUiThread {
