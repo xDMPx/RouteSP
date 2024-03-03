@@ -109,7 +109,7 @@ class RecordedRouteMapFragment : Fragment() {
         map.onPause()
     }
 
-    fun onOSMCopyrightNoticeClick(view: View) {
+    private fun onOSMCopyrightNoticeClick(view: View) {
         val browserIntent =
             Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
         startActivity(browserIntent, null)

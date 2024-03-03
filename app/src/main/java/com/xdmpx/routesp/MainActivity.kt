@@ -42,8 +42,7 @@ class MainActivity : AppCompatActivity() {
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        requestedNotificationPermission = true
-        requestPermissions(PermissionType.LOCATION)
+        if (isGranted) requestPermissions(PermissionType.LOCATION)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -174,7 +173,7 @@ class MainActivity : AppCompatActivity() {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             false
         } else {
-            true
+            requestPermissions(PermissionType.LOCATION)
         }
     }
 
