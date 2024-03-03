@@ -1,6 +1,7 @@
 package com.xdmpx.routesp
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.DialogInterface.OnDismissListener
@@ -10,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -38,11 +40,10 @@ class MainActivity : AppCompatActivity() {
     private var totalTime: Long = 0
     private var distanceInKM = true
 
-    private var requestedNotificationPermission = false
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) requestPermissions(PermissionType.LOCATION)
+        if (isGranted) requestPermissions(PermissionType.BATTERY)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,22 +146,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     enum class PermissionType {
-        NOTIFICATION, LOCATION,
+        NOTIFICATION, LOCATION, BATTERY
     }
 
     private fun requestPermissions(permissionType: PermissionType = PermissionType.NOTIFICATION): Boolean {
         return when (permissionType) {
             PermissionType.NOTIFICATION -> {
-                if (!requestedNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     return requestNotificationPermission()
                 } else {
-                    requestPermissions(PermissionType.LOCATION)
+                    requestPermissions(PermissionType.BATTERY)
                 }
+            }
+
+            PermissionType.BATTERY -> {
+                requestBackgroundActivity()
             }
 
             PermissionType.LOCATION -> {
                 requestLocation()
             }
+
         }
     }
 
@@ -173,7 +179,37 @@ class MainActivity : AppCompatActivity() {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             false
         } else {
+            requestPermissions(PermissionType.BATTERY)
+        }
+    }
+
+    private fun requestBackgroundActivity(): Boolean {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        val ignoringBatteryOptimizations = powerManager.isIgnoringBatteryOptimizations(packageName)
+
+        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val isBackgroundRestricted = activityManager.isBackgroundRestricted
+        Log.d(
+            "MainActivity",
+            "isBackgroundRestricted: $isBackgroundRestricted || ignoringBatteryOptimizations $ignoringBatteryOptimizations"
+        )
+
+        return if (!isBackgroundRestricted && ignoringBatteryOptimizations) {
             requestPermissions(PermissionType.LOCATION)
+        } else {
+            showAlertDialog(this@MainActivity,
+                "Background activity is restricted",
+                "Route recording cannot function correctly is background restrictions are enabled.\nPlease disable them.\nBattery Usage -> enable 'Allow background activity'\\'Unrestricted'",
+                getString(R.string.ok),
+                {}) { dialog, _ ->
+                dialog?.dismiss()
+                Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
+                        "package:" + BuildConfig.APPLICATION_ID
+                    )
+                ).apply { startActivity(this) }
+            }
+            false
         }
     }
 
