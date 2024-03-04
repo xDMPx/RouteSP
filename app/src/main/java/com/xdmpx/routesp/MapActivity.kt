@@ -193,12 +193,12 @@ class MapActivity : AppCompatActivity() {
         avgSpeed = !avgSpeed
         if (avgSpeed) {
             runOnUiThread {
-                (this@MapActivity.findViewById(R.id.speedImageView) as ImageView).setImageDrawable(
+                (this@MapActivity.findViewById<ImageView>(R.id.speedImageView)).setImageDrawable(
                     ResourcesCompat.getDrawable(resources, R.drawable.rounded_avg_pace_24, theme)
                 )
             }
         } else {
-            (this@MapActivity.findViewById(R.id.speedImageView) as ImageView).setImageDrawable(
+            (this@MapActivity.findViewById<ImageView>(R.id.speedImageView)).setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_speed_24, theme)
             )
         }
@@ -210,7 +210,7 @@ class MapActivity : AppCompatActivity() {
             false -> Utils.speedText(lastSpeed.toDouble(), speedInKMH)
         }
         runOnUiThread {
-            (this@MapActivity.findViewById(R.id.speedMapText) as TextView).text = speedText
+            (this@MapActivity.findViewById<TextView>(R.id.speedMapText)).text = speedText
         }
     }
 
@@ -227,7 +227,7 @@ class MapActivity : AppCompatActivity() {
         distanceInKM = !distanceInKM
         runOnUiThread {
             val distanceText = Utils.distanceText(routeLine.distance, distanceInKM)
-            (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text = distanceText
+            (this@MapActivity.findViewById<TextView>(R.id.distanceMapText)).text = distanceText
         }
     }
 
@@ -254,9 +254,9 @@ class MapActivity : AppCompatActivity() {
                                 setSpeedMapText()
 
                                 runOnUiThread {
-                                    (this@MapActivity.findViewById(R.id.distanceMapText) as TextView).text =
+                                    (this@MapActivity.findViewById<TextView>(R.id.distanceMapText)).text =
                                         distanceText
-                                    (this@MapActivity.findViewById(R.id.timeMapText) as TextView).text =
+                                    (this@MapActivity.findViewById<TextView>(R.id.timeMapText)).text =
                                         convertSecondsToHMmSs(timeInS)
                                 }
                                 map.invalidate()
@@ -283,7 +283,8 @@ class MapActivity : AppCompatActivity() {
         this@MapActivity.onBackPressedCallback.isEnabled = false
         onBackPressedCallback = this.onBackPressedDispatcher.addCallback(this) {}
 
-        (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
+        val progressBarLinearLayout = this@MapActivity.findViewById<LinearLayout>(R.id.progressBarLinearLayout)
+        progressBarLinearLayout.visibility =
             View.VISIBLE
 
         val endDate = Calendar.getInstance().time
@@ -294,7 +295,7 @@ class MapActivity : AppCompatActivity() {
 
         if (recordedGeoPoints.isEmpty()) {
             runOnUiThread {
-                (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
+                progressBarLinearLayout.visibility =
                     View.GONE
                 this@MapActivity.onBackPressedCallback.isEnabled = false
                 this@MapActivity.onBackPressedDispatcher.onBackPressed()
@@ -329,7 +330,7 @@ class MapActivity : AppCompatActivity() {
                 Log.d(DEBUG_TAG, "Saved ${recordedGeoPoints.size}")
 
                 runOnUiThread {
-                    (this@MapActivity.findViewById(R.id.progressBarLinearLayout) as LinearLayout).visibility =
+                    progressBarLinearLayout.visibility =
                         View.GONE
                     this@MapActivity.onBackPressedCallback.isEnabled = false
                     this@MapActivity.onBackPressedDispatcher.onBackPressed()

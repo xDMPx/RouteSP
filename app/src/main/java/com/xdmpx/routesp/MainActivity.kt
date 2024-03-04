@@ -320,7 +320,7 @@ class MainActivity : AppCompatActivity() {
         distanceInKM = !distanceInKM
         runOnUiThread {
             val distanceText = Utils.distanceText(totalDistance, distanceInKM)
-            (this@MainActivity.findViewById(R.id.distanceTextView) as TextView).text = distanceText
+            (this@MainActivity.findViewById<TextView>(R.id.distanceTextView)).text = distanceText
         }
     }
 

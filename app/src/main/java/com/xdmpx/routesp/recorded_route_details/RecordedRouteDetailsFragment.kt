@@ -40,8 +40,8 @@ class RecordedRouteDetailsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recorded_route_details, container, false)
 
-        (view.findViewById(R.id.dateValueView) as TextView).text = recordingDate
-        (view.findViewById(R.id.durationValueView) as TextView).text =
+        (view.findViewById<TextView>(R.id.dateValueView)).text = recordingDate
+        (view.findViewById<TextView>(R.id.durationValueView)).text =
             Utils.convertSecondsToHMmSs(timeInS)
 
         val distance = Utils.distanceText(distanceInM, distanceInKM)
