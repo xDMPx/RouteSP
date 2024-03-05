@@ -21,6 +21,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
 import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
+import com.xdmpx.routesp.database.entities.KilometerPointEntity
 import com.xdmpx.routesp.database.entities.PointEntity
 import com.xdmpx.routesp.database.entities.RouteEntity
 import com.xdmpx.routesp.services.LocationService
@@ -283,20 +284,20 @@ class MapActivity : AppCompatActivity() {
         this@MapActivity.onBackPressedCallback.isEnabled = false
         onBackPressedCallback = this.onBackPressedDispatcher.addCallback(this) {}
 
-        val progressBarLinearLayout = this@MapActivity.findViewById<LinearLayout>(R.id.progressBarLinearLayout)
-        progressBarLinearLayout.visibility =
-            View.VISIBLE
+        val progressBarLinearLayout =
+            this@MapActivity.findViewById<LinearLayout>(R.id.progressBarLinearLayout)
+        progressBarLinearLayout.visibility = View.VISIBLE
 
         val endDate = Calendar.getInstance().time
         val startDate = mLocationService.getStartDate()
         val recordedGeoPoints = mLocationService.getRecordedGeoPointsArray()
         val recordedAltitudes = mLocationService.getRecordedAltitudesArray()
+        val recordedKilometerPoints = mLocationService.getRecordedKilometerPoints()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
         if (recordedGeoPoints.isEmpty()) {
             runOnUiThread {
-                progressBarLinearLayout.visibility =
-                    View.GONE
+                progressBarLinearLayout.visibility = View.GONE
                 this@MapActivity.onBackPressedCallback.isEnabled = false
                 this@MapActivity.onBackPressedDispatcher.onBackPressed()
             }
@@ -315,23 +316,33 @@ class MapActivity : AppCompatActivity() {
                     distanceInM = distanceInM, startDate = startDate, endDate = endDate
                 )
             )
-            val latRouteID = routeDBDao.getLastRouteID()
-            if (latRouteID != null) {
-                recordedGeoPoints.zip(recordedAltitudes).forEach { (it, altitude) ->
+            val lastRouteID = routeDBDao.getLastRouteID()
+            if (lastRouteID != null) {
+                recordedGeoPoints.zip(recordedAltitudes).forEachIndexed { i, (it, altitude) ->
                     routeDBDao.insertPoint(
                         PointEntity(
-                            routeID = latRouteID,
+                            routeID = lastRouteID,
                             latitude = it.latitude,
                             longitude = it.longitude,
                             altitude = altitude
                         )
                     )
+                    val kilometerPointIndexes = recordedKilometerPoints.map { it.pointIndex }
+                    val kmIndex = kilometerPointIndexes.indexOf(i)
+                    if (kmIndex != -1) {
+                        routeDBDao.insertKilometerPoint(
+                            KilometerPointEntity(
+                                0,
+                                lastRouteID,
+                                recordedKilometerPoints[kmIndex].date
+                            )
+                        )
+                    }
                 }
                 Log.d(DEBUG_TAG, "Saved ${recordedGeoPoints.size}")
 
                 runOnUiThread {
-                    progressBarLinearLayout.visibility =
-                        View.GONE
+                    progressBarLinearLayout.visibility = View.GONE
                     this@MapActivity.onBackPressedCallback.isEnabled = false
                     this@MapActivity.onBackPressedDispatcher.onBackPressed()
                 }

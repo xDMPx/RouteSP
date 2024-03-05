@@ -19,10 +19,16 @@ import org.osmdroid.util.GeoPoint
 import java.util.Calendar
 import java.util.Date
 
+data class KilometerPoint(
+    val pointIndex: Int, val date: Date
+)
+
 class LocationService : Service() {
 
     private var recordedGeoPoints: ArrayList<GeoPoint> = ArrayList()
     private var recordedAltitudes: ArrayList<Double> = ArrayList()
+    private var recordedKilometerPoints: ArrayList<KilometerPoint> = ArrayList()
+    private var distance: Double = 0.0
     private lateinit var startDate: Date
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -77,6 +83,18 @@ class LocationService : Service() {
                         "LocationService",
                         "Location Updated: $location altitude: ${location.altitude}"
                     )
+                    if (recordedGeoPoints.size >= 1) {
+                        distance += newGeoPoint.distanceToAsDouble(recordedGeoPoints.last())
+                    }
+                    if (distance.toInt() / 1000 == 1) {
+                        distance = 0.0
+                        recordedKilometerPoints.add(
+                            KilometerPoint(
+                                recordedGeoPoints.lastIndex, Calendar.getInstance().time
+                            )
+                        )
+                    }
+
                     recordedGeoPoints.add(newGeoPoint)
                     recordedAltitudes.add(location.altitude)
                 }
@@ -125,6 +143,10 @@ class LocationService : Service() {
 
     fun getRecordedAltitudesArray(): Array<Double> {
         return recordedAltitudes.toTypedArray()
+    }
+
+    fun getRecordedKilometerPoints(): Array<KilometerPoint> {
+        return recordedKilometerPoints.toTypedArray()
     }
 
 }
