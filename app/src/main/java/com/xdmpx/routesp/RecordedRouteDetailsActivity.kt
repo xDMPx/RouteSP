@@ -25,6 +25,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     private var routeID: Int = 0
     private var recordingDate: String = ""
     private lateinit var altitudeArray: DoubleArray
+    private var speedsByKM: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,30 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
 
             val avgSpeedMS = Utils.calculateAvgSpeedMS(distanceInM, timeInS)
             this@RecordedRouteDetailsActivity.avgSpeedMS = avgSpeedMS
+
+
+            val kilometerPoints = routeDBDao.getRouteWithKilometerPoints(routeID)!!.points
+            var startDate = route.startDate
+            kilometerPoints.forEachIndexed { index, value ->
+                val timeDif = Utils.calculateTimeDiffS(startDate, value.date)
+                startDate = value.date
+                speedsByKM.add(
+                    String.format(
+                        "${index + 1}: %.2f km/h", Utils.calculateAvgSpeedMS(1000.0, timeDif) * 3.6
+                    )
+                )
+            }
+            val timeDif = if (kilometerPoints.isEmpty()) {
+                Utils.calculateTimeDiffS(route.startDate, route.endDate)
+            } else {
+                Utils.calculateTimeDiffS(kilometerPoints.last().date, route.endDate)
+            }
+            speedsByKM.add(
+                String.format(
+                    "Less than 1 km: %.2f km/h",
+                    Utils.calculateAvgSpeedMS(distanceInM % 1000, timeDif) * 3.6
+                )
+            )
         }
 
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
@@ -84,7 +109,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(
             R.id.fragment_container_view, RecordedRouteDetailsFragment.newInstance(
-                recordingDate, distanceInM, timeInS, avgSpeedMS, altitudeArray
+                recordingDate, distanceInM, timeInS, avgSpeedMS, altitudeArray, speedsByKM
             )
         )
         ft.commit()
