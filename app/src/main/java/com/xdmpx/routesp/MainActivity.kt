@@ -46,6 +46,10 @@ class MainActivity : AppCompatActivity() {
         if (isGranted) requestPermissions(PermissionType.BATTERY)
     }
 
+    private val requestLocationPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -218,36 +222,24 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_DENIED -> {
-                showAlertDialog(this@MainActivity,
-                    getString(R.string.please_grant_required_permission),
-                    getString(R.string.location_permission),
-                    getString(R.string.ok),
-                    {}) { dialog, _ ->
-                    dialog?.dismiss()
-                    Intent(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
-                            "package:" + BuildConfig.APPLICATION_ID
-                        )
-                    ).apply { startActivity(this) }
-                }
+                requestLocationPermissionsLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                    )
+                )
                 Log.e(DEBUG_TAG, "ACCESS_COARSE_LOCATION")
             }
 
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_DENIED -> {
-                showAlertDialog(this@MainActivity,
-                    getString(R.string.please_grant_required_permission),
-                    getString(R.string.location_permission),
-                    getString(R.string.ok),
-                    {}) { dialog, _ ->
-                    dialog?.dismiss()
-                    Intent(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
-                            "package:" + BuildConfig.APPLICATION_ID
-                        )
-                    ).apply { startActivity(this) }
-                }
+                requestLocationPermissionsLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                    )
+                )
                 Log.e(DEBUG_TAG, "ACCESS_FINE_LOCATION")
             }
 
