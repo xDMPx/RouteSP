@@ -243,24 +243,6 @@ class MainActivity : AppCompatActivity() {
                 Log.e(DEBUG_TAG, "ACCESS_FINE_LOCATION")
             }
 
-            ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_DENIED -> {
-                showAlertDialog(this@MainActivity,
-                    getString(R.string.please_grant_required_permission),
-                    getString(R.string.location_permission),
-                    getString(R.string.ok),
-                    {}) { dialog, _ ->
-                    dialog?.dismiss()
-                    Intent(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
-                            "package:" + BuildConfig.APPLICATION_ID
-                        )
-                    ).apply { startActivity(this) }
-                }
-                Log.e(DEBUG_TAG, "ACCESS_BACKGROUND_LOCATION")
-            }
-
             !isLocationEnabled() -> {
                 showAlertDialog(this@MainActivity,
                     getString(R.string.gps_disabled),
