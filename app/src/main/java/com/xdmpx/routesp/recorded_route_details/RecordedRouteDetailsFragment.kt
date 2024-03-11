@@ -17,6 +17,7 @@ const val ARG_TIME_IN_S = "time_in_s"
 const val ARG_AVG_SPEED_MS = "avg_speed_ms"
 const val ARG_ALTITUDE_ARRAY = "avg_altitude_array"
 const val ARG_SPEED_BY_KM = "avg_speed_by_km"
+const val ARG_ACCURACY_ARRAY = "avg_accuracy_array"
 
 class RecordedRouteDetailsFragment : Fragment() {
     private var recordingDate: String = ""
@@ -27,6 +28,7 @@ class RecordedRouteDetailsFragment : Fragment() {
     private var speedInKMH = true
     private lateinit var altitudeArray: DoubleArray
     private var speedsByKM: ArrayList<String> = ArrayList()
+    private lateinit var accuracyArray: FloatArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,7 @@ class RecordedRouteDetailsFragment : Fragment() {
             avgSpeedMS = it.getDouble(ARG_AVG_SPEED_MS)
             altitudeArray = it.getDoubleArray(ARG_ALTITUDE_ARRAY)!!
             speedsByKM = it.getStringArrayList(ARG_SPEED_BY_KM)!!
+            accuracyArray = it.getFloatArray(ARG_ACCURACY_ARRAY)!!
         }
     }
 
@@ -72,6 +75,12 @@ class RecordedRouteDetailsFragment : Fragment() {
             R.id.itemTextView,
             speedsByKM as ArrayList<String>
         )
+        val minAccuracyText = String.format("min: %.2f m", accuracyArray.min())
+        val maxAccuracyText = String.format("max: %.2f m", accuracyArray.max())
+        val minAccuracyTextView = view.findViewById<TextView>(R.id.minAccuracyValueView)
+        val maxAccuracyTextView = view.findViewById<TextView>(R.id.maxAccuracyValueView)
+        minAccuracyTextView.text = minAccuracyText
+        maxAccuracyTextView.text = maxAccuracyText
 
         return view
     }
@@ -84,7 +93,8 @@ class RecordedRouteDetailsFragment : Fragment() {
             timeInS: Long,
             avgSpeedMS: Double,
             altitudeArray: DoubleArray,
-            speedByKM: ArrayList<String>
+            speedByKM: ArrayList<String>,
+            accuracyArray: FloatArray
         ) = RecordedRouteDetailsFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_RECORDING_DATE, recordingDate)
@@ -93,6 +103,7 @@ class RecordedRouteDetailsFragment : Fragment() {
                 putDouble(ARG_AVG_SPEED_MS, avgSpeedMS)
                 putDoubleArray(ARG_ALTITUDE_ARRAY, altitudeArray)
                 putStringArrayList(ARG_SPEED_BY_KM, speedByKM)
+                putFloatArray(ARG_ACCURACY_ARRAY, accuracyArray)
             }
         }
     }

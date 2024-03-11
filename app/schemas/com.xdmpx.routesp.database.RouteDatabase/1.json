@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9caea9acabbacfb074179a781b477afe",
+    "identityHash": "989680b025bd1056644fb95a189180ae",
     "entities": [
       {
         "tableName": "RouteEntity",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "PointEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `routeID` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `altitude` REAL NOT NULL, FOREIGN KEY(`routeID`) REFERENCES `RouteEntity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `routeID` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `altitude` REAL NOT NULL, `accuracy` REAL NOT NULL DEFAULT 0, FOREIGN KEY(`routeID`) REFERENCES `RouteEntity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -75,6 +75,13 @@
             "columnName": "altitude",
             "affinity": "REAL",
             "notNull": true
+          },
+          {
+            "fieldPath": "accuracy",
+            "columnName": "accuracy",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -146,7 +153,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9caea9acabbacfb074179a781b477afe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '989680b025bd1056644fb95a189180ae')"
     ]
   }
 }

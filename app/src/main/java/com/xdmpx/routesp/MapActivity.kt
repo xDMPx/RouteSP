@@ -293,6 +293,7 @@ class MapActivity : AppCompatActivity() {
         val recordedGeoPoints = mLocationService.getRecordedGeoPointsArray()
         val recordedAltitudes = mLocationService.getRecordedAltitudesArray()
         val recordedKilometerPoints = mLocationService.getRecordedKilometerPoints()
+        val recordedAccuracy = mLocationService.getRecordedAccuracyArray()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
         if (recordedGeoPoints.isEmpty()) {
@@ -324,7 +325,8 @@ class MapActivity : AppCompatActivity() {
                             routeID = lastRouteID,
                             latitude = it.latitude,
                             longitude = it.longitude,
-                            altitude = altitude
+                            altitude = altitude,
+                            accuracy = recordedAccuracy[i]
                         )
                     )
                     val kilometerPointIndexes = recordedKilometerPoints.map { it.pointIndex }
@@ -332,9 +334,7 @@ class MapActivity : AppCompatActivity() {
                     if (kmIndex != -1) {
                         routeDBDao.insertKilometerPoint(
                             KilometerPointEntity(
-                                0,
-                                lastRouteID,
-                                recordedKilometerPoints[kmIndex].date
+                                0, lastRouteID, recordedKilometerPoints[kmIndex].date
                             )
                         )
                     }

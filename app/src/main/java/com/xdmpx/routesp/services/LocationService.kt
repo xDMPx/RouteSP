@@ -29,6 +29,7 @@ class LocationService : Service() {
     private var recordedAltitudes: ArrayList<Double> = ArrayList()
     private var recordedKilometerPoints: ArrayList<KilometerPoint> = ArrayList()
     private var distance: Double = 0.0
+    private var recordedAccuracy: ArrayList<Float> = ArrayList()
     private lateinit var startDate: Date
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -97,6 +98,7 @@ class LocationService : Service() {
 
                     recordedGeoPoints.add(newGeoPoint)
                     recordedAltitudes.add(location.altitude)
+                    recordedAccuracy.add(location.accuracy)
                 }
             }
         }
@@ -147,6 +149,10 @@ class LocationService : Service() {
 
     fun getRecordedKilometerPoints(): Array<KilometerPoint> {
         return recordedKilometerPoints.toTypedArray()
+    }
+
+    fun getRecordedAccuracyArray(): Array<Float> {
+        return recordedAccuracy.toTypedArray()
     }
 
 }
