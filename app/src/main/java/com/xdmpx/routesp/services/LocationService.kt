@@ -75,9 +75,12 @@ class LocationService : Service() {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                val locations = locationResult.locations
+                val locations =
+                    locationResult.locations.filter { location -> location.accuracy <= 50.0f }
+
                 for (location in locations) {
-                    if (location.time < latestLocationTime && location.accuracy <= 50.0f) continue
+                    if (location.time < latestLocationTime) continue
+                    latestLocationTime = location.time
 
                     val newGeoPoint = GeoPoint(location.latitude, location.longitude)
                     Log.d(
