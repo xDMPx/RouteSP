@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="DateValue"
+            tools:hint="DateValue"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
-            android:text="0.0h"
+            tools:hint="0.0h"
             app:layout_constraintStart_toEndOf="@+id/durationImageView"
             app:layout_constraintTop_toBottomOf="@+id/durationTextView" />
 
@@ -79,7 +79,7 @@
             android:layout_marginStart="4dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="0km"
+            tools:hint="0km"
             app:layout_constraintBottom_toBottomOf="@+id/durationValueView"
             app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
 
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="0.0km/h"
+            tools:hint="0.0km/h"
             app:layout_constraintStart_toStartOf="@+id/durationValueView"
             app:layout_constraintTop_toBottomOf="@+id/avgSpeedTextView" />
 
@@ -139,7 +139,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="0.0m"
+            tools:hint="0.0m"
             app:layout_constraintStart_toStartOf="@+id/altitudeTextView"
             app:layout_constraintTop_toBottomOf="@+id/altitudeTextView" />
 
@@ -147,7 +147,7 @@
             android:id="@+id/maxAltitudeValueView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.0m"
+            tools:hint="0.0m"
             app:layout_constraintStart_toStartOf="@+id/minAltitudeValueView"
             app:layout_constraintTop_toBottomOf="@+id/minAltitudeValueView" />
 
@@ -184,7 +184,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="0.0m"
+            tools:hint="0.0m"
             app:layout_constraintStart_toStartOf="@+id/accuracyTextView"
             app:layout_constraintTop_toBottomOf="@+id/accuracyTextView" />
 
@@ -192,7 +192,7 @@
             android:id="@+id/maxAccuracyValueView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.0m"
+            tools:hint="0.0m"
             app:layout_constraintStart_toStartOf="@+id/minAccuracyValueView"
             app:layout_constraintTop_toBottomOf="@+id/minAccuracyValueView" />
 
