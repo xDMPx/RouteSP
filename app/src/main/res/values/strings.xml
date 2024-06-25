@@ -6,8 +6,7 @@
     <string name="location_permission">Location permission -> Allow all the time</string>
     <string name="ok">OK</string>
     <string name="osm_copyright_notice">© OpenStreetMap\ncontributors</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="overview">OVERVIEW</string>
     <string name="recorded">Recorded</string>
     <string name="route">Route</string>
@@ -18,5 +17,20 @@
     <string name="altitude">Altitude</string>
     <string name="speed_by_km"> Speed by km</string>
     <string name="accuracy">Accuracy</string>
+    <string name="time">Time</string>
+    <string name="recordings">Recordings</string>
+
+    <string name="less_tkm">Less than 1 km</string>
+
+   <string name="delete">DELETE</string>
+    <string name="delete_record">Delete recorded route</string>
+    <string name="delete_record_confirmation">Are you sure you want to delete recorded route? This action cannot be undone.</string>
+
+    <string name="background_restricted">Background activity is restricted</string>
+    <string name="background_restricted_msg">Route recording cannot function correctly is background restrictions are enabled.\nPlease disable them.\nBattery Usage -> enable 'Allow background activity' to 'Unrestricted'</string>
+
+    <string name="notification_channel_name">RouteSP LocationService</string>
+<string name="notification_content_title">RouteSP is running</string>
+
 
 </resources>

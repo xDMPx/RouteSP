@@ -64,9 +64,9 @@ class MainActivity : AppCompatActivity() {
         recordedRoutesListView.setOnItemLongClickListener { adapterView, _, position, _ ->
             val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
             showAlertDialog(this@MainActivity,
-                "Delete recorded route",
-                "Are you sure you want to delete recorded route? This action cannot be undone.",
-                "DELETE",
+                getString(R.string.delete_record),
+                getString(R.string.delete_record_confirmation),
+                getString(R.string.delete),
                 onDismissListener = {}) { _, _ ->
                 deleteRecordedRoute(recordedRouteItem.routeID)
             }
@@ -102,7 +102,9 @@ class MainActivity : AppCompatActivity() {
 
                 recordedRoutesListItems.add(
                     RecordedRouteItem(
-                        it.id, startDateString, "Distance: $distance Time: $time"
+                        it.id,
+                        startDateString,
+                        "${getString(R.string.distance)}: $distance ${getString(R.string.time)}: $time"
                     )
                 )
             }
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             runOnUiThread {
-                val recordedRoutesCount = "${recordedRoutes.size} Recordings"
+                val recordedRoutesCount = "${recordedRoutes.size} ${getString(R.string.recordings)}"
                 recordedRoutesListView.adapter = recordedRoutesListArrayAdapter
                 this@MainActivity.findViewById<TextView>(R.id.distanceTextView).text =
                     Utils.distanceText(totalDistance, distanceInKM)
@@ -202,8 +204,8 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(PermissionType.LOCATION)
         } else {
             showAlertDialog(this@MainActivity,
-                "Background activity is restricted",
-                "Route recording cannot function correctly is background restrictions are enabled.\nPlease disable them.\nBattery Usage -> enable 'Allow background activity'\\'Unrestricted'",
+                getString(R.string.background_restricted),
+                getString(R.string.background_restricted_msg),
                 getString(R.string.ok),
                 {}) { dialog, _ ->
                 dialog?.dismiss()

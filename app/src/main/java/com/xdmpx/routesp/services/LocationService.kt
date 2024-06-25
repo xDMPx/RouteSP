@@ -115,7 +115,7 @@ class LocationService : Service() {
     private fun createNotificationChanel() {
         val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
 
-        val channelName = "RouteSP LocationService"
+        val channelName = getString(R.string.notification_channel_name)
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH
         )
@@ -127,7 +127,8 @@ class LocationService : Service() {
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
         val notification: Notification =
             notificationBuilder.setOngoing(true).setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("RouteSP is running").setCategory(Notification.CATEGORY_NAVIGATION)
+                .setContentTitle(getString(R.string.notification_content_title))
+                .setCategory(Notification.CATEGORY_NAVIGATION)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOngoing(true).build()
 

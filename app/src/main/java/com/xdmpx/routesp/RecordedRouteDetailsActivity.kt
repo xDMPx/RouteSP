@@ -81,7 +81,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             }
             speedsByKM.add(
                 String.format(
-                    "Less than 1 km: %.2f km/h",
+                    "${getString(R.string.less_tkm)}: %.2f km/h",
                     Utils.calculateAvgSpeedMS(distanceInM % 1000, timeDif) * 3.6
                 )
             )
