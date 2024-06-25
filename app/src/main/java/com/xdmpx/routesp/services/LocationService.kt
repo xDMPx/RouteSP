@@ -15,6 +15,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.xdmpx.routesp.R
+import com.xdmpx.routesp.utils.Utils
+import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import org.osmdroid.util.GeoPoint
 import java.util.Calendar
 import java.util.Date
@@ -24,6 +26,9 @@ data class KilometerPoint(
 )
 
 class LocationService : Service() {
+
+    val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
+    val NOTIFICATION_ID = 69420
 
     private var recordedGeoPoints: ArrayList<GeoPoint> = ArrayList()
     private var recordedAltitudes: ArrayList<Double> = ArrayList()
@@ -102,6 +107,14 @@ class LocationService : Service() {
                     recordedGeoPoints.add(newGeoPoint)
                     recordedAltitudes.add(location.altitude)
                     recordedAccuracy.add(location.accuracy)
+
+                    val timeInS = Utils.calculateTimeDiffS(
+                        getStartDate(), Calendar.getInstance().time
+                    )
+                    val distanceText =
+                        Utils.distanceText(distance, true)
+                    val speedText = Utils.speedText(location.speed.toDouble(), true)
+                    updateNotification(speedText, distanceText, convertSecondsToHMmSs(timeInS))
                 }
             }
         }
@@ -113,8 +126,6 @@ class LocationService : Service() {
     }
 
     private fun createNotificationChanel() {
-        val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
-
         val channelName = getString(R.string.notification_channel_name)
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH
@@ -130,9 +141,24 @@ class LocationService : Service() {
                 .setContentTitle(getString(R.string.notification_content_title))
                 .setCategory(Notification.CATEGORY_NAVIGATION)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .setOngoing(true).build()
+                .setOnlyAlertOnce(true)
+                .build()
 
-        startForeground(2, notification)
+        startForeground(NOTIFICATION_ID, notification)
+    }
+
+    private fun updateNotification(speed: String, distance: String, time: String) {
+        val manager = (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val notification: Notification =
+            notificationBuilder.setOngoing(true).setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.notification_content_title))
+                .setContentText("V: $speed S: $distance T:$time")
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .setOnlyAlertOnce(true)
+                .build()
+
+        manager.notify(NOTIFICATION_ID, notification)
     }
 
     fun getRecordedGeoPoints(): ArrayList<GeoPoint> {
