@@ -76,7 +76,7 @@ class LocationService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val locations =
-                    locationResult.locations.filter { location -> location.accuracy <= 50.0f }
+                    locationResult.locations.filter { location -> location.accuracy <= 35.0f }
 
                 for (location in locations) {
                     if (location.time < latestLocationTime) continue
