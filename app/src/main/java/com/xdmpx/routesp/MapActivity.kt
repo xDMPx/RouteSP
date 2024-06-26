@@ -19,12 +19,15 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.PreferenceManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.database.entities.KilometerPointEntity
+import com.xdmpx.routesp.database.entities.PauseEntity
 import com.xdmpx.routesp.database.entities.PointEntity
 import com.xdmpx.routesp.database.entities.RouteEntity
 import com.xdmpx.routesp.services.LocationService
+import com.xdmpx.routesp.services.Pause
 import com.xdmpx.routesp.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +68,8 @@ class MapActivity : AppCompatActivity() {
     private var speedInKMH = true
     private var avgSpeed = false
     private var distanceInKM = true
+    private var paused = false
+    private var pauses: Array<Pause> = arrayOf()
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -102,7 +107,7 @@ class MapActivity : AppCompatActivity() {
                 }
 
                 lastSpeed = location.speed
-                setSpeedMapText()
+                setSpeedMapText(pauses)
                 //mapController.setCenter(GeoPoint(location.latitude, location.longitude))
 
                 super.onLocationChanged(locations)
@@ -115,7 +120,8 @@ class MapActivity : AppCompatActivity() {
                 }
 
                 lastSpeed = location.speed
-                setSpeedMapText()
+
+                setSpeedMapText(pauses)
                 //mapController.setCenter(GeoPoint(location.latitude, location.longitude))
 
                 super.onLocationChanged(location)
@@ -187,7 +193,7 @@ class MapActivity : AppCompatActivity() {
 
     fun onSpeedClick(view: View) {
         speedInKMH = !speedInKMH
-        setSpeedMapText()
+        setSpeedMapText(pauses)
     }
 
     fun onSpeedIconClick(view: View) {
@@ -205,9 +211,9 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    private fun setSpeedMapText() {
+    private fun setSpeedMapText(pauses: Array<Pause>) {
         val speedText = when (avgSpeed) {
-            true -> Utils.speedText(calculateAvgSpeed(), distanceInKM)
+            true -> Utils.speedText(calculateAvgSpeed(pauses), distanceInKM)
             false -> Utils.speedText(lastSpeed.toDouble(), speedInKMH)
         }
         runOnUiThread {
@@ -215,9 +221,9 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    private fun calculateAvgSpeed(): Double {
+    private fun calculateAvgSpeed(pauses: Array<Pause>): Double {
         val timeInS = Utils.calculateTimeDiffS(
-            mLocationService.getStartDate(), Calendar.getInstance().time
+            mLocationService.getStartDate(), Calendar.getInstance().time, pauses
         )
         val distanceInM = routeLine.distance
 
@@ -236,6 +242,23 @@ class MapActivity : AppCompatActivity() {
         mLocationOverlay.enableFollowLocation()
     }
 
+    fun onPauseClick(view: View) {
+        paused = !paused
+        if (paused) {
+            runOnUiThread {
+                (this@MapActivity.findViewById<FloatingActionButton>(R.id.facPause)).setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.round_pause_24, theme)
+                )
+            }
+            mLocationService.pause()
+        } else {
+            (this@MapActivity.findViewById<ImageView>(R.id.facPause)).setImageDrawable(
+                ResourcesCompat.getDrawable(resources, R.drawable.round_play_arrow_24, theme)
+            )
+            mLocationService.resume()
+        }
+    }
+
     private fun scheduleTimer() {
         updateTimer = Timer()
         updateTimer.schedule(
@@ -249,10 +272,13 @@ class MapActivity : AppCompatActivity() {
                                 val distanceText =
                                     Utils.distanceText(routeLine.distance, distanceInKM)
 
+                                pauses = mLocationService.getPausesArray()
                                 val timeInS = Utils.calculateTimeDiffS(
-                                    mLocationService.getStartDate(), Calendar.getInstance().time
+                                    mLocationService.getStartDate(),
+                                    Calendar.getInstance().time,
+                                    pauses
                                 )
-                                setSpeedMapText()
+                                setSpeedMapText(pauses)
 
                                 runOnUiThread {
                                     (this@MapActivity.findViewById<TextView>(R.id.distanceMapText)).text =
@@ -294,6 +320,7 @@ class MapActivity : AppCompatActivity() {
         val recordedAltitudes = mLocationService.getRecordedAltitudesArray()
         val recordedKilometerPoints = mLocationService.getRecordedKilometerPoints()
         val recordedAccuracy = mLocationService.getRecordedAccuracyArray()
+        val pauses = mLocationService.getPausesArray()
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
 
         if (recordedGeoPoints.isEmpty()) {
@@ -339,7 +366,17 @@ class MapActivity : AppCompatActivity() {
                         )
                     }
                 }
+
+                for (pause in pauses) {
+                    routeDBDao.insertPause(
+                        PauseEntity(
+                            0, lastRouteID, pause.startDate, pause.endDate
+                        )
+                    )
+                }
+
                 Log.d(DEBUG_TAG, "Saved ${recordedGeoPoints.size}")
+                Log.d(DEBUG_TAG, "Saved Pauses: ${pauses.size}")
 
                 runOnUiThread {
                     progressBarLinearLayout.visibility = View.GONE

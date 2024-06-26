@@ -1,5 +1,6 @@
 package com.xdmpx.routesp.utils
 
+import com.xdmpx.routesp.services.Pause
 import java.util.Date
 
 object Utils {
@@ -13,6 +14,17 @@ object Utils {
 
     fun calculateTimeDiffS(startDate: Date, endDate: Date): Long {
         var timeDif = endDate.time - startDate.time
+        timeDif /= 1000
+        return timeDif
+    }
+
+    fun calculateTimeDiffS(startDate: Date, endDate: Date, pauses: Array<Pause>): Long {
+        var timeDif = endDate.time - startDate.time
+        for (pause in pauses) {
+            var pauseDif = pause.endDate.time - pause.startDate.time
+            if (pauseDif == 0L) pauseDif = endDate.time - pause.startDate.time
+            timeDif -= pauseDif
+        }
         timeDif /= 1000
         return timeDif
     }

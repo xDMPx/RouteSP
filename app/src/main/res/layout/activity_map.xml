@@ -17,7 +17,9 @@
         <org.osmdroid.views.MapView
             android:id="@+id/map"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent">
+
+        </org.osmdroid.views.MapView>
     </LinearLayout>
 
     <ImageView
@@ -125,6 +127,19 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/facPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:onClick="onPauseClick"
+        app:backgroundTint="#00BFA5"
+        app:layout_constraintBottom_toTopOf="@+id/facFollowLocation"
+        app:layout_constraintEnd_toEndOf="@+id/facFollowLocation"
+        app:shapeAppearanceOverlay="@style/GoToMapFAB"
+        app:srcCompat="@drawable/round_play_arrow_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/facFollowLocation"

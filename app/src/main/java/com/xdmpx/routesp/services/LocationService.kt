@@ -25,6 +25,10 @@ data class KilometerPoint(
     val pointIndex: Int, val date: Date
 )
 
+data class Pause(
+    val startDate: Date, val endDate: Date
+)
+
 class LocationService : Service() {
 
     val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
@@ -36,6 +40,8 @@ class LocationService : Service() {
     private var distance: Double = 0.0
     private var recordedAccuracy: ArrayList<Float> = ArrayList()
     private lateinit var startDate: Date
+    private var paused = false
+    private var pauses: ArrayList<Pause> = ArrayList()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -80,6 +86,8 @@ class LocationService : Service() {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
+                if (paused) return
+
                 val locations =
                     locationResult.locations.filter { location -> location.accuracy <= 35.0f }
 
@@ -109,10 +117,9 @@ class LocationService : Service() {
                     recordedAccuracy.add(location.accuracy)
 
                     val timeInS = Utils.calculateTimeDiffS(
-                        getStartDate(), Calendar.getInstance().time
+                        getStartDate(), Calendar.getInstance().time, pauses.toTypedArray()
                     )
-                    val distanceText =
-                        Utils.distanceText(distance, true)
+                    val distanceText = Utils.distanceText(distance, true)
                     val speedText = Utils.speedText(location.speed.toDouble(), true)
                     updateNotification(speedText, distanceText, convertSecondsToHMmSs(timeInS))
                 }
@@ -141,8 +148,7 @@ class LocationService : Service() {
                 .setContentTitle(getString(R.string.notification_content_title))
                 .setCategory(Notification.CATEGORY_NAVIGATION)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .setOnlyAlertOnce(true)
-                .build()
+                .setOnlyAlertOnce(true).build()
 
         startForeground(NOTIFICATION_ID, notification)
     }
@@ -155,10 +161,26 @@ class LocationService : Service() {
                 .setContentTitle(getString(R.string.notification_content_title))
                 .setContentText("V: $speed S: $distance T:$time")
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .setOnlyAlertOnce(true)
-                .build()
+                .setOnlyAlertOnce(true).build()
 
         manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    fun pause() {
+        paused = true
+        pauses.add(Pause(Calendar.getInstance().time, Calendar.getInstance().time))
+
+        val timeInS = Utils.calculateTimeDiffS(
+            getStartDate(), Calendar.getInstance().time, pauses.toTypedArray()
+        )
+        val distanceText = Utils.distanceText(distance, true)
+        val speedText = Utils.speedText(0.0, true)
+        updateNotification(speedText, distanceText, convertSecondsToHMmSs(timeInS))
+    }
+
+    fun resume() {
+        paused = false
+        pauses[pauses.lastIndex] = Pause(pauses.last().startDate, Calendar.getInstance().time)
     }
 
     fun getRecordedGeoPoints(): ArrayList<GeoPoint> {
@@ -183,6 +205,10 @@ class LocationService : Service() {
 
     fun getRecordedAccuracyArray(): Array<Float> {
         return recordedAccuracy.toTypedArray()
+    }
+
+    fun getPausesArray(): Array<Pause> {
+        return pauses.toTypedArray()
     }
 
 }

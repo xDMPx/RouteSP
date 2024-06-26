@@ -22,15 +22,15 @@
 
     <string name="less_tkm">Less than 1 km</string>
 
-   <string name="delete">DELETE</string>
+    <string name="delete">DELETE</string>
     <string name="delete_record">Delete recorded route</string>
     <string name="delete_record_confirmation">Are you sure you want to delete recorded route? This action cannot be undone.</string>
 
     <string name="background_restricted">Background activity is restricted</string>
-    <string name="background_restricted_msg">Route recording cannot function correctly is background restrictions are enabled.\nPlease disable them.\nBattery Usage -> enable 'Allow background activity' to 'Unrestricted'</string>
+    <string name="background_restricted_msg">Route recording cannot function correctly is background restrictions are enabled.\nPlease disable them.\nBattery Usage -> enable \'Allow background activity\' to \'Unrestricted\'</string>
 
     <string name="notification_channel_name">RouteSP LocationService</string>
-<string name="notification_content_title">RouteSP is running</string>
+    <string name="notification_content_title">RouteSP is running</string>
 
 
 </resources>
