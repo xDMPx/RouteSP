@@ -56,7 +56,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
 
             recordingDate = DateFormat.getDateTimeInstance().format(route.startDate)
 
-            timeInS = Utils.calculateTimeDiffS(route.startDate, route.endDate)
+            val pauses = routeDBDao.getPauses(routeID)
+            timeInS = Utils.calculateTimeDiffS(route.startDate, route.endDate, pauses)
             distanceInM = route.distanceInM
 
             val avgSpeedMS = Utils.calculateAvgSpeedMS(distanceInM, timeInS)
@@ -66,7 +67,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             val kilometerPoints = routeDBDao.getRouteWithKilometerPoints(routeID)!!.points
             var startDate = route.startDate
             kilometerPoints.forEachIndexed { index, value ->
-                val timeDif = Utils.calculateTimeDiffS(startDate, value.date)
+                val timeDif = Utils.calculateTimeDiffS(startDate, value.date, pauses)
                 startDate = value.date
                 speedsByKM.add(
                     String.format(
@@ -75,9 +76,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                 )
             }
             val timeDif = if (kilometerPoints.isEmpty()) {
-                Utils.calculateTimeDiffS(route.startDate, route.endDate)
+                Utils.calculateTimeDiffS(route.startDate, route.endDate, pauses)
             } else {
-                Utils.calculateTimeDiffS(kilometerPoints.last().date, route.endDate)
+                Utils.calculateTimeDiffS(kilometerPoints.last().date, route.endDate, pauses)
             }
             speedsByKM.add(
                 String.format(

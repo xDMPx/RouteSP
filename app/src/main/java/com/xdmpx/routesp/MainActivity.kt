@@ -95,10 +95,8 @@ class MainActivity : AppCompatActivity() {
                 val startDateString = getDateTimeInstance().format(it.startDate)
 
                 val pauses = routeDBDao.getPauses(it.id)
-                    .map { pauseEntity -> Pause(pauseEntity.pauseStart, pauseEntity.pauseEnd) }
                 val distance = Utils.distanceText(it.distanceInM, true)
-                val timeInS =
-                    Utils.calculateTimeDiffS(it.startDate, it.endDate, pauses.toTypedArray())
+                val timeInS = Utils.calculateTimeDiffS(it.startDate, it.endDate, pauses)
                 val time = Utils.convertSecondsToHMmSs(timeInS)
 
                 totalDistance += it.distanceInM
