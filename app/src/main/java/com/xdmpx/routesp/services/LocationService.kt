@@ -159,7 +159,7 @@ class LocationService : Service() {
         val notification: Notification =
             notificationBuilder.setOngoing(true).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.notification_content_title))
-                .setContentText("V: $speed S: $distance T:$time")
+                .setContentText("V: $speed S: $distance T: $time")
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOnlyAlertOnce(true).build()
 

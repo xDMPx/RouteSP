@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.xdmpx.routesp.database.RouteDatabase
-import com.xdmpx.routesp.services.Pause
 import com.xdmpx.routesp.utils.RecordedRouteItem
 import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
 import com.xdmpx.routesp.utils.Utils

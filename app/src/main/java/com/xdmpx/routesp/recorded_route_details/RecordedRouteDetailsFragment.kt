@@ -61,8 +61,8 @@ class RecordedRouteDetailsFragment : Fragment() {
         avgSpeedValueView.text = Utils.speedText(avgSpeedMS, speedInKMH)
         avgSpeedValueView.setOnClickListener { view -> onAvgSpeedClick(view) }
 
-        val minAltitudeText = String.format("min: %.2f m", altitudeArray.min())
-        val maxAltitudeText = String.format("max: %.2f m", altitudeArray.max())
+        val minAltitudeText = String.format(null, "min: %.2f m", altitudeArray.min())
+        val maxAltitudeText = String.format(null, "max: %.2f m", altitudeArray.max())
         val minAltitudeTextView = view.findViewById<TextView>(R.id.minAltitudeValueView)
         val maxAltitudeTextView = view.findViewById<TextView>(R.id.maxAltitudeValueView)
         minAltitudeTextView.text = minAltitudeText
@@ -75,8 +75,8 @@ class RecordedRouteDetailsFragment : Fragment() {
             R.id.itemTextView,
             speedsByKM as ArrayList<String>
         )
-        val minAccuracyText = String.format("min: %.2f m", accuracyArray.min())
-        val maxAccuracyText = String.format("max: %.2f m", accuracyArray.max())
+        val minAccuracyText = String.format(null, "min: %.2f m", accuracyArray.min())
+        val maxAccuracyText = String.format(null, "max: %.2f m", accuracyArray.max())
         val minAccuracyTextView = view.findViewById<TextView>(R.id.minAccuracyValueView)
         val maxAccuracyTextView = view.findViewById<TextView>(R.id.maxAccuracyValueView)
         minAccuracyTextView.text = minAccuracyText

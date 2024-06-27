@@ -10,7 +10,7 @@ object Utils {
         val s = seconds % 60
         val m = seconds / 60 % 60
         val h = seconds / (60 * 60) % 24
-        return String.format("%dh %dm %ds", h, m, s)
+        return String.format(null, "%dh %dm %ds", h, m, s)
     }
 
     fun calculateTimeDiffS(startDate: Date, endDate: Date): Long {
@@ -65,8 +65,8 @@ object Utils {
 
     fun distanceText(distanceInM: Double, distanceInKM: Boolean): String {
         return when (distanceInKM) {
-            true -> String.format("%.2f km", distanceInM / 1000f)
-            false -> String.format("%.2f m", distanceInM)
+            true -> String.format(null, "%.2f km", distanceInM / 1000f)
+            false -> String.format(null, "%.2f m", distanceInM)
         }
     }
 
@@ -76,8 +76,8 @@ object Utils {
             false -> speedMS
         }
         val speedText = when (speedInKMH) {
-            true -> String.format("%.2f km/h", speed)
-            false -> String.format("%.2f m/s", speed)
+            true -> String.format(null, "%.2f km/h", speed)
+            false -> String.format(null, "%.2f m/s", speed)
         }
 
         return speedText

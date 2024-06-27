@@ -71,7 +71,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                 startDate = value.date
                 speedsByKM.add(
                     String.format(
-                        "${index + 1}: %.2f km/h", Utils.calculateAvgSpeedMS(1000.0, timeDif) * 3.6
+                        null,
+                        "${index + 1}: %.2f km/h",
+                        Utils.calculateAvgSpeedMS(1000.0, timeDif) * 3.6
                     )
                 )
             }
@@ -82,6 +84,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             }
             speedsByKM.add(
                 String.format(
+                    null,
                     "${getString(R.string.less_tkm)}: %.2f km/h",
                     Utils.calculateAvgSpeedMS(distanceInM % 1000, timeDif) * 3.6
                 )
