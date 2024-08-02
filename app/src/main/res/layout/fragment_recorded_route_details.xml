@@ -15,11 +15,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            tools:hint="DateValue"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:hint="DateValue" />
 
         <ImageView
             android:id="@+id/durationImageView"
@@ -49,9 +49,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
-            tools:hint="0.0h"
             app:layout_constraintStart_toEndOf="@+id/durationImageView"
-            app:layout_constraintTop_toBottomOf="@+id/durationTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/durationTextView"
+            tools:hint="0.0h" />
 
         <ImageView
             android:id="@+id/distanceImageView"
@@ -79,9 +79,9 @@
             android:layout_marginStart="4dp"
             android:clickable="true"
             android:focusable="true"
-            tools:hint="0km"
             app:layout_constraintBottom_toBottomOf="@+id/durationValueView"
-            app:layout_constraintStart_toEndOf="@+id/distanceImageView" />
+            app:layout_constraintStart_toEndOf="@+id/distanceImageView"
+            tools:hint="0km" />
 
         <ImageView
             android:id="@+id/avgSpeedImageView"
@@ -109,9 +109,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            tools:hint="0.0km/h"
             app:layout_constraintStart_toStartOf="@+id/durationValueView"
-            app:layout_constraintTop_toBottomOf="@+id/avgSpeedTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/avgSpeedTextView"
+            tools:hint="0.0km/h" />
 
         <ImageView
             android:id="@+id/altitudeImageView"
@@ -139,17 +139,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            tools:hint="0.0m"
             app:layout_constraintStart_toStartOf="@+id/altitudeTextView"
-            app:layout_constraintTop_toBottomOf="@+id/altitudeTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/altitudeTextView"
+            tools:hint="0.0m" />
 
         <TextView
             android:id="@+id/maxAltitudeValueView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:hint="0.0m"
             app:layout_constraintStart_toStartOf="@+id/minAltitudeValueView"
-            app:layout_constraintTop_toBottomOf="@+id/minAltitudeValueView" />
+            app:layout_constraintTop_toBottomOf="@+id/minAltitudeValueView"
+            tools:hint="0.0m" />
 
         <TextView
             android:id="@+id/speedTextView"
@@ -170,31 +170,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/speedTextView" />
-
-        <TextView
-            android:id="@+id/accuracyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/accuracy"
-            app:layout_constraintStart_toStartOf="@+id/maxAltitudeValueView"
-            app:layout_constraintTop_toBottomOf="@+id/maxAltitudeValueView" />
-
-        <TextView
-            android:id="@+id/minAccuracyValueView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            tools:hint="0.0m"
-            app:layout_constraintStart_toStartOf="@+id/accuracyTextView"
-            app:layout_constraintTop_toBottomOf="@+id/accuracyTextView" />
-
-        <TextView
-            android:id="@+id/maxAccuracyValueView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:hint="0.0m"
-            app:layout_constraintStart_toStartOf="@+id/minAccuracyValueView"
-            app:layout_constraintTop_toBottomOf="@+id/minAccuracyValueView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

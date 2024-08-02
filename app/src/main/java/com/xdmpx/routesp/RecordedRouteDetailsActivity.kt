@@ -26,7 +26,6 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     private var recordingDate: String = ""
     private lateinit var altitudeArray: DoubleArray
     private var speedsByKM: ArrayList<String> = ArrayList()
-    private lateinit var accuracyArray: FloatArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +50,6 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             val route = routeWithPoints.route
             this@RecordedRouteDetailsActivity.altitudeArray =
                 routeWithPoints.points.map { it.altitude }.toDoubleArray()
-            this@RecordedRouteDetailsActivity.accuracyArray =
-                routeWithPoints.points.map { it.accuracy }.toFloatArray()
 
             recordingDate = DateFormat.getDateTimeInstance().format(route.startDate)
 
@@ -122,7 +119,6 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                 avgSpeedMS,
                 altitudeArray,
                 speedsByKM,
-                accuracyArray
             )
         )
         ft.commit()
