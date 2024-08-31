@@ -1,6 +1,5 @@
 package com.xdmpx.routesp.database.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -19,5 +18,4 @@ data class PointEntity(
     val latitude: Double,
     val longitude: Double,
     val altitude: Double,
-    @ColumnInfo(defaultValue = "0") val accuracy: Float,
 )
