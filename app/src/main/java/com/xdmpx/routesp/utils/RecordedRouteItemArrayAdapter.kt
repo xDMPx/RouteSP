@@ -24,8 +24,8 @@ class RecordedRouteItemArrayAdapter(
             )
         }
 
-        val titleText = convertView?.findViewById(R.id.title) as TextView
-        val subtitleText = convertView.findViewById(R.id.description) as TextView
+        val titleText: TextView = convertView?.findViewById(R.id.title)!!
+        val subtitleText: TextView = convertView.findViewById(R.id.description)
         titleText.text = routeItemsList[position].routeTitleText
         subtitleText.text = routeItemsList[position].routeDetailsText
 

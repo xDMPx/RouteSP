@@ -31,8 +31,8 @@ data class Pause(
 
 class LocationService : Service() {
 
-    val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
-    val NOTIFICATION_ID = 69420
+    private val NOTIFICATION_CHANNEL_ID = "com.xdmpx.routesp"
+    private val NOTIFICATION_ID = 69420
 
     private var recordedGeoPoints: ArrayList<GeoPoint> = ArrayList()
     private var recordedAltitudes: ArrayList<Double> = ArrayList()
