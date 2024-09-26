@@ -32,5 +32,6 @@
     <string name="notification_channel_name">RouteSP LocationService</string>
     <string name="notification_content_title">RouteSP is running</string>
 
+    <string name="settings">Settings</string>
 
 </resources>
