@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "com.xdmpx.routesp.datastore";
+option java_multiple_files = true;
+
+enum ThemeType{
+  SYSTEM = 0;
+  DARK = 1;
+  LIGHT = 2;
+}
+
+message SettingsProto {
+  ThemeType theme = 10;
+}

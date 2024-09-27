@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    id("com.google.protobuf")
 }
 
 android {
@@ -44,6 +45,21 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.28.2"
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.13.1")
@@ -65,5 +81,8 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
 
     implementation("androidx.fragment:fragment-ktx:1.8.3")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("com.google.protobuf:protobuf-kotlin-lite:4.28.2")
 
 }

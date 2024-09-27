@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.xdmpx.routesp.database.RouteDatabase
+import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.utils.RecordedRouteItem
 import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
 import com.xdmpx.routesp.utils.Utils
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var totalDistance: Double = 0.0
     private var totalTime: Long = 0
     private var distanceInKM = true
+    private val scopeIO = CoroutineScope(Dispatchers.IO)
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -53,6 +55,12 @@ class MainActivity : AppCompatActivity() {
     ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        scopeIO.launch {
+            com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)
+            val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
+            Log.d(DEBUG_TAG,"Settings: $theme")
+        }
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
@@ -101,6 +109,14 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         fillRecordedRoutesListView()
+    }
+
+    override fun onStop() {
+        scopeIO.launch {
+            com.xdmpx.routesp.settings.Settings.getInstance().saveSettings(this@MainActivity)
+            Log.d(DEBUG_TAG, "onStop")
+        }
+        super.onStop()
     }
 
     private fun fillRecordedRoutesListView() {
