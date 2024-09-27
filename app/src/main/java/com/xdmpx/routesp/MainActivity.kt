@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.datastore.ThemeType
@@ -55,11 +56,20 @@ class MainActivity : AppCompatActivity() {
     ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         scopeIO.launch {
             com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)
-            val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
-            Log.d(DEBUG_TAG,"Settings: $theme")
+            com.xdmpx.routesp.settings.Settings.getInstance().setTheme(ThemeType.DARK)
+            
+            runOnUiThread{
+                val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
+                when (theme) {
+                    ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    ThemeType.UNRECOGNIZED -> {}
+                }
+            }
+
         }
         super.onCreate(savedInstanceState)
 
