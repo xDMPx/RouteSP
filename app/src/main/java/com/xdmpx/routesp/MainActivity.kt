@@ -59,17 +59,7 @@ class MainActivity : AppCompatActivity() {
         scopeIO.launch {
             com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)
             com.xdmpx.routesp.settings.Settings.getInstance().setTheme(ThemeType.DARK)
-            
-            runOnUiThread{
-                val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
-                when (theme) {
-                    ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    ThemeType.UNRECOGNIZED -> {}
-                }
-            }
-
+            syncThemeWithSettings()
         }
         super.onCreate(savedInstanceState)
 
@@ -94,6 +84,18 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+    }
+
+    private fun syncThemeWithSettings() {
+        runOnUiThread {
+            val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
+            when (theme) {
+                ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                ThemeType.UNRECOGNIZED -> {}
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
