@@ -18,4 +18,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.xdmpx.routesp.ui.ThemeSelectorSetting
+        android:id="@+id/themeSelectorSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
