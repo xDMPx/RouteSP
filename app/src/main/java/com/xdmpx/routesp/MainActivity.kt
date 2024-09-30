@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         scopeIO.launch {
             com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)
-            com.xdmpx.routesp.settings.Settings.getInstance().setTheme(ThemeType.DARK)
             syncThemeWithSettings()
         }
         super.onCreate(savedInstanceState)
