@@ -1,5 +1,6 @@
 package com.xdmpx.routesp.ui
 
+import android.app.Dialog
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ class ThemeSelectorSetting : ConstraintLayout {
         addView(view)
 
         updateThemeSelectorText(view)
+        view.setOnClickListener { onClick() }
 
         set.clone(this)
         set.match(view, this)
@@ -40,6 +42,14 @@ class ThemeSelectorSetting : ConstraintLayout {
             ThemeType.SYSTEM -> resources.getString(R.string.settings_theme_system)
             ThemeType.UNRECOGNIZED -> ""
         }
+    }
+
+    private fun onClick() {
+        val dialog = Dialog(context)
+        dialog.setContentView(R.layout.theme_selector_dialog)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialog.show()
     }
 
     private fun ConstraintSet.match(view: View, parentView: View) {
