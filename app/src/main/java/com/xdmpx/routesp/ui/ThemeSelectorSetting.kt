@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +29,7 @@ class ThemeSelectorSetting : ConstraintLayout {
 
     private var onThemeUpdate: () -> Unit = {}
 
-    public fun setOnThemeUpdate(onThemeUpdate: () -> Unit) {
+    fun setOnThemeUpdate(onThemeUpdate: () -> Unit) {
         this@ThemeSelectorSetting.onThemeUpdate = onThemeUpdate
     }
 
@@ -39,6 +40,7 @@ class ThemeSelectorSetting : ConstraintLayout {
         addView(view)
 
         updateThemeSelectorText(view)
+        updateThemeSelectorIcon(view)
         view.setOnClickListener { onClick(view) }
 
         set.clone(this)
@@ -53,6 +55,20 @@ class ThemeSelectorSetting : ConstraintLayout {
             ThemeType.SYSTEM -> resources.getString(R.string.settings_theme_system)
             ThemeType.UNRECOGNIZED -> ""
         }
+    }
+
+    private fun updateThemeSelectorIcon(view: View) {
+        val theme = Settings.getInstance().settingsState.value.theme
+        val image = when (theme) {
+            ThemeType.LIGHT -> R.drawable.rounded_light_mode_24
+            ThemeType.DARK -> R.drawable.rounded_dark_mode_24
+            ThemeType.SYSTEM -> R.drawable.rounded_brightness_auto_24
+            ThemeType.UNRECOGNIZED -> R.drawable.rounded_brightness_auto_24
+        }
+
+        val themeSelectorSettingIcon = view.findViewById<ImageView>(R.id.themeSelectorSettingIcon)
+        themeSelectorSettingIcon.setImageResource(image)
+        themeSelectorSettingIcon.setColorFilter(view.findViewById<TextView>(R.id.themeSelectorSettingValue).currentTextColor)
     }
 
     private fun onClick(view: View) {
@@ -85,6 +101,7 @@ class ThemeSelectorSetting : ConstraintLayout {
                 onThemeUpdate()
             }
             updateThemeSelectorText(view)
+            updateThemeSelectorIcon(view)
 
             dialog.dismiss()
         }
