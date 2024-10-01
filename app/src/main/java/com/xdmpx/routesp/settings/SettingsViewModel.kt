@@ -17,6 +17,7 @@ val Context.settingsDataStore: DataStore<SettingsProto> by dataStore(
 )
 
 data class SettingsState(
+    val loaded: Boolean = false,
     val theme: ThemeType = ThemeType.SYSTEM,
 )
 
@@ -35,6 +36,7 @@ class SettingsViewModel : ViewModel() {
         val settingsData = context.settingsDataStore.data.catch { }.first()
         _settingsState.value.let {
             _settingsState.value = it.copy(
+                loaded = true,
                 theme = settingsData.theme,
             )
         }

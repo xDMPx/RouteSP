@@ -57,10 +57,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         scopeIO.launch {
-            com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)
-            syncThemeWithSettings()
+            if (!com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.loaded) {
+                com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)
+                runOnUiThread {
+                    recreate()
+                }
+            }
         }
         super.onCreate(savedInstanceState)
+
+        syncThemeWithSettings()
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.mainToolbar))
