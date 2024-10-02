@@ -30,6 +30,7 @@ object SettingsSerializer : Serializer<SettingsProto> {
     override val defaultValue: SettingsProto =
         SettingsProto.getDefaultInstance().toBuilder().apply {
             theme = ThemeType.SYSTEM
+            usePureDark = false
         }.build()
 
     override suspend fun readFrom(input: InputStream): SettingsProto {

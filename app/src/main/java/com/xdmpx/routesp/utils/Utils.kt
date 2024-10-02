@@ -2,6 +2,7 @@ package com.xdmpx.routesp.utils
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.xdmpx.routesp.R
 import com.xdmpx.routesp.database.entities.PauseEntity
 import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.services.Pause
@@ -87,8 +88,13 @@ object Utils {
     }
 
     fun syncThemeWithSettings(activity: AppCompatActivity) {
+        val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
+        val usePureDark =
+            com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.usePureDark
+        if ((theme == ThemeType.DARK || (theme == ThemeType.SYSTEM && activity.resources.configuration.isNightModeActive)) && usePureDark) {
+            activity.setTheme(R.style.Base_Theme_RouteSP_PureDark)
+        }
         activity.runOnUiThread {
-            val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
             when (theme) {
                 ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)

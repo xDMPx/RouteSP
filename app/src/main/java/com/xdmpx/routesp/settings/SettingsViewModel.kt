@@ -19,6 +19,7 @@ val Context.settingsDataStore: DataStore<SettingsProto> by dataStore(
 data class SettingsState(
     val loaded: Boolean = false,
     val theme: ThemeType = ThemeType.SYSTEM,
+    val usePureDark: Boolean = false,
 )
 
 class SettingsViewModel : ViewModel() {
@@ -32,12 +33,19 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun toggleUsePureDark() {
+        _settingsState.value.let {
+            _settingsState.value = it.copy(usePureDark = !it.usePureDark)
+        }
+    }
+
     suspend fun loadSettings(context: Context) {
         val settingsData = context.settingsDataStore.data.catch { }.first()
         _settingsState.value.let {
             _settingsState.value = it.copy(
                 loaded = true,
                 theme = settingsData.theme,
+                usePureDark = settingsData.usePureDark,
             )
         }
     }
@@ -46,6 +54,7 @@ class SettingsViewModel : ViewModel() {
         context.settingsDataStore.updateData {
             it.toBuilder().apply {
                 theme = this@SettingsViewModel._settingsState.value.theme
+                usePureDark = this@SettingsViewModel._settingsState.value.usePureDark
             }.build()
         }
     }
