@@ -1,6 +1,9 @@
 package com.xdmpx.routesp.utils
 
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.xdmpx.routesp.database.entities.PauseEntity
+import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.services.Pause
 import java.util.Date
 
@@ -81,6 +84,18 @@ object Utils {
         }
 
         return speedText
+    }
+
+    fun syncThemeWithSettings(activity: AppCompatActivity) {
+        activity.runOnUiThread {
+            val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
+            when (theme) {
+                ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                ThemeType.UNRECOGNIZED -> {}
+            }
+        }
     }
 
 }

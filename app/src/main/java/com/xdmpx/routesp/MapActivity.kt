@@ -85,6 +85,9 @@ class MapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Utils.syncThemeWithSettings(this@MapActivity)
+
         setContentView(R.layout.activity_map)
 
         Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID

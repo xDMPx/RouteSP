@@ -5,22 +5,21 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.ui.ThemeSelectorSetting
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.xdmpx.routesp.utils.Utils
 
 class SettingsActivity : AppCompatActivity() {
 
     private val DEBUG_TAG = "SettingsActivity"
-    private val scopeIO = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Utils.syncThemeWithSettings(this@SettingsActivity)
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
@@ -30,16 +29,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val themeSelectorSetting = findViewById<ThemeSelectorSetting>(R.id.themeSelectorSetting)
         themeSelectorSetting.setOnThemeUpdate {
-            runOnUiThread {
-                val theme =
-                    com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
-                when (theme) {
-                    ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    ThemeType.UNRECOGNIZED -> {}
-                }
-            }
+            Utils.syncThemeWithSettings(this@SettingsActivity)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

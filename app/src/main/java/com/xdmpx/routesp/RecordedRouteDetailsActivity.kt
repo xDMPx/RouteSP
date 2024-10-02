@@ -41,6 +41,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             showRecordedRouteMapFragment()
         }
 
+        Utils.syncThemeWithSettings(this@RecordedRouteDetailsActivity)
+
         setContentView(R.layout.activity_recorded_route_details)
 
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
