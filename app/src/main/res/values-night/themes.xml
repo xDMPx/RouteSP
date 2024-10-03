@@ -2,7 +2,9 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.RouteSP" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/Purple80</item>
+        <item name="colorSecondary">@color/PurpleGrey80</item>
+        <item name="colorTertiary">@color/Pink80</item>
     </style>
 
     <style name="Base.Theme.RouteSP.PureDark" parent="Base.Theme.RouteSP">
