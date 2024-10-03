@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Setting">
+        <attr name="setting_text" format="string" />
+        <attr name="setting_icon" format="reference" />
+    </declare-styleable>
+
+</resources>

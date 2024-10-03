@@ -2,6 +2,7 @@ package com.xdmpx.routesp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.LinearLayout
@@ -13,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.xdmpx.routesp.ui.ThemeSelectorSetting
 import com.xdmpx.routesp.utils.Utils
 import com.xdmpx.routesp.settings.Settings
+import com.xdmpx.routesp.ui.Setting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,13 +41,13 @@ class SettingsActivity : AppCompatActivity() {
             Utils.syncThemeWithSettings(this@SettingsActivity)
         }
 
-        val usePureDarkSetting = findViewById<LinearLayout>(R.id.usePureDarkSetting)
+        val usePureDarkSetting = findViewById<Setting>(R.id.usePureDarkSetting)
         val usePureDark = Settings.getInstance().settingsState.value.usePureDark
-        usePureDarkSetting.findViewById<CheckBox>(R.id.checkBox).isChecked = usePureDark
+        usePureDarkSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = usePureDark
         usePureDarkSetting.setOnClickListener {
             Settings.getInstance().toggleUsePureDark()
             val usePureDark = Settings.getInstance().settingsState.value.usePureDark
-            usePureDarkSetting.findViewById<CheckBox>(R.id.checkBox).isChecked = usePureDark
+            usePureDarkSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = usePureDark
             Utils.syncThemeWithSettings(this@SettingsActivity)
             recreate()
         }
