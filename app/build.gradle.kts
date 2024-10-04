@@ -81,7 +81,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
-    implementation("androidx.fragment:fragment-ktx:1.8.3")
+    implementation("androidx.fragment:fragment-ktx:1.8.4")
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("com.google.protobuf:protobuf-kotlin-lite:4.28.2")
