@@ -35,4 +35,14 @@
         app:setting_icon="@drawable/rounded_invert_colors_24"
         app:setting_text="@string/settings_pure_dark" />
 
+    <com.xdmpx.routesp.ui.SettingButton
+        android:id="@+id/deleteAllSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:layout_constraintTop_toBottomOf="@+id/usePureDarkSetting"
+        app:setting_icon="@drawable/rounded_delete_forever_24"
+        app:setting_text="@string/settings_delete_all" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

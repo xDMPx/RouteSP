@@ -2,22 +2,24 @@ package com.xdmpx.routesp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
+import android.view.animation.AlphaAnimation
 import android.widget.CheckBox
-import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.xdmpx.routesp.ui.ThemeSelectorSetting
-import com.xdmpx.routesp.utils.Utils
+import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.ui.Setting
+import com.xdmpx.routesp.ui.SettingButton
+import com.xdmpx.routesp.ui.ThemeSelectorSetting
+import com.xdmpx.routesp.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -50,6 +52,20 @@ class SettingsActivity : AppCompatActivity() {
             usePureDarkSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = usePureDark
             Utils.syncThemeWithSettings(this@SettingsActivity)
             recreate()
+        }
+
+        val buttonClick = AlphaAnimation(1f, 0.8f)
+
+        val deleteAllSetting = findViewById<SettingButton>(R.id.deleteAllSetting)
+        deleteAllSetting.isClickable = true
+        deleteAllSetting.setOnClickListener {
+           it.startAnimation(buttonClick)
+            scopeIO.launch {
+                val routeDBDao = RouteDatabase.getInstance(this@SettingsActivity).routeDatabaseDao
+                routeDBDao.getRoutes().forEach { route ->
+                    routeDBDao.deleteRoute(route)
+                }
+            }
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.xdmpx.routesp.R
 
-class Setting : ConstraintLayout {
+class SettingButton : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.Setting)
@@ -32,8 +32,9 @@ class Setting : ConstraintLayout {
         attributes.recycle()
     }
 
+
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.setting, this, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.setting_button, this, false)
         val set = ConstraintSet()
         addView(view)
 
