@@ -40,4 +40,5 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_delete_all">Delete all recorded routes</string>
+    <string name="confirmation_delete_all">Are you sure you want to delete all recorded routes? This action cannot be undone.</string>
 </resources>

@@ -16,6 +16,7 @@ import com.xdmpx.routesp.ui.Setting
 import com.xdmpx.routesp.ui.SettingButton
 import com.xdmpx.routesp.ui.ThemeSelectorSetting
 import com.xdmpx.routesp.utils.Utils
+import com.xdmpx.routesp.utils.Utils.showAlertDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,11 +60,18 @@ class SettingsActivity : AppCompatActivity() {
         val deleteAllSetting = findViewById<SettingButton>(R.id.deleteAllSetting)
         deleteAllSetting.isClickable = true
         deleteAllSetting.setOnClickListener {
-           it.startAnimation(buttonClick)
-            scopeIO.launch {
-                val routeDBDao = RouteDatabase.getInstance(this@SettingsActivity).routeDatabaseDao
-                routeDBDao.getRoutes().forEach { route ->
-                    routeDBDao.deleteRoute(route)
+            it.startAnimation(buttonClick)
+            showAlertDialog(this@SettingsActivity,
+                getString(R.string.settings_delete_all),
+                getString(R.string.confirmation_delete_all),
+                getString(R.string.delete),
+                onDismissListener = {}) { _, _ ->
+                scopeIO.launch {
+                    val routeDBDao =
+                        RouteDatabase.getInstance(this@SettingsActivity).routeDatabaseDao
+                    routeDBDao.getRoutes().forEach { route ->
+                        routeDBDao.deleteRoute(route)
+                    }
                 }
             }
         }

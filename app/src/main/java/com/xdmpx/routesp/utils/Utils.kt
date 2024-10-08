@@ -1,5 +1,9 @@
 package com.xdmpx.routesp.utils
 
+import android.content.Context
+import android.content.DialogInterface
+import android.content.DialogInterface.OnDismissListener
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.xdmpx.routesp.R
@@ -102,6 +106,22 @@ object Utils {
                 ThemeType.UNRECOGNIZED -> {}
             }
         }
+    }
+
+   fun showAlertDialog(
+        context: Context,
+        title: String,
+        message: String,
+        buttonText: String,
+        onDismissListener: OnDismissListener,
+        onClickListener: DialogInterface.OnClickListener
+    ) {
+        val alertDialog = AlertDialog.Builder(context).create()
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+        alertDialog.setOnDismissListener(onDismissListener)
+        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText, onClickListener)
+        alertDialog.show()
     }
 
 }

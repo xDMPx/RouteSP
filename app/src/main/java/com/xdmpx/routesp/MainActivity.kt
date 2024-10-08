@@ -31,6 +31,7 @@ import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.utils.RecordedRouteItem
 import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
 import com.xdmpx.routesp.utils.Utils
+import com.xdmpx.routesp.utils.Utils.showAlertDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -318,22 +319,6 @@ class MainActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
-    }
-
-    private fun showAlertDialog(
-        context: Context,
-        title: String,
-        message: String,
-        buttonText: String,
-        onDismissListener: OnDismissListener,
-        onClickListener: DialogInterface.OnClickListener
-    ) {
-        val alertDialog = AlertDialog.Builder(context).create()
-        alertDialog.setTitle(title)
-        alertDialog.setMessage(message)
-        alertDialog.setOnDismissListener(onDismissListener)
-        alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText, onClickListener)
-        alertDialog.show()
     }
 
     fun onDistanceClick(view: View) {
