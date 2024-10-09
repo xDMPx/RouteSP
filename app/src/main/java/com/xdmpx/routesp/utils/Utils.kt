@@ -3,6 +3,7 @@ package com.xdmpx.routesp.utils
 import android.content.Context
 import android.content.DialogInterface
 import android.content.DialogInterface.OnDismissListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -106,6 +107,12 @@ object Utils {
                 ThemeType.UNRECOGNIZED -> {}
             }
         }
+    }
+
+    fun ShortToast(context: Context, text: CharSequence) {
+        Toast.makeText(
+            context, text, Toast.LENGTH_SHORT
+        ).show()
     }
 
    fun showAlertDialog(

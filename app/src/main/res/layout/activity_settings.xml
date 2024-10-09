@@ -45,4 +45,16 @@
         app:setting_icon="@drawable/rounded_delete_forever_24"
         app:setting_text="@string/settings_delete_all" />
 
+    <com.xdmpx.routesp.ui.SettingButton
+        android:id="@+id/exportSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:layout_constraintTop_toBottomOf="@+id/deleteAllSetting"
+        app:setting_icon="@drawable/rounded_file_save_24"
+        app:setting_text="@string/settings_export_json" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

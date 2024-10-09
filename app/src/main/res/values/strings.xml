@@ -41,4 +41,8 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_delete_all">Delete all recorded routes</string>
     <string name="confirmation_delete_all">Are you sure you want to delete all recorded routes? This action cannot be undone.</string>
+    <string name="settings_export_json">Export all recorded routes to a JSON file</string>
+
+    <string name="export_successful">Counters exported</string>
+    <string name="export_failed">Error exporting data</string>
 </resources>
