@@ -12,6 +12,10 @@ import com.xdmpx.routesp.database.entities.PauseEntity
 import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.services.Pause
 import java.util.Date
+import org.json.JSONArray
+import org.json.JSONObject
+import com.xdmpx.routesp.database.RouteDatabase
+import android.net.Uri
 
 object Utils {
 
@@ -109,13 +113,78 @@ object Utils {
         }
     }
 
+    suspend fun routesDataToJsonArray(context: Context): JSONArray {
+        val routeDBDao = RouteDatabase.getInstance(context).routeDatabaseDao
+        val routesIDs = routeDBDao.getRoutes().map { route -> route.id }
+        val jsonArray = JSONArray(routesIDs.map { routeID ->
+            val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)
+
+            val points = routeWithPoints?.points
+            val jsonPoints = points?.map { point ->
+                val jsonObject = JSONObject()
+                jsonObject.put("routeID", point.routeID)
+                jsonObject.put("latitude", point.latitude)
+                jsonObject.put("longitude", point.longitude)
+                jsonObject.put("altitude", point.altitude)
+
+                jsonObject
+            }
+
+            val kilometerPoints = routeDBDao.getRouteWithKilometerPoints(routeID)?.points
+            val jsonKilometerPoints = kilometerPoints?.map { point ->
+                val jsonObject = JSONObject()
+                jsonObject.put("routeID", point.routeID)
+                jsonObject.put("date", point.date)
+
+                jsonObject
+            }
+
+            val pauses = routeDBDao.getRouteWithPauses(routeID)?.pauses
+            val jsonPauses = pauses?.map { pause ->
+                val jsonObject = JSONObject()
+                jsonObject.put("routeID", pause.routeID)
+                jsonObject.put("pauseStart", pause.pauseStart)
+                jsonObject.put("pauseEnd", pause.pauseEnd)
+
+                jsonObject
+            }
+
+
+            val route = routeWithPoints?.route
+            val jsonObject = JSONObject()
+            jsonObject.put("id", route?.id)
+            jsonObject.put("distanceInM", route?.distanceInM)
+            jsonObject.put("startDate", route?.startDate)
+            jsonObject.put("endDate", route?.endDate)
+            jsonObject.put("points", JSONArray(jsonPoints))
+            jsonObject.put("kilometerPoints", JSONArray(jsonKilometerPoints))
+            jsonObject.put("pauses", JSONArray(jsonPauses))
+
+            jsonObject
+        })
+
+        return jsonArray
+    }
+
+    suspend fun exportToJSON(context: Context, uri: Uri): Boolean {
+        val jsonArray = Utils.routesDataToJsonArray(context)
+        return try {
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                outputStream.write(jsonArray.toString().toByteArray())
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     fun ShortToast(context: Context, text: CharSequence) {
         Toast.makeText(
             context, text, Toast.LENGTH_SHORT
         ).show()
     }
 
-   fun showAlertDialog(
+    fun showAlertDialog(
         context: Context,
         title: String,
         message: String,

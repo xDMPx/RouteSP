@@ -23,8 +23,6 @@ import com.xdmpx.routesp.utils.Utils.showAlertDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
 import java.time.LocalDate
 
 class SettingsActivity : AppCompatActivity() {
@@ -130,7 +128,7 @@ class SettingsActivity : AppCompatActivity() {
         if (uri == null) return
 
         scopeIO.launch {
-            if (exportToJSON(uri)) {
+            if (Utils.exportToJSON(this@SettingsActivity, uri)) {
                 runOnUiThread {
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.export_successful)
@@ -143,71 +141,6 @@ class SettingsActivity : AppCompatActivity() {
                     )
                 }
             }
-        }
-    }
-
-    private suspend fun routesDataToJsonArray(): JSONArray {
-        val routeDBDao = RouteDatabase.getInstance(this@SettingsActivity).routeDatabaseDao
-        val routesIDs = routeDBDao.getRoutes().map { route -> route.id }
-        val jsonArray = JSONArray(routesIDs.map { routeID ->
-            val routeWithPoints = routeDBDao.getRouteWithPoints(routeID)
-
-            val points = routeWithPoints?.points
-            val jsonPoints = points?.map { point ->
-                val jsonObject = JSONObject()
-                jsonObject.put("routeID", point.routeID)
-                jsonObject.put("latitude", point.latitude)
-                jsonObject.put("longitude", point.longitude)
-                jsonObject.put("altitude", point.altitude)
-
-                jsonObject
-            }
-
-            val kilometerPoints = routeDBDao.getRouteWithKilometerPoints(routeID)?.points
-            val jsonKilometerPoints = kilometerPoints?.map { point ->
-                val jsonObject = JSONObject()
-                jsonObject.put("routeID", point.routeID)
-                jsonObject.put("date", point.date)
-
-                jsonObject
-            }
-
-            val pauses = routeDBDao.getRouteWithPauses(routeID)?.pauses
-            val jsonPauses = pauses?.map { pause ->
-                val jsonObject = JSONObject()
-                jsonObject.put("routeID", pause.routeID)
-                jsonObject.put("pauseStart", pause.pauseStart)
-                jsonObject.put("pauseEnd", pause.pauseEnd)
-
-                jsonObject
-            }
-
-
-            val route = routeWithPoints?.route
-            val jsonObject = JSONObject()
-            jsonObject.put("id", route?.id)
-            jsonObject.put("distanceInM", route?.distanceInM)
-            jsonObject.put("startDate", route?.startDate)
-            jsonObject.put("endDate", route?.endDate)
-            jsonObject.put("points", JSONArray(jsonPoints))
-            jsonObject.put("kilometerPoints", JSONArray(jsonKilometerPoints))
-            jsonObject.put("pauses", JSONArray(jsonPauses))
-
-            jsonObject
-        })
-
-        return jsonArray
-    }
-
-    private suspend fun exportToJSON(uri: Uri): Boolean {
-        val jsonArray = routesDataToJsonArray()
-        return try {
-            this@SettingsActivity.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                outputStream.write(jsonArray.toString().toByteArray())
-            }
-            true
-        } catch (e: Exception) {
-            false
         }
     }
 
