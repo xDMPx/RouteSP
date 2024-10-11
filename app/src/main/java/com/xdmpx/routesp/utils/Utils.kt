@@ -20,10 +20,9 @@ import org.json.JSONObject
 import com.xdmpx.routesp.database.RouteDatabase
 import android.net.Uri
 import android.util.Log
+import com.xdmpx.routesp.database.entities.Converters
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 object Utils {
 
@@ -142,7 +141,7 @@ object Utils {
             val jsonKilometerPoints = kilometerPoints?.map { point ->
                 val jsonObject = JSONObject()
                 jsonObject.put("routeID", point.routeID)
-                jsonObject.put("date", point.date)
+                jsonObject.put("date", Converters().dateToTimestamp(point.date))
 
                 jsonObject
             }
@@ -151,19 +150,18 @@ object Utils {
             val jsonPauses = pauses?.map { pause ->
                 val jsonObject = JSONObject()
                 jsonObject.put("routeID", pause.routeID)
-                jsonObject.put("pauseStart", pause.pauseStart)
-                jsonObject.put("pauseEnd", pause.pauseEnd)
+                jsonObject.put("pauseStart", Converters().dateToTimestamp(pause.pauseStart))
+                jsonObject.put("pauseEnd", Converters().dateToTimestamp(pause.pauseEnd))
 
                 jsonObject
             }
-
 
             val route = routeWithPoints?.route
             val jsonObject = JSONObject()
             jsonObject.put("id", route?.id)
             jsonObject.put("distanceInM", route?.distanceInM)
-            jsonObject.put("startDate", route?.startDate)
-            jsonObject.put("endDate", route?.endDate)
+            jsonObject.put("startDate", Converters().dateToTimestamp(route?.startDate))
+            jsonObject.put("endDate", Converters().dateToTimestamp(route?.endDate))
             jsonObject.put("points", JSONArray(jsonPoints))
             jsonObject.put("kilometerPoints", JSONArray(jsonKilometerPoints))
             jsonObject.put("pauses", JSONArray(jsonPauses))
@@ -210,13 +208,10 @@ object Utils {
     private fun kmpointsJSONToKMPointsList(
         lastRouteID: Int, kilometerPointsJSON: JSONArray
     ): List<KilometerPointEntity> {
-        val format = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
         val pointsArray = jsonArrayToJsonObjectArray(kilometerPointsJSON)
         val points = pointsArray.map {
             KilometerPointEntity(
-                0,
-                routeID = lastRouteID,
-                date = format.parse(it.getString("date"))!!
+                0, routeID = lastRouteID, date = Converters().fromTimestamp(it.getLong("date"))!!
             )
         }
 
@@ -226,14 +221,13 @@ object Utils {
     private fun pausesJSONToPausesList(
         lastRouteID: Int, pausesJSON: JSONArray
     ): List<PauseEntity> {
-        val format = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
         val pausesArray = jsonArrayToJsonObjectArray(pausesJSON)
         val pauses = pausesArray.map {
             PauseEntity(
                 0,
                 routeID = lastRouteID,
-                pauseStart = format.parse(it.getString("pauseStart"))!!,
-                pauseEnd = format.parse(it.getString("pauseEnd"))!!
+                pauseStart = Converters().fromTimestamp(it.getLong("pauseStart"))!!,
+                pauseEnd = Converters().fromTimestamp(it.getLong("pauseEnd"))!!
             )
         }
 
@@ -253,10 +247,8 @@ object Utils {
 
                     val distanceInM = routeJSON.getDouble("distanceInM")
 
-                    val format = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
-                    val startDate =
-                        format.parse(routeJSON.getString("startDate"))!!
-                    val endDate = format.parse(routeJSON.getString("endDate"))!!
+                    val startDate = Converters().fromTimestamp(routeJSON.getLong("startDate"))!!
+                    val endDate = Converters().fromTimestamp(routeJSON.getLong("endDate"))!!
 
                     routeDBDao.insertRoute(
                         RouteEntity(
@@ -264,7 +256,6 @@ object Utils {
                         )
                     )
                     val lastRouteID = routeDBDao.getLastRouteID()!!
-
 
                     val pointsArray =
                         pointsJSONToPointsList(lastRouteID, routeJSON.getJSONArray("points"))
