@@ -37,6 +37,14 @@ class SettingsActivity : AppCompatActivity() {
             )
         }
 
+    private val openDocument =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            importFromJSONCallback(
+                uri
+            )
+        }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -92,7 +100,12 @@ class SettingsActivity : AppCompatActivity() {
             val year = date.year
             val month = String.format(null, "%02d", date.monthValue)
             val day = date.dayOfMonth
-            createDocument.launch("apks_export_${year}_${month}_$day.json")
+            createDocument.launch("routesp_export_${year}_${month}_$day.json")
+        }
+
+        val importSetting = findViewById<SettingButton>(R.id.importSetting)
+        importSetting.setOnClickListener {
+            openDocument.launch(arrayOf("application/json"))
         }
 
 
@@ -138,6 +151,26 @@ class SettingsActivity : AppCompatActivity() {
                 runOnUiThread {
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.export_failed)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun importFromJSONCallback(uri: Uri?) {
+        if (uri == null) return
+
+        scopeIO.launch {
+            if (Utils.importFromJSON(this@SettingsActivity, uri)) {
+                runOnUiThread {
+                    ShortToast(
+                        this@SettingsActivity, resources.getString(R.string.import_successful)
+                    )
+                }
+            } else {
+                runOnUiThread {
+                    ShortToast(
+                        this@SettingsActivity, resources.getString(R.string.import_failed)
                     )
                 }
             }

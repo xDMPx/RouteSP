@@ -42,7 +42,12 @@
     <string name="settings_delete_all">Delete all recorded routes</string>
     <string name="confirmation_delete_all">Are you sure you want to delete all recorded routes? This action cannot be undone.</string>
     <string name="settings_export_json">Export all recorded routes to a JSON file</string>
+    <string name="settings_import_json">Import recorded routes from a JSON file</string>
 
-    <string name="export_successful">Counters exported</string>
+
+    <string name="export_successful">Recorded routes exported</string>
     <string name="export_failed">Error exporting data</string>
+    <string name="import_successful">Recorded routes imported</string>
+    <string name="import_failed">Error importing data</string>
+
 </resources>

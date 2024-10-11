@@ -8,7 +8,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.xdmpx.routesp.R
+import com.xdmpx.routesp.database.entities.PointEntity
 import com.xdmpx.routesp.database.entities.PauseEntity
+import com.xdmpx.routesp.database.entities.RouteEntity
+import com.xdmpx.routesp.database.entities.KilometerPointEntity
 import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.services.Pause
 import java.util.Date
@@ -16,6 +19,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import com.xdmpx.routesp.database.RouteDatabase
 import android.net.Uri
+import android.util.Log
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object Utils {
 
@@ -113,7 +121,7 @@ object Utils {
         }
     }
 
-    suspend fun routesDataToJsonArray(context: Context): JSONArray {
+    private suspend fun routesDataToJsonArray(context: Context): JSONArray {
         val routeDBDao = RouteDatabase.getInstance(context).routeDatabaseDao
         val routesIDs = routeDBDao.getRoutes().map { route -> route.id }
         val jsonArray = JSONArray(routesIDs.map { routeID ->
@@ -167,7 +175,7 @@ object Utils {
     }
 
     suspend fun exportToJSON(context: Context, uri: Uri): Boolean {
-        val jsonArray = Utils.routesDataToJsonArray(context)
+        val jsonArray = routesDataToJsonArray(context)
         return try {
             context.contentResolver.openOutputStream(uri)?.use { outputStream ->
                 outputStream.write(jsonArray.toString().toByteArray())
@@ -175,6 +183,113 @@ object Utils {
             true
         } catch (e: Exception) {
             false
+        }
+    }
+
+    private fun jsonArrayToJsonObjectArray(jsonArray: JSONArray): Array<JSONObject> {
+        val points = Array<JSONObject>(jsonArray.length()) { it -> jsonArray.getJSONObject(it) }
+        return points
+    }
+
+    private fun pointsJSONToPointsList(
+        lastRouteID: Int, pointsJSON: JSONArray
+    ): List<PointEntity> {
+        val pointsArray = jsonArrayToJsonObjectArray(pointsJSON)
+        val points = pointsArray.map {
+            PointEntity(
+                routeID = lastRouteID,
+                latitude = it.getDouble("latitude"),
+                longitude = it.getDouble("longitude"),
+                altitude = it.getDouble("altitude")
+            )
+        }
+
+        return points
+    }
+
+    private fun kmpointsJSONToKMPointsList(
+        lastRouteID: Int, kilometerPointsJSON: JSONArray
+    ): List<KilometerPointEntity> {
+        val format = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
+        val pointsArray = jsonArrayToJsonObjectArray(kilometerPointsJSON)
+        val points = pointsArray.map {
+            KilometerPointEntity(
+                0,
+                routeID = lastRouteID,
+                date = format.parse(it.getString("date"))!!
+            )
+        }
+
+        return points
+    }
+
+    private fun pausesJSONToPausesList(
+        lastRouteID: Int, pausesJSON: JSONArray
+    ): List<PauseEntity> {
+        val format = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
+        val pausesArray = jsonArrayToJsonObjectArray(pausesJSON)
+        val pauses = pausesArray.map {
+            PauseEntity(
+                0,
+                routeID = lastRouteID,
+                pauseStart = format.parse(it.getString("pauseStart"))!!,
+                pauseEnd = format.parse(it.getString("pauseEnd"))!!
+            )
+        }
+
+        return pauses
+    }
+
+    suspend fun importFromJSON(context: Context, uri: Uri): Boolean {
+        try {
+            val routeDBDao = RouteDatabase.getInstance(context).routeDatabaseDao
+            context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+                val importedJson = JSONArray(bufferedReader.readText())
+                inputStream.close()
+
+                for (i in 0..<importedJson.length()) {
+                    val routeJSON = importedJson.getJSONObject(i)
+
+                    val distanceInM = routeJSON.getDouble("distanceInM")
+
+                    val format = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.ENGLISH)
+                    val startDate =
+                        format.parse(routeJSON.getString("startDate"))!!
+                    val endDate = format.parse(routeJSON.getString("endDate"))!!
+
+                    routeDBDao.insertRoute(
+                        RouteEntity(
+                            distanceInM = distanceInM, startDate = startDate, endDate = endDate
+                        )
+                    )
+                    val lastRouteID = routeDBDao.getLastRouteID()!!
+
+
+                    val pointsArray =
+                        pointsJSONToPointsList(lastRouteID, routeJSON.getJSONArray("points"))
+                    pointsArray.forEach {
+                        routeDBDao.insertPoint(it)
+                    }
+
+                    val kilometerPointsArray = kmpointsJSONToKMPointsList(
+                        lastRouteID, routeJSON.getJSONArray("kilometerPoints")
+                    )
+                    kilometerPointsArray.forEach {
+                        routeDBDao.insertKilometerPoint(it)
+                    }
+
+                    val pausesArray =
+                        pausesJSONToPausesList(lastRouteID, routeJSON.getJSONArray("pauses"))
+                    pausesArray.forEach {
+                        routeDBDao.insertPause(it)
+                    }
+                }
+            }
+            return true
+        } catch (e: Exception) {
+            Log.e("SettingsActivity", "Error importing JSON: ${e.message}", e)
+            return false
         }
     }
 
