@@ -4,8 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +31,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private val DEBUG_TAG = "SettingsActivity"
     private val scopeIO = CoroutineScope(Dispatchers.IO)
+    private lateinit var progressBarLinearLayout: LinearLayout
 
     private val createDocument =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
@@ -56,6 +59,9 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(findViewById<Toolbar>(R.id.materialToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        progressBarLinearLayout =
+            this@SettingsActivity.findViewById<LinearLayout>(R.id.progressBarLinearLayout)
 
         val themeSelectorSetting = findViewById<ThemeSelectorSetting>(R.id.themeSelectorSetting)
         themeSelectorSetting.setOnThemeUpdate {
@@ -139,16 +145,19 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun exportToJSONCallback(uri: Uri?) {
         if (uri == null) return
+        progressBarLinearLayout.visibility = View.VISIBLE
 
         scopeIO.launch {
             if (Utils.exportToJSON(this@SettingsActivity, uri)) {
                 runOnUiThread {
+                    progressBarLinearLayout.visibility = View.GONE
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.export_successful)
                     )
                 }
             } else {
                 runOnUiThread {
+                    progressBarLinearLayout.visibility = View.GONE
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.export_failed)
                     )
@@ -159,16 +168,19 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun importFromJSONCallback(uri: Uri?) {
         if (uri == null) return
+        progressBarLinearLayout.visibility = View.VISIBLE
 
         scopeIO.launch {
             if (Utils.importFromJSON(this@SettingsActivity, uri)) {
                 runOnUiThread {
+                    progressBarLinearLayout.visibility = View.GONE
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.import_successful)
                     )
                 }
             } else {
                 runOnUiThread {
+                    progressBarLinearLayout.visibility = View.GONE
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.import_failed)
                     )
