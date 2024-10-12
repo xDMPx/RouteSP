@@ -8,6 +8,7 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -145,12 +146,14 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun exportToJSONCallback(uri: Uri?) {
         if (uri == null) return
+        val callback = this@SettingsActivity.onBackPressedDispatcher.addCallback {}
         progressBarLinearLayout.visibility = View.VISIBLE
 
         scopeIO.launch {
             if (Utils.exportToJSON(this@SettingsActivity, uri)) {
                 runOnUiThread {
                     progressBarLinearLayout.visibility = View.GONE
+                    callback.remove()
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.export_successful)
                     )
@@ -158,6 +161,7 @@ class SettingsActivity : AppCompatActivity() {
             } else {
                 runOnUiThread {
                     progressBarLinearLayout.visibility = View.GONE
+                    callback.remove()
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.export_failed)
                     )
@@ -168,12 +172,14 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun importFromJSONCallback(uri: Uri?) {
         if (uri == null) return
+        val callback = this@SettingsActivity.onBackPressedDispatcher.addCallback {}
         progressBarLinearLayout.visibility = View.VISIBLE
 
         scopeIO.launch {
             if (Utils.importFromJSON(this@SettingsActivity, uri)) {
                 runOnUiThread {
                     progressBarLinearLayout.visibility = View.GONE
+                    callback.remove()
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.import_successful)
                     )
@@ -181,6 +187,7 @@ class SettingsActivity : AppCompatActivity() {
             } else {
                 runOnUiThread {
                     progressBarLinearLayout.visibility = View.GONE
+                    callback.remove()
                     ShortToast(
                         this@SettingsActivity, resources.getString(R.string.import_failed)
                     )
