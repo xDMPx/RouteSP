@@ -3,11 +3,13 @@ package com.xdmpx.routesp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -174,9 +176,15 @@ class SettingsActivity : AppCompatActivity() {
         if (uri == null) return
         val callback = this@SettingsActivity.onBackPressedDispatcher.addCallback {}
         progressBarLinearLayout.visibility = View.VISIBLE
+        val textViewProgress = progressBarLinearLayout.getChildAt(1) as TextView
+        textViewProgress.text = resources.getString(R.string.initializing)
 
         scopeIO.launch {
-            if (Utils.importFromJSON(this@SettingsActivity, uri)) {
+            if (Utils.importFromJSON(this@SettingsActivity, uri) { p ->
+                    runOnUiThread {
+                        textViewProgress.text = p
+                    }
+                }) {
                 runOnUiThread {
                     progressBarLinearLayout.visibility = View.GONE
                     callback.remove()

@@ -234,7 +234,9 @@ object Utils {
         return pauses
     }
 
-    suspend fun importFromJSON(context: Context, uri: Uri): Boolean {
+    suspend fun importFromJSON(
+        context: Context, uri: Uri, progressCallback: (progressStatus: String) -> Unit
+    ): Boolean {
         try {
             val routeDBDao = RouteDatabase.getInstance(context).routeDatabaseDao
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -270,6 +272,7 @@ object Utils {
                         pausesJSONToPausesList(lastRouteID, routeJSON.getJSONArray("pauses"))
                     routeDBDao.insertPauses(pausesArray)
 
+                    progressCallback.invoke("${i + 1}/${importedJson.length()}")
                 }
             }
             return true

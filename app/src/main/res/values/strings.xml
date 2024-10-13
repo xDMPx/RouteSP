@@ -49,5 +49,6 @@
     <string name="export_failed">Error exporting data</string>
     <string name="import_successful">Recorded routes imported</string>
     <string name="import_failed">Error importing data</string>
+    <string name="initializing">Initializing…</string>
 
 </resources>
