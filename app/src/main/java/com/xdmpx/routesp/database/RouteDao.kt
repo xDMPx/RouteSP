@@ -19,10 +19,22 @@ interface RouteDao {
     suspend fun insertPoint(point: PointEntity)
 
     @Insert
+    @Transaction
+    suspend fun insertPoints(points: List<PointEntity>)
+
+    @Insert
     suspend fun insertPause(pause: PauseEntity)
 
     @Insert
+    @Transaction
+    suspend fun insertPauses(pauses: List<PauseEntity>)
+
+    @Insert
     suspend fun insertKilometerPoint(kPoint: KilometerPointEntity)
+
+    @Insert
+    @Transaction
+    suspend fun insertKilometerPoints(kPoints: List<KilometerPointEntity>)
 
     @Query("SELECT * FROM RouteEntity")
     suspend fun getRoutes(): List<RouteEntity>

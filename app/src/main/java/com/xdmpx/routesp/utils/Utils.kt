@@ -259,22 +259,17 @@ object Utils {
 
                     val pointsArray =
                         pointsJSONToPointsList(lastRouteID, routeJSON.getJSONArray("points"))
-                    pointsArray.forEach {
-                        routeDBDao.insertPoint(it)
-                    }
+                    routeDBDao.insertPoints(pointsArray)
 
                     val kilometerPointsArray = kmpointsJSONToKMPointsList(
                         lastRouteID, routeJSON.getJSONArray("kilometerPoints")
                     )
-                    kilometerPointsArray.forEach {
-                        routeDBDao.insertKilometerPoint(it)
-                    }
+                    routeDBDao.insertKilometerPoints(kilometerPointsArray)
 
                     val pausesArray =
                         pausesJSONToPausesList(lastRouteID, routeJSON.getJSONArray("pauses"))
-                    pausesArray.forEach {
-                        routeDBDao.insertPause(it)
-                    }
+                    routeDBDao.insertPauses(pausesArray)
+
                 }
             }
             return true
