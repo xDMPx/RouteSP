@@ -348,33 +348,30 @@ class MapActivity : AppCompatActivity() {
             )
             val lastRouteID = routeDBDao.getLastRouteID()
             if (lastRouteID != null) {
-                recordedGeoPoints.zip(recordedAltitudes).forEachIndexed { i, (it, altitude) ->
-                    routeDBDao.insertPoint(
-                        PointEntity(
-                            routeID = lastRouteID,
-                            latitude = it.latitude,
-                            longitude = it.longitude,
-                            altitude = altitude,
-                        )
+                val points = recordedGeoPoints.zip(recordedAltitudes).map { (it, altitude) ->
+                    PointEntity(
+                        routeID = lastRouteID,
+                        latitude = it.latitude,
+                        longitude = it.longitude,
+                        altitude = altitude,
                     )
-                    val kilometerPointIndexes = recordedKilometerPoints.map { it.pointIndex }
-                    val kmIndex = kilometerPointIndexes.indexOf(i)
-                    if (kmIndex != -1) {
-                        routeDBDao.insertKilometerPoint(
-                            KilometerPointEntity(
-                                0, lastRouteID, recordedKilometerPoints[kmIndex].date
-                            )
-                        )
-                    }
                 }
 
-                for (pause in pauses) {
-                    routeDBDao.insertPause(
-                        PauseEntity(
-                            0, lastRouteID, pause.startDate, pause.endDate
-                        )
+                routeDBDao.insertPoints(points)
+
+                val kmPoints = recordedKilometerPoints.map {
+                    KilometerPointEntity(
+                        0, lastRouteID, it.date
                     )
                 }
+                routeDBDao.insertKilometerPoints(kmPoints)
+
+                val pauses = pauses.map {
+                    PauseEntity(
+                        0, lastRouteID, it.startDate, it.endDate
+                    )
+                }
+                routeDBDao.insertPauses(pauses)
 
                 Log.d(DEBUG_TAG, "Saved ${recordedGeoPoints.size}")
                 Log.d(DEBUG_TAG, "Saved Pauses: ${pauses.size}")
