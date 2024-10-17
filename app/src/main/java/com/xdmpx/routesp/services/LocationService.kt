@@ -38,6 +38,7 @@ class LocationService : Service() {
     private var recordedAltitudes: ArrayList<Double> = ArrayList()
     private var recordedKilometerPoints: ArrayList<KilometerPoint> = ArrayList()
     private var distance: Double = 0.0
+    private var totalDistance: Double = 0.0
     private lateinit var startDate: Date
     private var paused = false
     private var pauses: ArrayList<Pause> = ArrayList()
@@ -100,7 +101,9 @@ class LocationService : Service() {
                         "Location Updated: $location altitude: ${location.altitude}"
                     )
                     if (recordedGeoPoints.size >= 1) {
-                        distance += newGeoPoint.distanceToAsDouble(recordedGeoPoints.last())
+                        val diff = newGeoPoint.distanceToAsDouble(recordedGeoPoints.last())
+                        distance += diff
+                        totalDistance += diff
                     }
                     if (distance.toInt() / 1000 == 1) {
                         distance = 0.0
@@ -117,7 +120,7 @@ class LocationService : Service() {
                     val timeInS = Utils.calculateTimeDiffS(
                         getStartDate(), Calendar.getInstance().time, pauses.toTypedArray()
                     )
-                    val distanceText = Utils.distanceText(distance, true)
+                    val distanceText = Utils.distanceText(totalDistance, true)
                     val speedText = Utils.speedText(location.speed.toDouble(), true)
                     updateNotification(speedText, distanceText, convertSecondsToHMmSs(timeInS))
                 }
