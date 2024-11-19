@@ -3,8 +3,6 @@ package com.xdmpx.routesp
 import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
-import android.content.DialogInterface
-import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -22,12 +20,9 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.xdmpx.routesp.database.RouteDatabase
-import com.xdmpx.routesp.datastore.ThemeType
 import com.xdmpx.routesp.utils.RecordedRouteItem
 import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
 import com.xdmpx.routesp.utils.Utils
