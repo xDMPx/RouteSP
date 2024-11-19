@@ -13,22 +13,22 @@ import com.xdmpx.routesp.R
 class SettingButton : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.Setting)
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.SettingButton)
         this.findViewById<TextView>(R.id.settingText).text =
-            attributes.getString(R.styleable.Setting_setting_text)
+            attributes.getString(R.styleable.SettingButton_setting_text)
         this.findViewById<ImageView>(R.id.settingIcon)
-            .setImageResource(attributes.getResourceId(R.styleable.Setting_setting_icon, 0))
+            .setImageResource(attributes.getResourceId(R.styleable.SettingButton_setting_icon, 0))
         attributes.recycle()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
     ) {
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.Setting)
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.SettingButton)
         this.findViewById<TextView>(R.id.settingText).text =
-            attributes.getString(R.styleable.Setting_setting_text)
+            attributes.getString(R.styleable.SettingButton_setting_text)
         this.findViewById<ImageView>(R.id.settingIcon)
-            .setImageResource(attributes.getResourceId(R.styleable.Setting_setting_icon, 0))
+            .setImageResource(attributes.getResourceId(R.styleable.SettingButton_setting_icon, 0))
         attributes.recycle()
     }
 
