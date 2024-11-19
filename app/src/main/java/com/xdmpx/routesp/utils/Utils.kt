@@ -29,7 +29,7 @@ object Utils {
     fun convertSecondsToHMmSs(seconds: Long): String {
         val s = seconds % 60
         val m = seconds / 60 % 60
-        val h = seconds / (60 * 60) % 24
+        val h = seconds / (60 * 60)
         return String.format(null, "%dh %dm %ds", h, m, s)
     }
 
