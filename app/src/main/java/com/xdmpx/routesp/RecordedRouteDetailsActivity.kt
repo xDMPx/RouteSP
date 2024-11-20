@@ -3,6 +3,8 @@ package com.xdmpx.routesp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
@@ -44,6 +46,11 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
         Utils.syncThemeWithSettings(this@RecordedRouteDetailsActivity)
 
         setContentView(R.layout.activity_recorded_route_details)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.tabLayout)) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, insets.top, 0, 0)
+            WindowInsetsCompat.CONSUMED
+        }
 
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         val scope = CoroutineScope(Dispatchers.IO)

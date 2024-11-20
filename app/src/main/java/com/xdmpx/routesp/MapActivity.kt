@@ -17,7 +17,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.preference.PreferenceManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
@@ -85,6 +88,11 @@ class MapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        // Hide the system bars.
+        windowInsetsController.hide(systemBars())
+
 
         Utils.syncThemeWithSettings(this@MapActivity)
 

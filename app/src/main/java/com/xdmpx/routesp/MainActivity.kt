@@ -22,6 +22,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.utils.RecordedRouteItem
 import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
@@ -66,6 +68,12 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.mainToolbar))
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainToolbar)) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, insets.top, 0, 0)
+            WindowInsetsCompat.CONSUMED
+        }
 
         recordedRoutesListView = this.findViewById(R.id.recordedRoutesList)
 

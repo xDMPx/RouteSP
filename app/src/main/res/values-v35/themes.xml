@@ -7,6 +7,5 @@
         <item name="colorPrimary">@color/Purple40</item>
         <item name="colorSecondary">@color/PurpleGrey40</item>
         <item name="colorTertiary">@color/Pink40</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 </resources>
