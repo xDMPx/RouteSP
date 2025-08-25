@@ -3,7 +3,7 @@ package com.xdmpx.routesp.settings
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import androidx.datastore.preferences.protobuf.InvalidProtocolBufferException
+import com.google.protobuf.InvalidProtocolBufferException
 import com.xdmpx.routesp.datastore.SettingsProto
 import com.xdmpx.routesp.datastore.ThemeType
 import java.io.InputStream

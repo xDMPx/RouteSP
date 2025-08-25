@@ -47,7 +47,7 @@ room {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.28.3"
+        artifact = "com.google.protobuf:protoc:4.32.0"
     }
     generateProtoTasks {
         all().forEach {
@@ -83,7 +83,7 @@ dependencies {
 
     implementation("androidx.fragment:fragment-ktx:1.8.9")
 
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
-    implementation("com.google.protobuf:protobuf-kotlin-lite:4.28.3")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("com.google.protobuf:protobuf-kotlin-lite:4.32.0")
 
 }
