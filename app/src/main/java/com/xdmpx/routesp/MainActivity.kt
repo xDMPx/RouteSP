@@ -24,6 +24,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.coroutineScope
 import com.google.android.material.color.DynamicColors
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.utils.RecordedRouteItem
@@ -32,8 +38,14 @@ import com.xdmpx.routesp.utils.Utils
 import com.xdmpx.routesp.utils.Utils.showAlertDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.DateFormat.getDateTimeInstance
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ui_pref")
 
 class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
@@ -82,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 
         recordedRoutesListView.setOnItemClickListener { adapterView, _, position, _ ->
             val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
-            goToRecordedRouteDetailsActivity(recordedRouteItem.routeID)
+            goToRecordedRouteDetailsActivity(recordedRouteItem.routeID, position)
         }
         recordedRoutesListView.setOnItemLongClickListener { adapterView, _, position, _ ->
             val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
@@ -118,6 +130,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        Log.d(DEBUG_TAG, "onResume")
         super.onResume()
 
         fillRecordedRoutesListView()
@@ -184,6 +197,15 @@ class MainActivity : AppCompatActivity() {
                     Utils.convertSecondsToHMmSs(totalTime)
                 this@MainActivity.findViewById<TextView>(R.id.recordedTextView).text =
                     recordedRoutesCount
+                val scrollValueKey = intPreferencesKey("scroll_value")
+
+                val scrollValue: Flow<Int> =
+                    this@MainActivity.dataStore.data.catch { }.map { uiPref ->
+                        uiPref[scrollValueKey] ?: 0
+                    }
+                this@MainActivity.lifecycle.coroutineScope.launch {
+                    recordedRoutesListView.setSelection(scrollValue.first())
+                }
             }
         }
 
@@ -196,7 +218,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToRecordedRouteDetailsActivity(routeID: Int) {
+    private fun goToRecordedRouteDetailsActivity(routeID: Int, pos: Int) {
+        val scrollValueKey = intPreferencesKey("scroll_value")
+        scopeIO.launch {
+            this@MainActivity.dataStore.edit { uiPref ->
+                uiPref[scrollValueKey] = pos
+            }
+        }
+
         val intent = Intent(this, RecordedRouteDetailsActivity::class.java)
         intent.putExtra("routeID", routeID)
         startActivity(intent)
