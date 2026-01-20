@@ -11,4 +11,8 @@
         <item name="android:colorBackground">@color/black</item>
     </style>
 
+    <style name="Base.Theme.RouteSP.DynamicColors.PureDark" parent="ThemeOverlay.Material3.DynamicColors.DayNight">
+        <item name="android:colorBackground">@color/black</item>
+    </style>
+
 </resources>

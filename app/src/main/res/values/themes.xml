@@ -10,6 +10,8 @@
 
     <style name="Theme.RouteSP" parent="Base.Theme.RouteSP" />
 
+    <style name="Base.Theme.RouteSP.DynamicColors" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />
+
     <style name="GoToMapFAB">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">100%</item>

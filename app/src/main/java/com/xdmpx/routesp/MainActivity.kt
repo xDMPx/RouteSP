@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.color.DynamicColors
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.utils.RecordedRouteItem
 import com.xdmpx.routesp.utils.RecordedRouteItemArrayAdapter
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
     ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DynamicColors.applyToActivitiesIfAvailable(this@MainActivity.application)
+
         scopeIO.launch {
             if (!com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.loaded) {
                 com.xdmpx.routesp.settings.Settings.getInstance().loadSettings(this@MainActivity)

@@ -21,6 +21,7 @@ import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.DynamicColors
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.database.entities.KilometerPointEntity
@@ -87,6 +88,7 @@ class MapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DynamicColors.applyToActivitiesIfAvailable(this@MapActivity.application)
 
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         // Hide the system bars.

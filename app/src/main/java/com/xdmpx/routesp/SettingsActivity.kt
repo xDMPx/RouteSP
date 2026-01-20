@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.color.DynamicColors
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.ui.Setting
@@ -53,6 +54,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        DynamicColors.applyToActivitiesIfAvailable(this@SettingsActivity.application)
         Utils.syncThemeWithSettings(this@SettingsActivity)
 
         enableEdgeToEdge()

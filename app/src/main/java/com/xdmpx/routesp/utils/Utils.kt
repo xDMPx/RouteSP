@@ -108,7 +108,9 @@ object Utils {
         val usePureDark =
             com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.usePureDark
         if ((theme == ThemeType.DARK || (theme == ThemeType.SYSTEM && activity.resources.configuration.isNightModeActive)) && usePureDark) {
-            activity.setTheme(R.style.Base_Theme_RouteSP_PureDark)
+            activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors_PureDark)
+        } else {
+            activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors)
         }
         activity.runOnUiThread {
             when (theme) {

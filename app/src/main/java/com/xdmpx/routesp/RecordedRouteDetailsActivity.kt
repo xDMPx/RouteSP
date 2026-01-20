@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import com.google.android.material.color.DynamicColors
 import com.google.android.material.tabs.TabLayout
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.recorded_route_details.ARG_ROUTE_ID
@@ -32,6 +33,8 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         routeID = intent.extras!!.getInt("routeID")
+
+        DynamicColors.applyToActivitiesIfAvailable(this@RecordedRouteDetailsActivity.application)
 
         if (savedInstanceState == null) {
             val bundle = bundleOf(ARG_ROUTE_ID to routeID)
