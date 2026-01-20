@@ -6,8 +6,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -17,13 +15,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
-import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.preference.PreferenceManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.database.entities.KilometerPointEntity
 import com.xdmpx.routesp.database.entities.PauseEntity
@@ -32,6 +30,7 @@ import com.xdmpx.routesp.database.entities.RouteEntity
 import com.xdmpx.routesp.services.LocationService
 import com.xdmpx.routesp.services.Pause
 import com.xdmpx.routesp.utils.Utils
+import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -198,7 +197,7 @@ class MapActivity : AppCompatActivity() {
 
     fun onOSMCopyrightNoticeClick(view: View) {
         val browserIntent =
-            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
+            Intent(Intent.ACTION_VIEW, "https://www.openstreetmap.org/copyright".toUri())
         startActivity(browserIntent, null)
     }
 

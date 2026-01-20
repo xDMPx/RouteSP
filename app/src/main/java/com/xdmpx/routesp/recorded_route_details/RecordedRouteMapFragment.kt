@@ -1,12 +1,12 @@
 package com.xdmpx.routesp.recorded_route_details
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.xdmpx.routesp.BuildConfig
@@ -111,7 +111,7 @@ class RecordedRouteMapFragment : Fragment() {
 
     private fun onOSMCopyrightNoticeClick(view: View) {
         val browserIntent =
-            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/copyright"))
+            Intent(Intent.ACTION_VIEW, "https://www.openstreetmap.org/copyright".toUri())
         startActivity(browserIntent, null)
     }
 

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -22,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.xdmpx.routesp.database.RouteDatabase
@@ -258,9 +258,8 @@ class MainActivity : AppCompatActivity() {
                 {}) { dialog, _ ->
                 dialog?.dismiss()
                 Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(
-                        "package:" + BuildConfig.APPLICATION_ID
-                    )
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    ("package:" + BuildConfig.APPLICATION_ID).toUri()
                 ).apply { startActivity(this) }
             }
             false
