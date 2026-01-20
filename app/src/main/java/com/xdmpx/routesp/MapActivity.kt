@@ -258,13 +258,13 @@ class MapActivity : AppCompatActivity() {
         if (paused) {
             runOnUiThread {
                 (this@MapActivity.findViewById<FloatingActionButton>(R.id.facPause)).setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.round_pause_24, theme)
+                    ResourcesCompat.getDrawable(resources, R.drawable.round_play_arrow_24, theme)
                 )
             }
             mLocationService.pause()
         } else {
             (this@MapActivity.findViewById<ImageView>(R.id.facPause)).setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.round_play_arrow_24, theme)
+                ResourcesCompat.getDrawable(resources, R.drawable.round_pause_24, theme)
             )
             mLocationService.resume()
         }

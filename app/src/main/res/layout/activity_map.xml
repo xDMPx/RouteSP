@@ -137,7 +137,7 @@
         app:layout_constraintBottom_toTopOf="@+id/facFollowLocation"
         app:layout_constraintEnd_toEndOf="@+id/facFollowLocation"
         app:shapeAppearanceOverlay="@style/GoToMapFAB"
-        app:srcCompat="@drawable/round_play_arrow_24" />
+        app:srcCompat="@drawable/round_pause_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/facFollowLocation"
