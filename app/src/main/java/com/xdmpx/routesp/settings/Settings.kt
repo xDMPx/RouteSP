@@ -31,6 +31,7 @@ object SettingsSerializer : Serializer<SettingsProto> {
         SettingsProto.getDefaultInstance().toBuilder().apply {
             theme = ThemeType.SYSTEM
             usePureDark = false
+            useDynamicColor = true
         }.build()
 
     override suspend fun readFrom(input: InputStream): SettingsProto {

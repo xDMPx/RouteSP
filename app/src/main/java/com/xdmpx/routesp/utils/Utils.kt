@@ -107,10 +107,19 @@ object Utils {
         val theme = com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.theme
         val usePureDark =
             com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.usePureDark
+        val useDynamicColor =
+            com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.useDynamicColor
         if ((theme == ThemeType.DARK || (theme == ThemeType.SYSTEM && activity.resources.configuration.isNightModeActive)) && usePureDark) {
-            activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors_PureDark)
+            if (useDynamicColor) {
+                activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors_PureDark)
+            } else {
+                activity.setTheme(R.style.Base_Theme_RouteSP_PureDark)
+            }
         } else {
-            activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors)
+            if (useDynamicColor) {
+                activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors)
+            } else {
+                activity.setTheme(R.style.Base_Theme_RouteSP)
         }
         activity.runOnUiThread {
             when (theme) {

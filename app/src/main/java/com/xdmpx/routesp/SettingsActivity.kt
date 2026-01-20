@@ -83,6 +83,17 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
+        val useDynamicColorsSetting = findViewById<Setting>(R.id.useDynamicColorsSetting)
+        val useDynamicColor = Settings.getInstance().settingsState.value.useDynamicColor
+        useDynamicColorsSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = useDynamicColor
+        useDynamicColorsSetting.setOnClickListener {
+            Settings.getInstance().toggleUseDynamicColor()
+            val useDynamicColor = Settings.getInstance().settingsState.value.useDynamicColor
+            useDynamicColorsSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = useDynamicColor
+            Utils.syncThemeWithSettings(this@SettingsActivity)
+            recreate()
+        }
+
         val buttonClick = AlphaAnimation(1f, 0.8f)
 
         val deleteAllSetting = findViewById<SettingButton>(R.id.deleteAllSetting)

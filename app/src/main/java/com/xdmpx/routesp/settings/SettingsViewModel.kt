@@ -20,6 +20,7 @@ data class SettingsState(
     val loaded: Boolean = false,
     val theme: ThemeType = ThemeType.SYSTEM,
     val usePureDark: Boolean = false,
+    val useDynamicColor: Boolean = false,
 )
 
 class SettingsViewModel : ViewModel() {
@@ -39,6 +40,12 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun toggleUseDynamicColor() {
+        _settingsState.value.let {
+            _settingsState.value = it.copy(useDynamicColor = !it.useDynamicColor)
+        }
+    }
+
     suspend fun loadSettings(context: Context) {
         val settingsData = context.settingsDataStore.data.catch { }.first()
         _settingsState.value.let {
@@ -46,6 +53,7 @@ class SettingsViewModel : ViewModel() {
                 loaded = true,
                 theme = settingsData.theme,
                 usePureDark = settingsData.usePureDark,
+                useDynamicColor = settingsData.useDynamicColor,
             )
         }
     }
@@ -55,6 +63,7 @@ class SettingsViewModel : ViewModel() {
             it.toBuilder().apply {
                 theme = this@SettingsViewModel._settingsState.value.theme
                 usePureDark = this@SettingsViewModel._settingsState.value.usePureDark
+                useDynamicColor = this@SettingsViewModel._settingsState.value.useDynamicColor
             }.build()
         }
     }
