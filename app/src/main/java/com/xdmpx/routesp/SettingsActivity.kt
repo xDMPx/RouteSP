@@ -74,22 +74,22 @@ class SettingsActivity : AppCompatActivity() {
 
         val usePureDarkSetting = findViewById<Setting>(R.id.usePureDarkSetting)
         val usePureDark = Settings.getInstance().settingsState.value.usePureDark
-        usePureDarkSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = usePureDark
+        usePureDarkSetting.getCheckBox().isChecked = usePureDark
         usePureDarkSetting.setOnClickListener {
             Settings.getInstance().toggleUsePureDark()
             val usePureDark = Settings.getInstance().settingsState.value.usePureDark
-            usePureDarkSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = usePureDark
+            usePureDarkSetting.getCheckBox().isChecked = usePureDark
             Utils.syncThemeWithSettings(this@SettingsActivity)
             recreate()
         }
 
         val useDynamicColorsSetting = findViewById<Setting>(R.id.useDynamicColorsSetting)
         val useDynamicColor = Settings.getInstance().settingsState.value.useDynamicColor
-        useDynamicColorsSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = useDynamicColor
+        useDynamicColorsSetting.getCheckBox().isChecked = useDynamicColor
         useDynamicColorsSetting.setOnClickListener {
             Settings.getInstance().toggleUseDynamicColor()
             val useDynamicColor = Settings.getInstance().settingsState.value.useDynamicColor
-            useDynamicColorsSetting.findViewById<CheckBox>(R.id.settingCheckBox).isChecked = useDynamicColor
+            useDynamicColorsSetting.getCheckBox().isChecked = useDynamicColor
             Utils.syncThemeWithSettings(this@SettingsActivity)
             recreate()
         }

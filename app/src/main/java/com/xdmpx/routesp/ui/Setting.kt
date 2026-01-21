@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.get
 import com.xdmpx.routesp.R
 
 class Setting : ConstraintLayout {
@@ -42,6 +44,10 @@ class Setting : ConstraintLayout {
 
         set.clone(this)
         set.match(view, this)
+    }
+
+    fun getCheckBox(): CheckBox {
+        return (this@Setting[0] as ConstraintLayout)[2] as CheckBox
     }
 
     private fun ConstraintSet.match(view: View, parentView: View) {
