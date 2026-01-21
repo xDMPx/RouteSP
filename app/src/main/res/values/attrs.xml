@@ -3,10 +3,12 @@
 
     <attr name="setting_text" format="string" />
     <attr name="setting_icon" format="reference" />
+    <attr name="setting_value" format="boolean" />
 
     <declare-styleable name="Setting">
         <attr name="setting_text" />
         <attr name="setting_icon" />
+        <attr name="setting_value" />
     </declare-styleable>
 
     <declare-styleable name="SettingButton">

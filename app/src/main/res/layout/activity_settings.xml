@@ -33,7 +33,8 @@
         android:clickable="true"
         app:layout_constraintTop_toBottomOf="@+id/themeSelectorSetting"
         app:setting_icon="@drawable/rounded_invert_colors_24"
-        app:setting_text="@string/settings_pure_dark" />
+        app:setting_text="@string/settings_pure_dark"
+        app:setting_value="false" />
 
     <com.xdmpx.routesp.ui.Setting
         android:id="@+id/useDynamicColorsSetting"
@@ -43,7 +44,8 @@
         android:clickable="true"
         app:layout_constraintTop_toBottomOf="@+id/usePureDarkSetting"
         app:setting_icon="@drawable/rounded_palette_24"
-        app:setting_text="@string/settings_dynamic_color" />
+        app:setting_text="@string/settings_dynamic_color"
+        app:setting_value="true" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"

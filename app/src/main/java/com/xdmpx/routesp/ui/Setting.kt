@@ -20,6 +20,7 @@ class Setting : ConstraintLayout {
             attributes.getString(R.styleable.Setting_setting_text)
         this.findViewById<ImageView>(R.id.settingIcon)
             .setImageResource(attributes.getResourceId(R.styleable.Setting_setting_icon, 0))
+        ((this@Setting[0] as ConstraintLayout)[2] as CheckBox).isChecked = attributes.getBoolean(R.styleable.Setting_setting_value, false)
         attributes.recycle()
     }
 
@@ -31,6 +32,7 @@ class Setting : ConstraintLayout {
             attributes.getString(R.styleable.Setting_setting_text)
         this.findViewById<ImageView>(R.id.settingIcon)
             .setImageResource(attributes.getResourceId(R.styleable.Setting_setting_icon, 0))
+        ((this@Setting[0] as ConstraintLayout)[2] as CheckBox).isChecked = attributes.getBoolean(R.styleable.Setting_setting_value, false)
         attributes.recycle()
     }
 
