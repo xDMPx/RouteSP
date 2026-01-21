@@ -36,6 +36,7 @@
     <string name="about">About</string>
 
     <string name="about_app_description">App for GPS‑based route tracking and recording.</string>
+    <string name="about_version">Version</string>
     <string name="about_source_code">Source code</string>
 
     <string name="about_source_code_url">https://github.com/xDMPx/RouteSP</string>

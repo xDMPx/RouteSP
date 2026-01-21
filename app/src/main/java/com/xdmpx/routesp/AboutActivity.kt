@@ -1,10 +1,14 @@
 package com.xdmpx.routesp
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -41,9 +45,21 @@ class AboutActivity : AppCompatActivity() {
         val iconView = this@AboutActivity.findViewById<ImageView>(R.id.iconView)
         iconView.setImageDrawable(drawable)
 
+        val version = this@AboutActivity.findViewById<ConstraintLayout>(R.id.version)
+        version.setOnClickListener {
+            copyVersionToClipboard(this@AboutActivity)
+        }
+        val versionTextView = this@AboutActivity.findViewById<TextView>(R.id.versionTextView)
+        val versionText =
+            "${getString(R.string.about_version)} v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        versionTextView.text = versionText
+
         val sourceCode = this@AboutActivity.findViewById<ConstraintLayout>(R.id.sourceCode)
         sourceCode.setOnClickListener {
-            openURL(this@AboutActivity, ContextCompat.getString(this@AboutActivity, R.string.about_source_code_url))
+            openURL(
+                this@AboutActivity,
+                ContextCompat.getString(this@AboutActivity, R.string.about_source_code_url)
+            )
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -66,6 +82,16 @@ class AboutActivity : AppCompatActivity() {
             // Invoke the superclass to handle it.
             super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun copyVersionToClipboard(context: Context) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText(
+            "${context.getString(context.applicationInfo.labelRes)} Version",
+            "${context.getString(context.applicationInfo.labelRes)} v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        )
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     private fun openURL(context: Context, url: String) {
