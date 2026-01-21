@@ -70,6 +70,7 @@ class SettingsActivity : AppCompatActivity() {
         val themeSelectorSetting = findViewById<ThemeSelectorSetting>(R.id.themeSelectorSetting)
         themeSelectorSetting.setOnThemeUpdate {
             Utils.syncThemeWithSettings(this@SettingsActivity)
+            recreate()
         }
 
         val usePureDarkSetting = findViewById<Setting>(R.id.usePureDarkSetting)
