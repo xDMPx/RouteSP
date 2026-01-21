@@ -1,5 +1,6 @@
 package com.xdmpx.routesp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,6 +9,9 @@ import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.color.DynamicColors
@@ -37,6 +41,11 @@ class AboutActivity : AppCompatActivity() {
         val iconView = this@AboutActivity.findViewById<ImageView>(R.id.iconView)
         iconView.setImageDrawable(drawable)
 
+        val sourceCode = this@AboutActivity.findViewById<ConstraintLayout>(R.id.sourceCode)
+        sourceCode.setOnClickListener {
+            openURL(this@AboutActivity, ContextCompat.getString(this@AboutActivity, R.string.about_source_code_url))
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -58,4 +67,10 @@ class AboutActivity : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
+
+    private fun openURL(context: Context, url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, url.toUri())
+        context.startActivity(browserIntent, null)
+    }
+
 }
