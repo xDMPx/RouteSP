@@ -122,6 +122,12 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        R.id.action_about -> {
+            val intent = Intent(this, AboutActivity::class.java)
+            startActivity(intent)
+            true
+        }
+
         else -> {
             // The user's action isn't recognized.
             // Invoke the superclass to handle it.
