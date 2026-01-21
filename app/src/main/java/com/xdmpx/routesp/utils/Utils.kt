@@ -120,13 +120,14 @@ object Utils {
                 activity.setTheme(R.style.Base_Theme_RouteSP_DynamicColors)
             } else {
                 activity.setTheme(R.style.Base_Theme_RouteSP)
-        }
-        activity.runOnUiThread {
-            when (theme) {
-                ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                ThemeType.UNRECOGNIZED -> {}
+            }
+            activity.runOnUiThread {
+                when (theme) {
+                    ThemeType.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    ThemeType.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    ThemeType.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    ThemeType.UNRECOGNIZED -> {}
+                }
             }
         }
     }
