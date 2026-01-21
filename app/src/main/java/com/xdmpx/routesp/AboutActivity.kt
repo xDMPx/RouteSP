@@ -3,6 +3,7 @@ package com.xdmpx.routesp
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,10 @@ class AboutActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }
+
+        val drawable = packageManager.getApplicationIcon(BuildConfig.APPLICATION_ID)
+        val iconView = this@AboutActivity.findViewById<ImageView>(R.id.iconView)
+        iconView.setImageDrawable(drawable)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

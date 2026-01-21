@@ -35,6 +35,8 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
 
+    <string name="about_app_description">App for GPS‑based route tracking and recording.</string>
+
     <string name="settings_pure_dark">Use pure(AMOLED) dark in dark them</string>
     <string name="settings_dynamic_color">Use dynamic colors in theme</string>
     <string name="settings_theme">Theme</string>
