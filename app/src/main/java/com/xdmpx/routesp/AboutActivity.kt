@@ -62,6 +62,18 @@ class AboutActivity : AppCompatActivity() {
             )
         }
 
+        val license = this@AboutActivity.findViewById<ConstraintLayout>(R.id.license)
+        license.setOnClickListener {
+            openURL(
+                this@AboutActivity,
+                ContextCompat.getString(this@AboutActivity, R.string.about_license_url)
+            )
+        }
+        val licenseTextView = this@AboutActivity.findViewById<TextView>(R.id.licenseTextView)
+        val licenseText =
+            "${getString(R.string.about_license)}: ${getString(R.string.about_license_name)}"
+        licenseTextView.text = licenseText
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

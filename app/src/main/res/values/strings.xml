@@ -38,8 +38,11 @@
     <string name="about_app_description">App for GPS‑based route tracking and recording.</string>
     <string name="about_version">Version</string>
     <string name="about_source_code">Source code</string>
+    <string name="about_license">License</string>
+    <string name="about_license_name">Apache-2.0 license</string>
 
     <string name="about_source_code_url">https://github.com/xDMPx/RouteSP</string>
+    <string name="about_license_url">"https://github.com/xDMPx/RouteSP/blob/main/LICENSE"</string>
 
     <string name="settings_pure_dark">Use pure(AMOLED) dark in dark them</string>
     <string name="settings_dynamic_color">Use dynamic colors in theme</string>
