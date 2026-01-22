@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/settings_theme"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/themeSelectorSettingIcon"
         app:layout_constraintStart_toEndOf="@+id/themeSelectorSettingIcon"
         app:layout_constraintTop_toTopOf="@+id/themeSelectorSettingIcon" />
@@ -33,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/settings_theme_system"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/themeSelectorSettingLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/themeSelectorSettingLabel" />

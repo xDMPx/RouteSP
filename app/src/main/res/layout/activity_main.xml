@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/overview"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainToolbar" />
@@ -36,19 +37,21 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="onDistanceClick"
-        tools:hint="0.0km"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/overviewTextView"
+        tools:hint="0.0km" />
 
     <TextView
         android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        tools:hint="0.0h"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="@+id/overviewTextView"
         app:layout_constraintStart_toStartOf="@+id/overviewTextView"
-        app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/overviewTextView"
+        tools:hint="0.0h" />
 
     <TextView
         android:id="@+id/recordedTextView"
@@ -57,6 +60,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:text="@string/recorded"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overviewTextView" />
 
