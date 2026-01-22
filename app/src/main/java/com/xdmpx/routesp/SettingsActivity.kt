@@ -63,6 +63,7 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(findViewById<Toolbar>(R.id.materialToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.title = getString(R.string.about_screen)
 
         progressBarLinearLayout =
             this@SettingsActivity.findViewById<LinearLayout>(R.id.progressBarLinearLayout)
@@ -101,7 +102,8 @@ class SettingsActivity : AppCompatActivity() {
         deleteAllSetting.isClickable = true
         deleteAllSetting.setOnClickListener {
             it.startAnimation(buttonClick)
-            showAlertDialog(this@SettingsActivity,
+            showAlertDialog(
+                this@SettingsActivity,
                 getString(R.string.settings_delete_all),
                 getString(R.string.confirmation_delete_all),
                 getString(R.string.delete),

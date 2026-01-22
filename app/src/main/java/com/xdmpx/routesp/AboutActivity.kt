@@ -34,6 +34,7 @@ class AboutActivity : AppCompatActivity() {
         setSupportActionBar(findViewById<Toolbar>(R.id.materialToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.title = getString(R.string.about_screen)
 
         this@AboutActivity.onBackPressedDispatcher.addCallback {
             val intent = Intent(this@AboutActivity, MainActivity::class.java)
