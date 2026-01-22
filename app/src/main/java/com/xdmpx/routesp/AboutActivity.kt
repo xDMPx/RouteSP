@@ -74,6 +74,19 @@ class AboutActivity : AppCompatActivity() {
             "${getString(R.string.about_license)}: ${getString(R.string.about_license_name)}"
         licenseTextView.text = licenseText
 
+
+        val author = this@AboutActivity.findViewById<ConstraintLayout>(R.id.author)
+        author.setOnClickListener {
+            openURL(
+                this@AboutActivity,
+                ContextCompat.getString(this@AboutActivity, R.string.about_author_url)
+            )
+        }
+        val authorTextView = this@AboutActivity.findViewById<TextView>(R.id.authorTextView)
+        val authorText =
+            "${getString(R.string.about_author)}: ${getString(R.string.about_author_name)}"
+        authorTextView.text = authorText
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
