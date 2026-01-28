@@ -1,9 +1,9 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("androidx.room")
-    id("com.google.protobuf")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.androidx.room)
+    alias(libs.plugins.google.protobuf)
 }
 
 android {
@@ -61,30 +61,27 @@ protobuf {
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.cardview)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.activity)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.google.android.material:material:1.13.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("androidx.activity:activity:1.8.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    implementation(libs.osmdroid.android)
+    implementation(libs.androidx.preference.ktx)
 
-    implementation("org.osmdroid:osmdroid-android:6.1.20")
-    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
-    val roomVersion = "2.8.4"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
+    implementation(libs.androidx.fragment.ktx)
 
-    implementation("androidx.fragment:fragment-ktx:1.8.9")
-
-    implementation("androidx.datastore:datastore-preferences:1.2.0")
-    implementation("com.google.protobuf:protobuf-kotlin-lite:4.33.4")
-
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.protobuf.kotlin.lite)
 }
