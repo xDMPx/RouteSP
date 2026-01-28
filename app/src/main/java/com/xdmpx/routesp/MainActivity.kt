@@ -182,18 +182,6 @@ class MainActivity : AppCompatActivity() {
             val recordedRoutesListArrayAdapter =
                 RecordedRouteItemArrayAdapter(this@MainActivity, recordedRoutesListItems)
 
-            val maxHeight =
-                this@MainActivity.findViewById<LinearLayout>(R.id.recordedRoutesListContainer).measuredHeight
-            Log.d("MainActivity", "maxHeight  $maxHeight")
-            if (recordedRoutesListArrayAdapter.count >= 1) {
-                val item: View =
-                    recordedRoutesListArrayAdapter.getView(0, null, recordedRoutesListView)
-                item.measure(0, 0)
-                Log.d("MainActivity", "item  ${item.measuredHeight}")
-                recordedRoutesListView.layoutParams.height =
-                    ((maxHeight / item.measuredHeight - 0.5) * item.measuredHeight).toInt()
-            }
-
             runOnUiThread {
                 val recordedRoutesCount = "${recordedRoutes.size} ${getString(R.string.recordings)}"
                 recordedRoutesListView.adapter = recordedRoutesListArrayAdapter
@@ -203,6 +191,20 @@ class MainActivity : AppCompatActivity() {
                     Utils.convertSecondsToHMmSs(totalTime)
                 this@MainActivity.findViewById<TextView>(R.id.recordedTextView).text =
                     recordedRoutesCount
+
+                val maxHeight =
+                    this@MainActivity.findViewById<LinearLayout>(R.id.recordedRoutesListContainer).measuredHeight
+                Log.d("MainActivity", "maxHeight  $maxHeight")
+                if (recordedRoutesListArrayAdapter.count >= 1) {
+                    val item: View =
+                        recordedRoutesListArrayAdapter.getView(0, null, recordedRoutesListView)
+                    item.measure(0, 0)
+                    Log.d("MainActivity", "item height  ${item.measuredHeight}")
+                    recordedRoutesListView.layoutParams.height =
+                        (maxHeight.toFloat() - (item.measuredHeight * 0.5f)).toInt()
+                }
+
+
                 val scrollValueKey = intPreferencesKey("scroll_value")
 
                 val scrollValue: Flow<Int> =
