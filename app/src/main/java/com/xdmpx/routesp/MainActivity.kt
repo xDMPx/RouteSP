@@ -14,11 +14,13 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -43,6 +45,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.nio.charset.StandardCharsets
 import java.text.DateFormat.getDateTimeInstance
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ui_pref")
@@ -50,11 +53,17 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ui
 class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
 
+    enum class SortOrder {
+        Ascending, Descending
+    }
+
     private lateinit var recordedRoutesListView: ListView
     private var totalDistance: Double = 0.0
     private var totalTime: Long = 0
     private var distanceInKM = true
     private val scopeIO = CoroutineScope(Dispatchers.IO)
+
+    private var sortByDate: SortOrder = SortOrder.Ascending
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -98,7 +107,8 @@ class MainActivity : AppCompatActivity() {
         }
         recordedRoutesListView.setOnItemLongClickListener { adapterView, _, position, _ ->
             val recordedRouteItem = adapterView.adapter.getItem(position) as RecordedRouteItem
-            showAlertDialog(this@MainActivity,
+            showAlertDialog(
+                this@MainActivity,
                 getString(R.string.delete_record),
                 getString(R.string.delete_record_confirmation),
                 getString(R.string.delete),
@@ -108,6 +118,32 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        val sortButton = this.findViewById<ImageView>(R.id.sortButton)
+        sortButton.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+            val sortByOptions = arrayOf(
+                String(
+                    "Date ${
+                        if (sortByDate == SortOrder.Ascending) {
+                            "⬇"
+                        } else {
+                            "⬆"
+                        }
+                    }".toByteArray(), StandardCharsets.UTF_8
+                )
+            )
+            builder.setTitle("Sort By:").setItems(sortByOptions) { dialog, which ->
+                sortByDate = if (sortByDate == SortOrder.Ascending) {
+                    SortOrder.Descending
+                } else {
+                    SortOrder.Ascending
+                }
+                fillRecordedRoutesListView()
+            }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -158,7 +194,11 @@ class MainActivity : AppCompatActivity() {
         val scope = CoroutineScope(Dispatchers.IO)
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         scope.launch {
-            val recordedRoutes = routeDBDao.getRoutes()
+            var recordedRoutes = routeDBDao.getRoutes()
+            if (sortByDate == SortOrder.Descending) {
+                recordedRoutes =
+                    recordedRoutes.sortedByDescending { (_, _, startDate, _) -> startDate.time }
+            }
             recordedRoutes.forEach {
                 val startDateString = getDateTimeInstance().format(it.startDate)
 
@@ -291,7 +331,8 @@ class MainActivity : AppCompatActivity() {
         return if (!isBackgroundRestricted && ignoringBatteryOptimizations) {
             requestPermissions(PermissionType.LOCATION)
         } else {
-            showAlertDialog(this@MainActivity,
+            showAlertDialog(
+                this@MainActivity,
                 getString(R.string.background_restricted),
                 getString(R.string.background_restricted_msg),
                 getString(R.string.ok),
@@ -333,7 +374,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             !isLocationEnabled() -> {
-                showAlertDialog(this@MainActivity,
+                showAlertDialog(
+                    this@MainActivity,
                     getString(R.string.gps_disabled),
                     getString(R.string.please_turn_on_gps),
                     getString(R.string.ok),

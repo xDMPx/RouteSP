@@ -63,7 +63,7 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(findViewById<Toolbar>(R.id.materialToolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.title = getString(R.string.about_screen)
+        supportActionBar?.title = getString(R.string.settings_screen)
 
         progressBarLinearLayout =
             this@SettingsActivity.findViewById<LinearLayout>(R.id.progressBarLinearLayout)
