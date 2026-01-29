@@ -4,6 +4,7 @@
     <attr name="setting_text" format="string" />
     <attr name="setting_icon" format="reference" />
     <attr name="setting_value" format="boolean" />
+    <attr name="setting_text_values" format="string" />
 
     <declare-styleable name="Setting">
         <attr name="setting_text" />
@@ -14,6 +15,12 @@
     <declare-styleable name="SettingButton">
         <attr name="setting_text" />
         <attr name="setting_icon" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingTogglableText">
+        <attr name="setting_text" />
+        <attr name="setting_icon" />
+        <attr name="setting_text_values"/>
     </declare-styleable>
 
 </resources>

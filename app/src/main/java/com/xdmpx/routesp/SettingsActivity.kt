@@ -20,6 +20,7 @@ import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.ui.Setting
 import com.xdmpx.routesp.ui.SettingButton
+import com.xdmpx.routesp.ui.SettingTogglableText
 import com.xdmpx.routesp.ui.ThemeSelectorSetting
 import com.xdmpx.routesp.utils.Utils
 import com.xdmpx.routesp.utils.Utils.ShortToast
@@ -95,13 +96,13 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
-        val defaultUnitsKmSetting = findViewById<Setting>(R.id.defaultUnitsKm)
+        val defaultUnitsKmSetting = findViewById<SettingTogglableText>(R.id.defaultUnitsKm)
         val defaultUnitsKm = Settings.getInstance().settingsState.value.defaultUnitsKm
-        defaultUnitsKmSetting.getCheckBox().isChecked = defaultUnitsKm
+        defaultUnitsKmSetting.choseTextOption(if(defaultUnitsKm) 0 else 1)
         defaultUnitsKmSetting.setOnClickListener {
             Settings.getInstance().toggleDefaultUnitsKm()
             val defaultUnitsKm = Settings.getInstance().settingsState.value.defaultUnitsKm
-            defaultUnitsKmSetting.getCheckBox().isChecked = defaultUnitsKm
+            defaultUnitsKmSetting.choseTextOption(if(defaultUnitsKm) 0 else 1)
         }
 
         val buttonClick = AlphaAnimation(1f, 0.8f)

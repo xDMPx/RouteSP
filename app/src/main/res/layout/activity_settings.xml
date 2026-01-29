@@ -46,7 +46,7 @@
         app:setting_text="@string/settings_dynamic_color"
         app:setting_value="true" />
 
-    <com.xdmpx.routesp.ui.Setting
+    <com.xdmpx.routesp.ui.SettingTogglableText
         android:id="@+id/defaultUnitsKm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,6 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/useDynamicColorsSetting"
         app:setting_icon="@drawable/rounded_distance_24"
         app:setting_text="@string/settings_default_units_km"
+        app:setting_text_values="km, km/h;m, m/s"
         app:setting_value="true"/>
 
     <com.google.android.material.divider.MaterialDivider
