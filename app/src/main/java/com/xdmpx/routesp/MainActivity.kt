@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     private var sortByDate: SortOrder = SortOrder.Ascending
     private var sortByDistance: SortOrder = SortOrder.None
+    private var sortByDuration: SortOrder = SortOrder.None
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -139,6 +140,14 @@ class MainActivity : AppCompatActivity() {
                             SortOrder.None -> " "
                         }
                     }".toByteArray(), StandardCharsets.UTF_8
+                ), String(
+                    "Duration ${
+                        when (sortByDuration) {
+                            SortOrder.Ascending -> "⬇"
+                            SortOrder.Descending -> "⬆"
+                            SortOrder.None -> " "
+                        }
+                    }".toByteArray(), StandardCharsets.UTF_8
                 )
             )
             builder.setTitle("Sort By:").setItems(sortByOptions) { dialog, which ->
@@ -150,6 +159,7 @@ class MainActivity : AppCompatActivity() {
                             SortOrder.Ascending
                         }
                         sortByDistance = SortOrder.None
+                        sortByDuration = SortOrder.None
                     }
 
                     1 -> {
@@ -159,6 +169,17 @@ class MainActivity : AppCompatActivity() {
                             SortOrder.Ascending
                         }
                         sortByDate = SortOrder.None
+                        sortByDuration = SortOrder.None
+                    }
+
+                    2 -> {
+                        sortByDuration = if (sortByDuration == SortOrder.Ascending) {
+                            SortOrder.Descending
+                        } else {
+                            SortOrder.Ascending
+                        }
+                        sortByDate = SortOrder.None
+                        sortByDistance = SortOrder.None
                     }
                 }
 
@@ -229,6 +250,20 @@ class MainActivity : AppCompatActivity() {
             if (sortByDistance == SortOrder.Descending) {
                 recordedRoutes =
                     recordedRoutes.sortedByDescending { (_, distanceInM, _, _) -> distanceInM }
+            }
+            if (sortByDuration == SortOrder.Ascending) {
+                recordedRoutes = recordedRoutes.sortedBy { (_, _, startDate, endDate) ->
+                    Utils.calculateTimeDiffS(
+                        startDate, endDate
+                    )
+                }
+            }
+            if (sortByDuration == SortOrder.Descending) {
+                recordedRoutes = recordedRoutes.sortedByDescending { (_, _, startDate, endDate) ->
+                    Utils.calculateTimeDiffS(
+                        startDate, endDate
+                    )
+                }
             }
             recordedRoutes.forEach {
                 val startDateString = getDateTimeInstance().format(it.startDate)
