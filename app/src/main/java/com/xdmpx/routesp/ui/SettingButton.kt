@@ -9,27 +9,28 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.xdmpx.routesp.R
+import androidx.core.content.withStyledAttributes
 
 class SettingButton : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.SettingButton)
-        this.findViewById<TextView>(R.id.settingText).text =
-            attributes.getString(R.styleable.SettingButton_setting_text)
-        this.findViewById<ImageView>(R.id.settingIcon)
-            .setImageResource(attributes.getResourceId(R.styleable.SettingButton_setting_icon, 0))
-        attributes.recycle()
+        context.withStyledAttributes(attrs, R.styleable.SettingButton) {
+            this@SettingButton.findViewById<TextView>(R.id.settingText).text =
+                getString(R.styleable.SettingButton_setting_text)
+            this@SettingButton.findViewById<ImageView>(R.id.settingIcon)
+                .setImageResource(getResourceId(R.styleable.SettingButton_setting_icon, 0))
+        }
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
     ) {
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.SettingButton)
-        this.findViewById<TextView>(R.id.settingText).text =
-            attributes.getString(R.styleable.SettingButton_setting_text)
-        this.findViewById<ImageView>(R.id.settingIcon)
-            .setImageResource(attributes.getResourceId(R.styleable.SettingButton_setting_icon, 0))
-        attributes.recycle()
+        context.withStyledAttributes(attrs, R.styleable.SettingButton) {
+            this@SettingButton.findViewById<TextView>(R.id.settingText).text =
+                getString(R.styleable.SettingButton_setting_text)
+            this@SettingButton.findViewById<ImageView>(R.id.settingIcon)
+                .setImageResource(getResourceId(R.styleable.SettingButton_setting_icon, 0))
+        }
     }
 
 

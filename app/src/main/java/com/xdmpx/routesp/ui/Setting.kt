@@ -11,29 +11,32 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.get
 import com.xdmpx.routesp.R
+import androidx.core.content.withStyledAttributes
 
 class Setting : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.Setting)
-        this.findViewById<TextView>(R.id.settingText).text =
-            attributes.getString(R.styleable.Setting_setting_text)
-        this.findViewById<ImageView>(R.id.settingIcon)
-            .setImageResource(attributes.getResourceId(R.styleable.Setting_setting_icon, 0))
-        ((this@Setting[0] as ConstraintLayout)[2] as CheckBox).isChecked = attributes.getBoolean(R.styleable.Setting_setting_value, false)
-        attributes.recycle()
+        context.withStyledAttributes(attrs, R.styleable.Setting) {
+            this@Setting.findViewById<TextView>(R.id.settingText).text =
+                getString(R.styleable.Setting_setting_text)
+            this@Setting.findViewById<ImageView>(R.id.settingIcon)
+                .setImageResource(getResourceId(R.styleable.Setting_setting_icon, 0))
+            ((this@Setting[0] as ConstraintLayout)[2] as CheckBox).isChecked =
+                getBoolean(R.styleable.Setting_setting_value, false)
+        }
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
     ) {
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.Setting)
-        this.findViewById<TextView>(R.id.settingText).text =
-            attributes.getString(R.styleable.Setting_setting_text)
-        this.findViewById<ImageView>(R.id.settingIcon)
-            .setImageResource(attributes.getResourceId(R.styleable.Setting_setting_icon, 0))
-        ((this@Setting[0] as ConstraintLayout)[2] as CheckBox).isChecked = attributes.getBoolean(R.styleable.Setting_setting_value, false)
-        attributes.recycle()
+        context.withStyledAttributes(attrs, R.styleable.Setting) {
+            this@Setting.findViewById<TextView>(R.id.settingText).text =
+                getString(R.styleable.Setting_setting_text)
+            this@Setting.findViewById<ImageView>(R.id.settingIcon)
+                .setImageResource(getResourceId(R.styleable.Setting_setting_icon, 0))
+            ((this@Setting[0] as ConstraintLayout)[2] as CheckBox).isChecked =
+                getBoolean(R.styleable.Setting_setting_value, false)
+        }
     }
 
     init {
