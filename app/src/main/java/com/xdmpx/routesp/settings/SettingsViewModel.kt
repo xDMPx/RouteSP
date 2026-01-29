@@ -21,6 +21,7 @@ data class SettingsState(
     val theme: ThemeType = ThemeType.SYSTEM,
     val usePureDark: Boolean = false,
     val useDynamicColor: Boolean = false,
+    val defaultUnitsKm: Boolean = true
 )
 
 class SettingsViewModel : ViewModel() {
@@ -46,6 +47,12 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun toggleDefaultUnitsKm () {
+        _settingsState.value.let {
+            _settingsState.value = it.copy(defaultUnitsKm = !it.defaultUnitsKm)
+        }
+    }
+
     suspend fun loadSettings(context: Context) {
         val settingsData = context.settingsDataStore.data.catch { }.first()
         _settingsState.value.let {
@@ -54,6 +61,7 @@ class SettingsViewModel : ViewModel() {
                 theme = settingsData.theme,
                 usePureDark = settingsData.usePureDark,
                 useDynamicColor = settingsData.useDynamicColor,
+                defaultUnitsKm = settingsData.defaultUnitsKm
             )
         }
     }
@@ -64,6 +72,7 @@ class SettingsViewModel : ViewModel() {
                 theme = this@SettingsViewModel._settingsState.value.theme
                 usePureDark = this@SettingsViewModel._settingsState.value.usePureDark
                 useDynamicColor = this@SettingsViewModel._settingsState.value.useDynamicColor
+                defaultUnitsKm = this@SettingsViewModel._settingsState.value.defaultUnitsKm
             }.build()
         }
     }

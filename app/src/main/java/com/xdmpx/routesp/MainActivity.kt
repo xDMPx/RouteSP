@@ -101,6 +101,8 @@ class MainActivity : AppCompatActivity() {
             WindowInsetsCompat.CONSUMED
         }
 
+        distanceInKM =
+            com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.defaultUnitsKm
         recordedRoutesListView = this.findViewById(R.id.recordedRoutesList)
 
         recordedRoutesListView.setOnItemClickListener { adapterView, _, position, _ ->

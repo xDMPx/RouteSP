@@ -60,6 +60,7 @@
     <string name="confirmation_delete_all">Are you sure you want to delete all recorded routes? This action cannot be undone.</string>
     <string name="settings_export_json">Export all recorded routes to a JSON file</string>
     <string name="settings_import_json">Import recorded routes from a JSON file</string>
+    <string name="settings_default_units_km">Default units to km, km/h</string>
 
 
     <string name="export_successful">Recorded routes exported</string>

@@ -30,6 +30,7 @@ import com.xdmpx.routesp.database.entities.PointEntity
 import com.xdmpx.routesp.database.entities.RouteEntity
 import com.xdmpx.routesp.services.LocationService
 import com.xdmpx.routesp.services.Pause
+import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.utils.Utils
 import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import kotlinx.coroutines.CoroutineScope
@@ -96,6 +97,8 @@ class MapActivity : AppCompatActivity() {
 
 
         Utils.syncThemeWithSettings(this@MapActivity)
+        distanceInKM = Settings.getInstance().settingsState.value.defaultUnitsKm
+        speedInKMH = Settings.getInstance().settingsState.value.defaultUnitsKm
 
         setContentView(R.layout.activity_map)
 

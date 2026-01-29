@@ -96,6 +96,15 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
+        val defaultUnitsKmSetting = findViewById<Setting>(R.id.defaultUnitsKm)
+        val defaultUnitsKm = Settings.getInstance().settingsState.value.defaultUnitsKm
+        defaultUnitsKmSetting.getCheckBox().isChecked = defaultUnitsKm
+        defaultUnitsKmSetting.setOnClickListener {
+            Settings.getInstance().toggleDefaultUnitsKm()
+            val defaultUnitsKm = Settings.getInstance().settingsState.value.defaultUnitsKm
+            defaultUnitsKmSetting.getCheckBox().isChecked = defaultUnitsKm
+        }
+
         val buttonClick = AlphaAnimation(1f, 0.8f)
 
         val deleteAllSetting = findViewById<SettingButton>(R.id.deleteAllSetting)

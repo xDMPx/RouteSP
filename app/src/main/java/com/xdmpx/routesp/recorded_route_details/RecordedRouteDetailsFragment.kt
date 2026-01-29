@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import com.xdmpx.routesp.R
+import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.utils.Utils
 
 const val ARG_RECORDING_DATE = "startDateString"
@@ -44,6 +45,8 @@ class RecordedRouteDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recorded_route_details, container, false)
+        distanceInKM = Settings.getInstance().settingsState.value.defaultUnitsKm
+        speedInKMH = Settings.getInstance().settingsState.value.defaultUnitsKm
 
         (view.findViewById<TextView>(R.id.dateValueView)).text = recordingDate
         (view.findViewById<TextView>(R.id.durationValueView)).text =

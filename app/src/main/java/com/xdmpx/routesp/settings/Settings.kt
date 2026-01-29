@@ -32,6 +32,7 @@ object SettingsSerializer : Serializer<SettingsProto> {
             theme = ThemeType.SYSTEM
             usePureDark = false
             useDynamicColor = true
+            defaultUnitsKm = true
         }.build()
 
     override suspend fun readFrom(input: InputStream): SettingsProto {
