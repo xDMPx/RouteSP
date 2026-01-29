@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
 
     enum class SortOrder {
-        Ascending, Descending
+        Ascending, Descending, None
     }
 
     private lateinit var recordedRoutesListView: ListView
@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     private val scopeIO = CoroutineScope(Dispatchers.IO)
 
     private var sortByDate: SortOrder = SortOrder.Ascending
+    private var sortByDistance: SortOrder = SortOrder.None
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -124,20 +125,43 @@ class MainActivity : AppCompatActivity() {
             val sortByOptions = arrayOf(
                 String(
                     "Date ${
-                        if (sortByDate == SortOrder.Ascending) {
-                            "⬇"
-                        } else {
-                            "⬆"
+                        when (sortByDate) {
+                            SortOrder.Ascending -> "⬇"
+                            SortOrder.Descending -> "⬆"
+                            SortOrder.None -> " "
+                        }
+                    }".toByteArray(), StandardCharsets.UTF_8
+                ), String(
+                    "Distance ${
+                        when (sortByDistance) {
+                            SortOrder.Ascending -> "⬇"
+                            SortOrder.Descending -> "⬆"
+                            SortOrder.None -> " "
                         }
                     }".toByteArray(), StandardCharsets.UTF_8
                 )
             )
             builder.setTitle("Sort By:").setItems(sortByOptions) { dialog, which ->
-                sortByDate = if (sortByDate == SortOrder.Ascending) {
-                    SortOrder.Descending
-                } else {
-                    SortOrder.Ascending
+                when (which) {
+                    0 -> {
+                        sortByDate = if (sortByDate == SortOrder.Ascending) {
+                            SortOrder.Descending
+                        } else {
+                            SortOrder.Ascending
+                        }
+                        sortByDistance = SortOrder.None
+                    }
+
+                    1 -> {
+                        sortByDistance = if (sortByDistance == SortOrder.Ascending) {
+                            SortOrder.Descending
+                        } else {
+                            SortOrder.Ascending
+                        }
+                        sortByDate = SortOrder.None
+                    }
                 }
+
                 fillRecordedRoutesListView()
             }
 
@@ -199,6 +223,13 @@ class MainActivity : AppCompatActivity() {
                 recordedRoutes =
                     recordedRoutes.sortedByDescending { (_, _, startDate, _) -> startDate.time }
             }
+            if (sortByDistance == SortOrder.Ascending) {
+                recordedRoutes = recordedRoutes.sortedBy { (_, distanceInM, _, _) -> distanceInM }
+            }
+            if (sortByDistance == SortOrder.Descending) {
+                recordedRoutes =
+                    recordedRoutes.sortedByDescending { (_, distanceInM, _, _) -> distanceInM }
+            }
             recordedRoutes.forEach {
                 val startDateString = getDateTimeInstance().format(it.startDate)
 
@@ -243,7 +274,6 @@ class MainActivity : AppCompatActivity() {
                     recordedRoutesListView.layoutParams.height =
                         (maxHeight.toFloat() - (item.measuredHeight * 0.5f)).toInt()
                 }
-
 
                 val scrollValueKey = intPreferencesKey("scroll_value")
 
