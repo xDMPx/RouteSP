@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         distanceInKM =
-            com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.defaultUnitsKm
+            com.xdmpx.routesp.settings.Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
         recordedRoutesListView = this.findViewById(R.id.recordedRoutesList)
 
         recordedRoutesListView.setOnItemClickListener { adapterView, _, position, _ ->

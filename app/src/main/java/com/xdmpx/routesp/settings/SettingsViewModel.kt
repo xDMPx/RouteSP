@@ -21,7 +21,8 @@ data class SettingsState(
     val theme: ThemeType = ThemeType.SYSTEM,
     val usePureDark: Boolean = false,
     val useDynamicColor: Boolean = false,
-    val defaultUnitsKm: Boolean = true
+    val defaultDistanceUnitsKm: Boolean = true,
+    val defaultSpeedUnitsKmh: Boolean = true,
 )
 
 class SettingsViewModel : ViewModel() {
@@ -47,9 +48,15 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
-    fun toggleDefaultUnitsKm () {
+    fun toggleDefaultDistanceUnitsKm() {
         _settingsState.value.let {
-            _settingsState.value = it.copy(defaultUnitsKm = !it.defaultUnitsKm)
+            _settingsState.value = it.copy(defaultDistanceUnitsKm = !it.defaultDistanceUnitsKm)
+        }
+    }
+
+    fun toggleDefaultSpeedUnitsKmh() {
+        _settingsState.value.let {
+            _settingsState.value = it.copy(defaultSpeedUnitsKmh = !it.defaultSpeedUnitsKmh)
         }
     }
 
@@ -61,7 +68,8 @@ class SettingsViewModel : ViewModel() {
                 theme = settingsData.theme,
                 usePureDark = settingsData.usePureDark,
                 useDynamicColor = settingsData.useDynamicColor,
-                defaultUnitsKm = settingsData.defaultUnitsKm
+                defaultDistanceUnitsKm = settingsData.defaultDistanceUnitsKm,
+                defaultSpeedUnitsKmh = settingsData.defaultSpeedUnitsKmh,
             )
         }
     }
@@ -72,7 +80,10 @@ class SettingsViewModel : ViewModel() {
                 theme = this@SettingsViewModel._settingsState.value.theme
                 usePureDark = this@SettingsViewModel._settingsState.value.usePureDark
                 useDynamicColor = this@SettingsViewModel._settingsState.value.useDynamicColor
-                defaultUnitsKm = this@SettingsViewModel._settingsState.value.defaultUnitsKm
+                defaultDistanceUnitsKm =
+                    this@SettingsViewModel._settingsState.value.defaultDistanceUnitsKm
+                defaultSpeedUnitsKmh =
+                    this@SettingsViewModel._settingsState.value.defaultSpeedUnitsKmh
             }.build()
         }
     }

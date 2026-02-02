@@ -96,13 +96,27 @@ class SettingsActivity : AppCompatActivity() {
             recreate()
         }
 
-        val defaultUnitsKmSetting = findViewById<SettingTogglableText>(R.id.defaultUnitsKm)
-        val defaultUnitsKm = Settings.getInstance().settingsState.value.defaultUnitsKm
-        defaultUnitsKmSetting.choseTextOption(if(defaultUnitsKm) 0 else 1)
-        defaultUnitsKmSetting.setOnClickListener {
-            Settings.getInstance().toggleDefaultUnitsKm()
-            val defaultUnitsKm = Settings.getInstance().settingsState.value.defaultUnitsKm
-            defaultUnitsKmSetting.choseTextOption(if(defaultUnitsKm) 0 else 1)
+        val defaultDistanceUnitsKmSetting =
+            findViewById<SettingTogglableText>(R.id.defaultDistanceUnitsKm)
+        val defaultDistanceUnitsKm =
+            Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
+        defaultDistanceUnitsKmSetting.choseTextOption(if (defaultDistanceUnitsKm) 0 else 1)
+        defaultDistanceUnitsKmSetting.setOnClickListener {
+            Settings.getInstance().toggleDefaultDistanceUnitsKm()
+            val defaultDistanceUnitsKm =
+                Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
+            defaultDistanceUnitsKmSetting.choseTextOption(if (defaultDistanceUnitsKm) 0 else 1)
+        }
+
+        val defaultSpeedUnitsKmhSetting =
+            findViewById<SettingTogglableText>(R.id.defaultSpeedUnitsKmh)
+        val defaultSpeedUnitsKmh = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
+        defaultSpeedUnitsKmhSetting.choseTextOption(if (defaultSpeedUnitsKmh) 0 else 1)
+        defaultSpeedUnitsKmhSetting.setOnClickListener {
+            Settings.getInstance().toggleDefaultSpeedUnitsKmh()
+            val defaultSpeedUnitsKmh =
+                Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
+            defaultSpeedUnitsKmhSetting.choseTextOption(if (defaultSpeedUnitsKmh) 0 else 1)
         }
 
         val buttonClick = AlphaAnimation(1f, 0.8f)

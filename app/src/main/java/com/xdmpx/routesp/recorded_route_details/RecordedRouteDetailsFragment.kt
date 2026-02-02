@@ -45,8 +45,8 @@ class RecordedRouteDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recorded_route_details, container, false)
-        distanceInKM = Settings.getInstance().settingsState.value.defaultUnitsKm
-        speedInKMH = Settings.getInstance().settingsState.value.defaultUnitsKm
+        distanceInKM = Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
+        speedInKMH = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
 
         (view.findViewById<TextView>(R.id.dateValueView)).text = recordingDate
         (view.findViewById<TextView>(R.id.durationValueView)).text =

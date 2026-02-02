@@ -13,5 +13,6 @@ message SettingsProto {
   ThemeType theme = 10;
   bool use_pure_dark = 1;
   bool use_dynamic_color = 2;
-  bool default_units_km = 3;
+  bool default_distance_units_km = 3;
+  bool default_speed_units_kmh = 4;
 }

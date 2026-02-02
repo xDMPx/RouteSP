@@ -97,8 +97,8 @@ class MapActivity : AppCompatActivity() {
 
 
         Utils.syncThemeWithSettings(this@MapActivity)
-        distanceInKM = Settings.getInstance().settingsState.value.defaultUnitsKm
-        speedInKMH = Settings.getInstance().settingsState.value.defaultUnitsKm
+        distanceInKM = Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
+        speedInKMH = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
 
         setContentView(R.layout.activity_map)
 

@@ -47,16 +47,28 @@
         app:setting_value="true" />
 
     <com.xdmpx.routesp.ui.SettingTogglableText
-        android:id="@+id/defaultUnitsKm"
+        android:id="@+id/defaultDistanceUnitsKm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:clickable="true"
         app:layout_constraintTop_toBottomOf="@+id/useDynamicColorsSetting"
         app:setting_icon="@drawable/rounded_distance_24"
-        app:setting_text="@string/settings_default_units_km"
-        app:setting_text_values="km, km/h;m, m/s"
-        app:setting_value="true"/>
+        app:setting_text="@string/settings_default_distance_units_km"
+        app:setting_text_values="km;m"
+        app:setting_value="true" />
+
+    <com.xdmpx.routesp.ui.SettingTogglableText
+        android:id="@+id/defaultSpeedUnitsKmh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:layout_constraintTop_toBottomOf="@+id/defaultDistanceUnitsKm"
+        app:setting_icon="@drawable/ic_baseline_speed_24"
+        app:setting_text="@string/settings_default_speed_units_kmh"
+        app:setting_text_values="km/h;m/s"
+        app:setting_value="true" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
@@ -67,7 +79,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/defaultUnitsKm" />
+        app:layout_constraintTop_toBottomOf="@+id/defaultSpeedUnitsKmh" />
 
     <com.xdmpx.routesp.ui.SettingButton
         android:id="@+id/deleteAllSetting"
