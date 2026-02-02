@@ -320,6 +320,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 this@MainActivity.lifecycle.coroutineScope.launch {
                     recordedRoutesListView.setSelection(scrollValue.first())
+                    scopeIO.launch {
+                        this@MainActivity.dataStore.edit { uiPref ->
+                            uiPref[scrollValueKey] = 0
+                        }
+                    }
                 }
             }
         }
