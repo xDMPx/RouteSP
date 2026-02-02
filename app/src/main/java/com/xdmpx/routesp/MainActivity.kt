@@ -28,6 +28,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -248,6 +249,23 @@ class MainActivity : AppCompatActivity() {
         val scope = CoroutineScope(Dispatchers.IO)
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         scope.launch {
+            val sortOrderKey = booleanPreferencesKey("scroll_order")
+            val sortOrderValue: Flow<Boolean> =
+                this@MainActivity.dataStore.data.catch { }.map { uiPref ->
+                    uiPref[sortOrderKey] ?: true
+                }
+            val sortOrder =
+                if (sortOrderValue.first()) SortOrder.Ascending else SortOrder.Descending
+            val sortByKey = intPreferencesKey("scroll_by")
+            val sortByValue: Flow<Int> = this@MainActivity.dataStore.data.catch { }.map { uiPref ->
+                uiPref[sortByKey] ?: 0
+            }
+            when (sortByValue.first()) {
+                1 -> sortBy = SortBy.Date(sortOrder)
+                2 -> sortBy = SortBy.Distance(sortOrder)
+                3 -> sortBy = SortBy.Duration(sortOrder)
+            }
+
             var recordedRoutes = routeDBDao.getRoutes()
             when (sortBy) {
                 is SortBy.Date if sortBy.order == SortOrder.Ascending -> {
@@ -337,7 +355,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val scrollValueKey = intPreferencesKey("scroll_value")
-
                 val scrollValue: Flow<Int> =
                     this@MainActivity.dataStore.data.catch { }.map { uiPref ->
                         uiPref[scrollValueKey] ?: 0
@@ -347,6 +364,7 @@ class MainActivity : AppCompatActivity() {
                     scopeIO.launch {
                         this@MainActivity.dataStore.edit { uiPref ->
                             uiPref[scrollValueKey] = 0
+                            uiPref[sortByKey] = 0
                         }
                     }
                 }
@@ -364,9 +382,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun goToRecordedRouteDetailsActivity(routeID: Int, pos: Int) {
         val scrollValueKey = intPreferencesKey("scroll_value")
+        val sortByKey = intPreferencesKey("scroll_by")
+        val sortOrderKey = booleanPreferencesKey("scroll_order")
         scopeIO.launch {
             this@MainActivity.dataStore.edit { uiPref ->
                 uiPref[scrollValueKey] = pos
+                uiPref[sortOrderKey] = sortBy.order != SortOrder.Descending
+                uiPref[sortByKey] = when (sortBy) {
+                    is SortBy.Date -> {
+                        1
+                    }
+
+                    is SortBy.Distance -> {
+                        2
+                    }
+
+                    is SortBy.Duration -> {
+                        3
+                    }
+                }
             }
         }
 
