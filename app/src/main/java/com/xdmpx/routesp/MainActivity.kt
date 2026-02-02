@@ -63,9 +63,15 @@ class MainActivity : AppCompatActivity() {
     private var distanceInKM = true
     private val scopeIO = CoroutineScope(Dispatchers.IO)
 
-    private var sortByDate: SortOrder = SortOrder.Ascending
-    private var sortByDistance: SortOrder = SortOrder.None
-    private var sortByDuration: SortOrder = SortOrder.None
+    sealed class SortBy {
+        data class Date(override val order: SortOrder) : SortBy()
+        data class Distance(override val order: SortOrder) : SortBy()
+        data class Duration(override val order: SortOrder) : SortBy()
+
+        abstract val order: SortOrder
+    }
+
+    private var sortBy: SortBy = SortBy.Date(SortOrder.Ascending)
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -122,32 +128,33 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+
         val sortButton = this.findViewById<ImageView>(R.id.sortButton)
         sortButton.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
             val sortByOptions = arrayOf(
                 String(
                     "Date ${
-                        when (sortByDate) {
-                            SortOrder.Ascending -> "⬇"
-                            SortOrder.Descending -> "⬆"
-                            SortOrder.None -> " "
+                        when (sortBy) {
+                            is SortBy.Date if sortBy.order == SortOrder.Ascending -> "⬇"
+                            is SortBy.Date if sortBy.order == SortOrder.Descending -> "⬆"
+                            else -> " "
                         }
                     }".toByteArray(), StandardCharsets.UTF_8
                 ), String(
                     "Distance ${
-                        when (sortByDistance) {
-                            SortOrder.Ascending -> "⬇"
-                            SortOrder.Descending -> "⬆"
-                            SortOrder.None -> " "
+                        when (sortBy) {
+                            is SortBy.Distance if sortBy.order == SortOrder.Ascending -> "⬇"
+                            is SortBy.Distance if sortBy.order == SortOrder.Descending -> "⬆"
+                            else -> " "
                         }
                     }".toByteArray(), StandardCharsets.UTF_8
                 ), String(
                     "Duration ${
-                        when (sortByDuration) {
-                            SortOrder.Ascending -> "⬇"
-                            SortOrder.Descending -> "⬆"
-                            SortOrder.None -> " "
+                        when (sortBy) {
+                            is SortBy.Duration if sortBy.order == SortOrder.Ascending -> "⬇"
+                            is SortBy.Duration if sortBy.order == SortOrder.Descending -> "⬆"
+                            else -> " "
                         }
                     }".toByteArray(), StandardCharsets.UTF_8
                 )
@@ -155,33 +162,33 @@ class MainActivity : AppCompatActivity() {
             builder.setTitle("Sort By:").setItems(sortByOptions) { dialog, which ->
                 when (which) {
                     0 -> {
-                        sortByDate = if (sortByDate == SortOrder.Ascending) {
-                            SortOrder.Descending
-                        } else {
-                            SortOrder.Ascending
+                        sortBy = when (sortBy) {
+                            is SortBy.Date if sortBy.order == SortOrder.Ascending -> SortBy.Date(
+                                SortOrder.Descending
+                            )
+
+                            else -> SortBy.Date(SortOrder.Ascending)
                         }
-                        sortByDistance = SortOrder.None
-                        sortByDuration = SortOrder.None
                     }
 
                     1 -> {
-                        sortByDistance = if (sortByDistance == SortOrder.Ascending) {
-                            SortOrder.Descending
-                        } else {
-                            SortOrder.Ascending
+                        sortBy = when (sortBy) {
+                            is SortBy.Distance if sortBy.order == SortOrder.Ascending -> SortBy.Distance(
+                                SortOrder.Descending
+                            )
+
+                            else -> SortBy.Distance(SortOrder.Ascending)
                         }
-                        sortByDate = SortOrder.None
-                        sortByDuration = SortOrder.None
                     }
 
                     2 -> {
-                        sortByDuration = if (sortByDuration == SortOrder.Ascending) {
-                            SortOrder.Descending
-                        } else {
-                            SortOrder.Ascending
+                        sortBy = when (sortBy) {
+                            is SortBy.Duration if sortBy.order == SortOrder.Ascending -> SortBy.Duration(
+                                SortOrder.Descending
+                            )
+
+                            else -> SortBy.Duration(SortOrder.Ascending)
                         }
-                        sortByDate = SortOrder.None
-                        sortByDistance = SortOrder.None
                     }
                 }
 
@@ -242,31 +249,48 @@ class MainActivity : AppCompatActivity() {
         val routeDBDao = RouteDatabase.getInstance(this).routeDatabaseDao
         scope.launch {
             var recordedRoutes = routeDBDao.getRoutes()
-            if (sortByDate == SortOrder.Descending) {
-                recordedRoutes =
-                    recordedRoutes.sortedByDescending { (_, _, startDate, _) -> startDate.time }
-            }
-            if (sortByDistance == SortOrder.Ascending) {
-                recordedRoutes = recordedRoutes.sortedBy { (_, distanceInM, _, _) -> distanceInM }
-            }
-            if (sortByDistance == SortOrder.Descending) {
-                recordedRoutes =
-                    recordedRoutes.sortedByDescending { (_, distanceInM, _, _) -> distanceInM }
-            }
-            if (sortByDuration == SortOrder.Ascending) {
-                recordedRoutes = recordedRoutes.sortedBy { (_, _, startDate, endDate) ->
-                    Utils.calculateTimeDiffS(
-                        startDate, endDate
-                    )
+            when (sortBy) {
+                is SortBy.Date if sortBy.order == SortOrder.Ascending -> {
+                    recordedRoutes =
+                        recordedRoutes.sortedBy { (_, _, startDate, _) -> startDate.time }
                 }
-            }
-            if (sortByDuration == SortOrder.Descending) {
-                recordedRoutes = recordedRoutes.sortedByDescending { (_, _, startDate, endDate) ->
-                    Utils.calculateTimeDiffS(
-                        startDate, endDate
-                    )
+
+                is SortBy.Date if sortBy.order == SortOrder.Descending -> {
+
+                    recordedRoutes =
+                        recordedRoutes.sortedByDescending { (_, _, startDate, _) -> startDate.time }
                 }
+
+                is SortBy.Distance if sortBy.order == SortOrder.Ascending -> {
+                    recordedRoutes =
+                        recordedRoutes.sortedBy { (_, distanceInM, _, _) -> distanceInM }
+                }
+
+                is SortBy.Distance if sortBy.order == SortOrder.Ascending -> {
+                    recordedRoutes =
+                        recordedRoutes.sortedByDescending { (_, distanceInM, _, _) -> distanceInM }
+                }
+
+                is SortBy.Duration if sortBy.order == SortOrder.Ascending -> {
+                    recordedRoutes = recordedRoutes.sortedBy { (_, _, startDate, endDate) ->
+                        Utils.calculateTimeDiffS(
+                            startDate, endDate
+                        )
+                    }
+                }
+
+                is SortBy.Duration if sortBy.order == SortOrder.Descending -> {
+                    recordedRoutes =
+                        recordedRoutes.sortedByDescending { (_, _, startDate, endDate) ->
+                            Utils.calculateTimeDiffS(
+                                startDate, endDate
+                            )
+                        }
+                }
+
+                else -> {}
             }
+
             recordedRoutes.forEach {
                 val startDateString = getDateTimeInstance().format(it.startDate)
 
