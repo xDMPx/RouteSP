@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     private val DEBUG_TAG = "MainActivity"
 
     enum class SortOrder {
-        Ascending, Descending, None
+        Ascending, Descending
     }
 
     private lateinit var recordedRoutesListView: ListView
