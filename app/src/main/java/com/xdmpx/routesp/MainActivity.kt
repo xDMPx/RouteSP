@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
                         recordedRoutes.sortedBy { (_, distanceInM, _, _) -> distanceInM }
                 }
 
-                is SortBy.Distance if sortBy.order == SortOrder.Ascending -> {
+                is SortBy.Distance if sortBy.order == SortOrder.Descending -> {
                     recordedRoutes =
                         recordedRoutes.sortedByDescending { (_, distanceInM, _, _) -> distanceInM }
                 }
