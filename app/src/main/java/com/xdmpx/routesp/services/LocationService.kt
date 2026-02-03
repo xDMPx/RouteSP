@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.xdmpx.routesp.R
+import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.utils.Utils
 import com.xdmpx.routesp.utils.Utils.convertSecondsToHMmSs
 import org.osmdroid.util.GeoPoint
@@ -120,8 +121,10 @@ class LocationService : Service() {
                     val timeInS = Utils.calculateTimeDiffS(
                         getStartDate(), Calendar.getInstance().time, pauses.toTypedArray()
                     )
-                    val distanceText = Utils.distanceText(totalDistance, true)
-                    val speedText = Utils.speedText(location.speed.toDouble(), true)
+                    val speedInKMH = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
+                    val distanceInKm = Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
+                    val distanceText = Utils.distanceText(totalDistance, distanceInKm)
+                    val speedText = Utils.speedText(location.speed.toDouble(), speedInKMH)
                     updateNotification(speedText, distanceText, convertSecondsToHMmSs(timeInS))
                 }
             }
