@@ -22,10 +22,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:padding="4dp"
             android:clickable="true"
             android:focusable="true"
-            app:srcCompat="@drawable/rounded_sort_24" />
+            android:padding="4dp"
+            app:srcCompat="@drawable/rounded_sort_24"
+            app:tint="?android:textColorPrimary" />
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
