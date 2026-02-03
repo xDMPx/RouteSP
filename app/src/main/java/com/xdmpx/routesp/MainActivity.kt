@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -134,72 +135,82 @@ class MainActivity : AppCompatActivity() {
 
         val sortButton = this.findViewById<ImageView>(R.id.sortButton)
         sortButton.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
-            val sortByOptions = arrayOf(
-                String(
-                    "Date ${
-                        when (sortBy) {
-                            is SortBy.Date if sortBy.order == SortOrder.Ascending -> "⬇"
-                            is SortBy.Date if sortBy.order == SortOrder.Descending -> "⬆"
-                            else -> " "
-                        }
-                    }".toByteArray(), StandardCharsets.UTF_8
-                ), String(
-                    "Distance ${
-                        when (sortBy) {
-                            is SortBy.Distance if sortBy.order == SortOrder.Ascending -> "⬇"
-                            is SortBy.Distance if sortBy.order == SortOrder.Descending -> "⬆"
-                            else -> " "
-                        }
-                    }".toByteArray(), StandardCharsets.UTF_8
-                ), String(
-                    "Duration ${
-                        when (sortBy) {
-                            is SortBy.Duration if sortBy.order == SortOrder.Ascending -> "⬇"
-                            is SortBy.Duration if sortBy.order == SortOrder.Descending -> "⬆"
-                            else -> " "
-                        }
-                    }".toByteArray(), StandardCharsets.UTF_8
-                )
-            )
-            builder.setTitle("Sort By:").setItems(sortByOptions) { dialog, which ->
-                when (which) {
-                    0 -> {
-                        sortBy = when (sortBy) {
-                            is SortBy.Date if sortBy.order == SortOrder.Ascending -> SortBy.Date(
-                                SortOrder.Descending
-                            )
+            val builder = AlertDialog.Builder(this@MainActivity)
+            val inflater = this@MainActivity.layoutInflater
 
-                            else -> SortBy.Date(SortOrder.Ascending)
-                        }
-                    }
-
-                    1 -> {
-                        sortBy = when (sortBy) {
-                            is SortBy.Distance if sortBy.order == SortOrder.Ascending -> SortBy.Distance(
-                                SortOrder.Descending
-                            )
-
-                            else -> SortBy.Distance(SortOrder.Ascending)
-                        }
-                    }
-
-                    2 -> {
-                        sortBy = when (sortBy) {
-                            is SortBy.Duration if sortBy.order == SortOrder.Ascending -> SortBy.Duration(
-                                SortOrder.Descending
-                            )
-
-                            else -> SortBy.Duration(SortOrder.Ascending)
-                        }
-                    }
-                }
-
-                fillRecordedRoutesListView()
-            }
-
+            builder.setView(inflater.inflate(R.layout.main_sort_dialog, null))
+            builder.create()
             val dialog: AlertDialog = builder.create()
             dialog.show()
+
+            val sortByDate = dialog.findViewById<TextView>(R.id.sortByDate)
+            val sortByDistance = dialog.findViewById<TextView>(R.id.sortByDistance)
+            val sortByDuration = dialog.findViewById<TextView>(R.id.sortByDuration)
+
+            sortByDate?.setCompoundDrawables(null, null, null, null)
+            sortByDistance?.setCompoundDrawables(null, null, null, null)
+            sortByDuration?.setCompoundDrawables(null, null, null, null)
+
+            val icon = when (sortBy.order) {
+                SortOrder.Ascending -> AppCompatResources.getDrawable(
+                    this@MainActivity, R.drawable.rounded_arrow_upward_alt_24
+                )
+
+                SortOrder.Descending -> AppCompatResources.getDrawable(
+                    this@MainActivity, R.drawable.rounded_arrow_downward_alt_24
+                )
+            }
+
+            when (sortBy) {
+                is SortBy.Date -> {
+                    sortByDate?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        null, null, icon, null
+                    )
+                }
+
+                is SortBy.Distance -> {
+                    sortByDistance?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        null, null, icon, null
+                    )
+                }
+
+                is SortBy.Duration -> {
+                    sortByDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        null, null, icon, null
+                    )
+                }
+            }
+
+            sortByDate?.setOnClickListener {
+                sortBy = when (sortBy) {
+                    is SortBy.Date if (sortBy.order == SortOrder.Ascending) -> SortBy.Date(SortOrder.Descending)
+                    else -> SortBy.Date(SortOrder.Ascending)
+                }
+                dialog.dismiss()
+                fillRecordedRoutesListView()
+            }
+            sortByDistance?.setOnClickListener {
+                sortBy = when (sortBy) {
+                    is SortBy.Distance if (sortBy.order == SortOrder.Ascending) -> SortBy.Distance(
+                        SortOrder.Descending
+                    )
+
+                    else -> SortBy.Distance(SortOrder.Ascending)
+                }
+                dialog.dismiss()
+                fillRecordedRoutesListView()
+            }
+            sortByDuration?.setOnClickListener {
+                sortBy = when (sortBy) {
+                    is SortBy.Duration if (sortBy.order == SortOrder.Ascending) -> SortBy.Duration(
+                        SortOrder.Descending
+                    )
+
+                    else -> SortBy.Duration(SortOrder.Ascending)
+                }
+                dialog.dismiss()
+                fillRecordedRoutesListView()
+            }
         }
     }
 
