@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -99,6 +100,7 @@ class MainActivity : AppCompatActivity() {
 
         Utils.syncThemeWithSettings(this@MainActivity)
 
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.mainToolbar))
 
