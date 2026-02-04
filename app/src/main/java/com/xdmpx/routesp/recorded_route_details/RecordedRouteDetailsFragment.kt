@@ -26,6 +26,7 @@ class RecordedRouteDetailsFragment : Fragment() {
     private var avgSpeedMS = 0.0
     private var distanceInKM = true
     private var speedInKMH = true
+    private var speedByKMInKMH = true
     private lateinit var altitudeArray: DoubleArray
     private lateinit var speedsInMsByKM: DoubleArray
 
@@ -71,13 +72,11 @@ class RecordedRouteDetailsFragment : Fragment() {
         val speedByKM = speedsInMsByKM.mapIndexed { index, v ->
             if (index < speedsInMsByKM.lastIndex) {
                 String.format(
-                    null, "${index + 1}: %.2f ${if (speedInKMH) "km/h" else "m/s"}", v
+                    null, "${index + 1}: ${Utils.speedText(v, speedInKMH)}",
                 )
             } else {
                 String.format(
-                    null,
-                    "${getString(R.string.less_tkm)}: %.2f ${if (speedInKMH) "km/h" else "m/s"}",
-                    v
+                    null, "${getString(R.string.less_tkm)}: ${Utils.speedText(v, speedInKMH)}"
                 )
             }
         }
@@ -88,6 +87,30 @@ class RecordedRouteDetailsFragment : Fragment() {
             R.id.itemTextView,
             speedByKM as ArrayList<String>
         )
+
+        speedByKMInKMH = speedInKMH
+        listView.setOnItemClickListener { _, _, _, _ ->
+            val view = this@RecordedRouteDetailsFragment.view ?: return@setOnItemClickListener
+            speedByKMInKMH = !speedByKMInKMH
+            val speedByKM = speedsInMsByKM.mapIndexed { index, v ->
+                if (index < speedsInMsByKM.lastIndex) {
+                    String.format(
+                        null, "${index + 1}: ${Utils.speedText(v, speedByKMInKMH)}",
+                    )
+                } else {
+                    String.format(
+                        null, "${getString(R.string.less_tkm)}: ${Utils.speedText(v, speedByKMInKMH)}"
+                    )
+                }
+            }
+            val listView = view.findViewById<ListView>(R.id.routeList)
+            listView.adapter = ArrayAdapter(
+                view.context,
+                R.layout.speed_list_item,
+                R.id.itemTextView,
+                speedByKM as ArrayList<String>
+            )
+        }
 
         return view
     }
