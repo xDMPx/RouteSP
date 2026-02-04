@@ -14,7 +14,6 @@ import com.xdmpx.routesp.database.RouteDatabase
 import com.xdmpx.routesp.recorded_route_details.ARG_ROUTE_ID
 import com.xdmpx.routesp.recorded_route_details.RecordedRouteDetailsFragment
 import com.xdmpx.routesp.recorded_route_details.RecordedRouteMapFragment
-import com.xdmpx.routesp.settings.Settings
 import com.xdmpx.routesp.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +28,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
     private var routeID: Int = 0
     private var recordingDate: String = ""
     private lateinit var altitudeArray: DoubleArray
-    private var speedsByKM: ArrayList<String> = ArrayList()
+    private var speedsInMSByKM: ArrayList<Double> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,16 +75,11 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
 
             val kilometerPoints = routeDBDao.getRouteWithKilometerPoints(routeID)!!.points
             var startDate = route.startDate
-            val speedInKMH = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
             kilometerPoints.forEachIndexed { index, value ->
                 val timeDif = Utils.calculateTimeDiffS(startDate, value.date, pauses)
                 startDate = value.date
-                speedsByKM.add(
-                    String.format(
-                        null,
-                        "${index + 1}: %.2f ${if (speedInKMH) "km/h" else "m/s"}",
-                        Utils.calculateAvgSpeedMS(1000.0, timeDif) * (if (speedInKMH) 3.6 else 1.0)
-                    )
+                speedsInMSByKM.add(
+                    Utils.calculateAvgSpeedMS(1000.0, timeDif)
                 )
             }
             val timeDif = if (kilometerPoints.isEmpty()) {
@@ -93,13 +87,9 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
             } else {
                 Utils.calculateTimeDiffS(kilometerPoints.last().date, route.endDate, pauses)
             }
-            speedsByKM.add(
-                String.format(
-                    null,
-                    "${getString(R.string.less_tkm)}: %.2f ${if (speedInKMH) "km/h" else "m/s"}",
-                    Utils.calculateAvgSpeedMS(
-                        distanceInM % 1000, timeDif
-                    ) * (if (speedInKMH) 3.6 else 1.0)
+            speedsInMSByKM.add(
+                Utils.calculateAvgSpeedMS(
+                    distanceInM % 1000, timeDif
                 )
             )
         }
@@ -134,7 +124,7 @@ class RecordedRouteDetailsActivity : AppCompatActivity() {
                 timeInS,
                 avgSpeedMS,
                 altitudeArray,
-                speedsByKM,
+                speedsInMSByKM.toDoubleArray(),
             )
         )
         ft.commit()

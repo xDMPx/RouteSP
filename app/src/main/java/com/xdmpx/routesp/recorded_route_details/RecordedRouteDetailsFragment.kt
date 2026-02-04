@@ -27,7 +27,7 @@ class RecordedRouteDetailsFragment : Fragment() {
     private var distanceInKM = true
     private var speedInKMH = true
     private lateinit var altitudeArray: DoubleArray
-    private var speedsByKM: ArrayList<String> = ArrayList()
+    private lateinit var speedsInMsByKM: DoubleArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,7 @@ class RecordedRouteDetailsFragment : Fragment() {
             timeInS = it.getLong(ARG_TIME_IN_S)
             avgSpeedMS = it.getDouble(ARG_AVG_SPEED_MS)
             altitudeArray = it.getDoubleArray(ARG_ALTITUDE_ARRAY)!!
-            speedsByKM = it.getStringArrayList(ARG_SPEED_BY_KM)!!
+            speedsInMsByKM = it.getDoubleArray(ARG_SPEED_BY_KM)!!
         }
     }
 
@@ -68,12 +68,25 @@ class RecordedRouteDetailsFragment : Fragment() {
         minAltitudeTextView.text = minAltitudeText
         maxAltitudeTextView.text = maxAltitudeText
 
+        val speedByKM = speedsInMsByKM.mapIndexed { index, v ->
+            if (index < speedsInMsByKM.lastIndex) {
+                String.format(
+                    null, "${index + 1}: %.2f ${if (speedInKMH) "km/h" else "m/s"}", v
+                )
+            } else {
+                String.format(
+                    null,
+                    "${getString(R.string.less_tkm)}: %.2f ${if (speedInKMH) "km/h" else "m/s"}",
+                    v
+                )
+            }
+        }
         val listView = view.findViewById<ListView>(R.id.routeList)
         listView.adapter = ArrayAdapter(
             view.context,
             R.layout.speed_list_item,
             R.id.itemTextView,
-            speedsByKM as ArrayList<String>
+            speedByKM as ArrayList<String>
         )
 
         return view
@@ -87,7 +100,7 @@ class RecordedRouteDetailsFragment : Fragment() {
             timeInS: Long,
             avgSpeedMS: Double,
             altitudeArray: DoubleArray,
-            speedByKM: ArrayList<String>,
+            speedByKM: DoubleArray,
         ) = RecordedRouteDetailsFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_RECORDING_DATE, recordingDate)
@@ -95,7 +108,7 @@ class RecordedRouteDetailsFragment : Fragment() {
                 putLong(ARG_TIME_IN_S, timeInS)
                 putDouble(ARG_AVG_SPEED_MS, avgSpeedMS)
                 putDoubleArray(ARG_ALTITUDE_ARRAY, altitudeArray)
-                putStringArrayList(ARG_SPEED_BY_KM, speedByKM)
+                putDoubleArray(ARG_SPEED_BY_KM, speedByKM)
             }
         }
     }
