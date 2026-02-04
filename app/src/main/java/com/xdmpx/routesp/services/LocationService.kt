@@ -44,6 +44,9 @@ class LocationService : Service() {
     private var paused = false
     private var pauses: ArrayList<Pause> = ArrayList()
 
+    private var speedInKMH = true
+    private var distanceInKm = true
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var latestLocationTime: Long = 0
@@ -59,6 +62,8 @@ class LocationService : Service() {
         if (!::fusedLocationClient.isInitialized) {
             startDate = Calendar.getInstance().time
             latestLocationTime = startDate.time
+            speedInKMH = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
+            distanceInKm = Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
             setRequestLocationUpdates()
         }
         return Service.START_STICKY
@@ -121,8 +126,6 @@ class LocationService : Service() {
                     val timeInS = Utils.calculateTimeDiffS(
                         getStartDate(), Calendar.getInstance().time, pauses.toTypedArray()
                     )
-                    val speedInKMH = Settings.getInstance().settingsState.value.defaultSpeedUnitsKmh
-                    val distanceInKm = Settings.getInstance().settingsState.value.defaultDistanceUnitsKm
                     val distanceText = Utils.distanceText(totalDistance, distanceInKm)
                     val speedText = Utils.speedText(location.speed.toDouble(), speedInKMH)
                     updateNotification(speedText, distanceText, convertSecondsToHMmSs(timeInS))
@@ -209,6 +212,14 @@ class LocationService : Service() {
 
     fun getPausesArray(): Array<Pause> {
         return pauses.toTypedArray()
+    }
+
+    fun setSpeedInKmh(enabled: Boolean) {
+        speedInKMH = enabled
+    }
+
+    fun setDistanceInKm(enabled: Boolean) {
+        distanceInKm = enabled
     }
 
 }

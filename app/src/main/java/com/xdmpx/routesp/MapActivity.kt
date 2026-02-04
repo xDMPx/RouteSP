@@ -208,6 +208,7 @@ class MapActivity : AppCompatActivity() {
 
     fun onSpeedClick(view: View) {
         speedInKMH = !speedInKMH
+        mLocationService.setSpeedInKmh(speedInKMH)
         setSpeedMapText(pauses)
     }
 
@@ -247,6 +248,7 @@ class MapActivity : AppCompatActivity() {
 
     fun onDistanceClick(view: View) {
         distanceInKM = !distanceInKM
+        mLocationService.setDistanceInKm(distanceInKM)
         runOnUiThread {
             val distanceText = Utils.distanceText(routeLine.distance, distanceInKM)
             (this@MapActivity.findViewById<TextView>(R.id.distanceMapText)).text = distanceText
