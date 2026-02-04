@@ -26,7 +26,6 @@ class RecordedRouteDetailsFragment : Fragment() {
     private var avgSpeedMS = 0.0
     private var distanceInKM = true
     private var speedInKMH = true
-    private var speedByKMInKMH = true
     private lateinit var altitudeArray: DoubleArray
     private lateinit var speedsInMsByKM: DoubleArray
 
@@ -69,48 +68,12 @@ class RecordedRouteDetailsFragment : Fragment() {
         minAltitudeTextView.text = minAltitudeText
         maxAltitudeTextView.text = maxAltitudeText
 
-        val speedByKM = speedsInMsByKM.mapIndexed { index, v ->
-            if (index < speedsInMsByKM.lastIndex) {
-                String.format(
-                    null, "${index + 1}: ${Utils.speedText(v, speedInKMH)}",
-                )
-            } else {
-                String.format(
-                    null, "${getString(R.string.less_tkm)}: ${Utils.speedText(v, speedInKMH)}"
-                )
-            }
-        }
         val listView = view.findViewById<ListView>(R.id.routeList)
-        listView.adapter = ArrayAdapter(
-            view.context,
-            R.layout.speed_list_item,
-            R.id.itemTextView,
-            speedByKM as ArrayList<String>
-        )
-
-        speedByKMInKMH = speedInKMH
         listView.setOnItemClickListener { _, _, _, _ ->
             val view = this@RecordedRouteDetailsFragment.view ?: return@setOnItemClickListener
-            speedByKMInKMH = !speedByKMInKMH
-            val speedByKM = speedsInMsByKM.mapIndexed { index, v ->
-                if (index < speedsInMsByKM.lastIndex) {
-                    String.format(
-                        null, "${index + 1}: ${Utils.speedText(v, speedByKMInKMH)}",
-                    )
-                } else {
-                    String.format(
-                        null, "${getString(R.string.less_tkm)}: ${Utils.speedText(v, speedByKMInKMH)}"
-                    )
-                }
-            }
-            val listView = view.findViewById<ListView>(R.id.routeList)
-            listView.adapter = ArrayAdapter(
-                view.context,
-                R.layout.speed_list_item,
-                R.id.itemTextView,
-                speedByKM as ArrayList<String>
-            )
+            onAvgSpeedClick(view)
         }
+        fillSpeedByKmAdapter(view)
 
         return view
     }
@@ -148,6 +111,30 @@ class RecordedRouteDetailsFragment : Fragment() {
         speedInKMH = !speedInKMH
         view.findViewById<TextView>(R.id.avgSpeedValueView).text =
             Utils.speedText(avgSpeedMS, speedInKMH)
+
+        val view = this@RecordedRouteDetailsFragment.view ?: return
+        fillSpeedByKmAdapter(view)
+    }
+
+    private fun fillSpeedByKmAdapter(view: View) {
+        val speedByKM = speedsInMsByKM.mapIndexed { index, v ->
+            if (index < speedsInMsByKM.lastIndex) {
+                String.format(
+                    null, "${index + 1}: ${Utils.speedText(v, speedInKMH)}"
+                )
+            } else {
+                String.format(
+                    null, "${getString(R.string.less_tkm)}: ${Utils.speedText(v, speedInKMH)}"
+                )
+            }
+        }
+        val listView = view.findViewById<ListView>(R.id.routeList) ?: return
+        listView.adapter = ArrayAdapter(
+            view.context,
+            R.layout.speed_list_item,
+            R.id.itemTextView,
+            speedByKM as ArrayList<String>
+        )
     }
 
 }
